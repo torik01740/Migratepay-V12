@@ -125,6 +125,8 @@
 - **.gitignore Protection:**
   - Updated to comprehensively ignore all `.env.*` variants while explicitly protecting `!.env.example`.
   - Added rules to prevent tracking of SQL dumps (`*.sql`) and SQLite journals (`*.sqlite-journal`).
+- **Baseline Commit Hash:** `e91b8fc` ("chore: establish MigratePay V12 project baseline").
+- **GitHub Synchronization:** Synchronized to `origin/master` (`https://github.com/torik01740/Migratepay-V12.git`).
 - **Backup & Recovery Preparation:**
   - Standalone baseline backup created outside the project directory:
     - Path: `F:\laragon\www\Migratepay-V12-backups\Migratepay-V12-baseline-20261102-210722.zip`
