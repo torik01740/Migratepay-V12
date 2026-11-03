@@ -11,6 +11,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'api/login',
+            'api/register',
+            'api/check-availability',
+            'api/forgot-password',
+            'api/verify-otp',
+            'api/reset-password',
+            'api/payments/webhook/*',
+        ]);
+
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);

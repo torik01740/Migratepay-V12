@@ -1281,7 +1281,10 @@
         }
         function getCsrf() {
             const t = document.querySelector('meta[name="csrf-token"]');
-            return t ? t.content : '';
+            if (t && t.content) return t.content;
+            const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+            if (match) return decodeURIComponent(match[1]);
+            return '';
         }
         function showLoginError(msg, isSuccess = false) {
             const el = document.getElementById('login-error-msg');
@@ -1534,8 +1537,10 @@
             if (dist) payload.district      = dist;
 
             try {
+                payload._token = getCsrf();
                 const res    = await fetch(getBasePath() + '/api/register', {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrf(), 'Accept': 'application/json' },
                     body: JSON.stringify(payload)
                 });
@@ -1577,11 +1582,35 @@
             btn.classList.add('loading');
 
             try {
-                const res    = await fetch(getBasePath() + '/api/login', {
+                let csrfToken = getCsrf();
+                let res = await fetch(getBasePath() + '/api/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrf(), 'Accept': 'application/json' },
-                    body: JSON.stringify({ email, password: pass })
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                    body: JSON.stringify({ email, password: pass, _token: csrfToken })
                 });
+
+                // Auto-recover if CSRF token expired in background
+                if (res.status === 419) {
+                    try {
+                        const tokenRes = await fetch(getBasePath() + '/api/csrf-token', { credentials: 'same-origin' });
+                        const tokenData = await tokenRes.json();
+                        if (tokenData && tokenData.csrf_token) {
+                            csrfToken = tokenData.csrf_token;
+                            const metaTag = document.querySelector('meta[name="csrf-token"]');
+                            if (metaTag) metaTag.setAttribute('content', csrfToken);
+                            res = await fetch(getBasePath() + '/api/login', {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                                body: JSON.stringify({ email, password: pass, _token: csrfToken })
+                            });
+                        }
+                    } catch (tokenErr) {
+                        console.error('Failed to auto-refresh CSRF token:', tokenErr);
+                    }
+                }
+
                 const result = await res.json();
                 btn.classList.remove('loading');
 

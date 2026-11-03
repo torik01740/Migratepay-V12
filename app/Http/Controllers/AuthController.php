@@ -208,6 +208,13 @@ class AuthController extends Controller
      */
     public function updatePassword(Request $request): JsonResponse
     {
+        if ($request->has('new_password') && !$request->has('password')) {
+            $request->merge([
+                'password' => $request->new_password,
+                'password_confirmation' => $request->new_password_confirmation,
+            ]);
+        }
+
         $request->validate([
             'current_password' => 'required',
             'password'         => 'required|string|min:8|confirmed',

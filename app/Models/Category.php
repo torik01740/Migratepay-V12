@@ -28,4 +28,9 @@ class Category extends Model
     {
         return $this->hasMany(Deal::class);
     }
+
+    public function scopeAlphabetical($query)
+    {
+        return $query->orderBy('name', 'asc');
+    }
 }

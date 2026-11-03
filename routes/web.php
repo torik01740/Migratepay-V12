@@ -60,25 +60,31 @@ Route::get('/auth', function () {
 Route::get('/login', fn () => redirect('/auth'))->name('login');
 Route::get('/register', fn () => redirect('/auth?tab=register'))->name('register');
 
-// Protected Dashboard Gateways (Phase 6 Implementation Boundary)
+// Protected Dashboard Gateways (Phase 6 React 19 + Chakra UI 3 Shell)
 Route::get('/dashboard/{any?}', function () {
     if (!auth()->check()) {
         return redirect('/auth');
     }
-    return response()->json(['message' => 'Dashboard reconstruction scheduled for Phase 6.']);
+    $user = auth()->user();
+    if ($user->role === 'admin') {
+        return redirect('/admin');
+    }
+    return view('dashboard', ['authUser' => $user]);
 })->where('any', '.*')->name('dashboard');
 
 Route::get('/admin/{any?}', function () {
     if (!auth()->check() || auth()->user()->role !== 'admin') {
         return redirect('/auth?role=admin');
     }
-    return response()->json(['message' => 'Admin dashboard reconstruction scheduled for Phase 6.']);
+    $user = auth()->user();
+    return view('admin', ['authUser' => $user]);
 })->where('any', '.*')->name('admin.dashboard');
 
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. Authentication & Identity Management
 // ─────────────────────────────────────────────────────────────────────────────
+Route::get('/api/csrf-token', fn () => response()->json(['success' => true, 'csrf_token' => csrf_token()]));
 Route::post('/api/register', [AuthController::class, 'register']);
 Route::post('/api/check-availability', [AuthController::class, 'checkAvailability']);
 Route::post('/api/login', [AuthController::class, 'login']);
@@ -91,6 +97,7 @@ Route::post('/api/reset-password', [AuthController::class, 'resetPassword']);
 // 2. Public API Endpoints (Sanitized, No Secrets Exposed)
 // ─────────────────────────────────────────────────────────────────────────────
 Route::get('/api/public/categories', [CategoryController::class, 'index']);
+Route::get('/api/categories', [CategoryController::class, 'index']);
 Route::get('/api/public/gateway-settings', [PaymentGatewayController::class, 'publicSettings']);
 Route::get('/api/payment-gateways/public', [PaymentGatewayController::class, 'publicSettings']); // Canonical Alias
 Route::get('/api/public/calculate-charge', [DealController::class, 'calculateChargeAPI']);
@@ -124,12 +131,32 @@ Route::get('/payments/checkout/redirect/{ref}', function ($ref) {
 Route::middleware('auth')->group(function () {
     // Current user sync & profile
     Route::get('/api/me', [AuthController::class, 'me']);
+    Route::get('/api/user/profile', [AuthController::class, 'me']);
     Route::put('/api/profile', [ProfileController::class, 'update']);
+    Route::match(['post', 'put'], '/api/user/profile', [ProfileController::class, 'update']);
     Route::post('/api/change-password', [AuthController::class, 'updatePassword']);
+    Route::post('/api/user/change-password', [AuthController::class, 'updatePassword']);
     Route::post('/api/user/request-verification', [AuthController::class, 'requestVerification']);
+
+    // Transactions History
+    Route::get('/api/transactions', function () {
+        $user = auth()->user();
+        $transactions = $user->transactions()->latest()->paginate(25);
+        return response()->json([
+            'success' => true,
+            'transactions' => $transactions->items(),
+            'data' => $transactions->items(),
+            'pagination' => [
+                'total' => $transactions->total(),
+                'current_page' => $transactions->currentPage(),
+                'last_page' => $transactions->lastPage(),
+            ],
+        ]);
+    });
 
     // Deposits
     Route::get('/api/deposits', [DepositController::class, 'index']);
+    Route::get('/api/deposit-methods', [PaymentGatewayController::class, 'publicSettings']);
     Route::post('/api/deposits', [DepositController::class, 'store']);
     Route::post('/api/deposits/upload-screenshot', [DepositController::class, 'uploadScreenshot']);
 
@@ -145,6 +172,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/api/deals/{id}/release', [DealController::class, 'release']);
     Route::post('/api/deals/{id}/message', [DealController::class, 'sendMessage']);
     Route::post('/api/deals/{id}/submit', [DealController::class, 'submitWork']);
+    Route::post('/api/deals/{id}/deliverable', [DealController::class, 'submitWork']);
     Route::post('/api/deals/{id}/review-submission', [DealController::class, 'reviewSubmission']);
     Route::post('/api/deals/{id}/extension', [DealController::class, 'requestExtension']);
     Route::post('/api/deals/{id}/approve-extension', [DealController::class, 'approveExtension']);
@@ -171,7 +199,10 @@ Route::middleware('auth')->group(function () {
 
     // Support Tickets
     Route::get('/api/support-tickets', [SupportTicketController::class, 'index']);
+    Route::get('/api/support/tickets', [SupportTicketController::class, 'index']);
+    Route::post('/api/support/tickets', [SupportTicketController::class, 'store']);
     Route::post('/api/support-tickets/{id}/reply', [SupportTicketController::class, 'reply']);
+    Route::post('/api/support/tickets/{id}/reply', [SupportTicketController::class, 'reply']);
     Route::post('/api/support-tickets/sync', [SupportTicketController::class, 'sync']);
 
     // Private File Access (Policy Gated)
@@ -259,11 +290,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::delete('/blog/{id}', [CmsBlogController::class, 'adminBlogDestroy']);
     });
 
-    // Categories
-    Route::get('/api/categories', [CategoryController::class, 'index']);
+    // Categories Admin Management
+    Route::get('/api/admin/categories', [CategoryController::class, 'index']);
     Route::post('/api/categories', [CategoryController::class, 'store']);
+    Route::post('/api/admin/categories', [CategoryController::class, 'store']);
     Route::put('/api/categories/{id}', [CategoryController::class, 'update']);
+    Route::put('/api/admin/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('/api/categories/{id}', [CategoryController::class, 'destroy']);
+    Route::delete('/api/admin/categories/{id}', [CategoryController::class, 'destroy']);
 
     // Backward-Compatible Aliases for existing adminApi.js
     Route::get('/api/users', [UserController::class, 'index']);
