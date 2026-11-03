@@ -1,0 +1,589 @@
+/*
+    MigratePay Legal Pages Shared Styles - Revision 3
+    Premium Animated Glow Background — matches FAQ page design language
+*/
+
+/* ================================================================
+   1. BASE PAGE — Soft ash foundation
+================================================================ */
+body.legal-page-body {
+    background-color: #EEF3FB;
+    min-height: 100vh;
+    color: #334155;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ================================================================
+   2. WRAPPER — transparent so background shows through
+================================================================ */
+body.legal-page-body .terms-page {
+    background: transparent !important;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 120px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ================================================================
+   3. HEADER override for legal pages
+================================================================ */
+body.legal-page-body header,
+body.legal-page-body #site-header {
+    background: rgba(255, 255, 255, 0.88) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6) !important;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* ================================================================
+   4. FULL-PAGE ANIMATED GLOW BACKGROUND
+   Fixed layer behind all content — same system as FAQ page
+================================================================ */
+.legal-bg-decorations {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* Base soft ash gradient layer */
+.legal-bg-decorations::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        160deg,
+        #EEF3FB 0%,
+        #F0F5FF 25%,
+        #EBF4FF 50%,
+        #F3F0FF 75%,
+        #ECF5FB 100%
+    );
+}
+
+/* Animated glow blobs */
+.legal-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+    pointer-events: none;
+}
+
+/* Primary blue glow — top-right */
+.blob-blue {
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(
+        circle,
+        rgba(59, 130, 246, 0.18) 0%,
+        rgba(37, 99, 235, 0.06) 45%,
+        transparent 70%
+    );
+    top: -200px;
+    right: -150px;
+    animation: lglow1 22s ease-in-out infinite alternate;
+}
+
+/* Cyan glow — bottom-left */
+.blob-cyan {
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(
+        circle,
+        rgba(6, 182, 212, 0.14) 0%,
+        rgba(6, 182, 212, 0.04) 50%,
+        transparent 70%
+    );
+    bottom: 100px;
+    left: -100px;
+    animation: lglow2 28s ease-in-out infinite alternate;
+}
+
+/* Indigo glow — center */
+.blob-ash {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(
+        circle,
+        rgba(99, 102, 241, 0.11) 0%,
+        rgba(99, 102, 241, 0.03) 50%,
+        transparent 70%
+    );
+    top: 40%;
+    left: 25%;
+    filter: blur(60px);
+    animation: lglow3 30s ease-in-out infinite alternate;
+}
+
+/* Violet glow — bottom-right */
+.blob-indigo {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(
+        circle,
+        rgba(139, 92, 246, 0.09) 0%,
+        transparent 65%
+    );
+    bottom: 30%;
+    right: 10%;
+    filter: blur(55px);
+    animation: lglow4 25s ease-in-out infinite alternate;
+}
+
+/* Glow drift keyframes */
+@keyframes lglow1 {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.8; }
+    50%  { transform: translate(-60px, 80px) scale(1.08); opacity: 1; }
+    100% { transform: translate(40px, -40px) scale(0.95); opacity: 0.7; }
+}
+@keyframes lglow2 {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.7; }
+    50%  { transform: translate(70px, -50px) scale(1.1); opacity: 0.9; }
+    100% { transform: translate(-30px, 60px) scale(0.9); opacity: 0.6; }
+}
+@keyframes lglow3 {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.8; }
+    100% { transform: translate(-50px, 80px) scale(1.05); opacity: 0.6; }
+}
+@keyframes lglow4 {
+    0%   { transform: translate(0, 0); opacity: 0.7; }
+    100% { transform: translate(40px, -60px); opacity: 0.5; }
+}
+
+/* ================================================================
+   5. FLOATING DECORATIVE ICONS
+   Low-opacity SVG icons that slowly drift — same as FAQ page
+================================================================ */
+.legal-icon {
+    position: absolute;
+    opacity: 0;
+    animation: lfade-in 2s ease forwards, lfloat var(--li-dur, 14s) ease-in-out var(--li-del, 0s) infinite;
+    pointer-events: none;
+    color: #2563EB;
+}
+
+@keyframes lfade-in {
+    from { opacity: 0; }
+    to   { opacity: var(--li-op, 0.08); }
+}
+@keyframes lfloat {
+    0%   { transform: translateY(0) rotate(var(--li-rs, 0deg)); }
+    50%  { transform: translateY(var(--li-fy, -18px)) rotate(var(--li-re, 4deg)); }
+    100% { transform: translateY(0) rotate(var(--li-rs, 0deg)); }
+}
+
+/* Individual icon positions & timings */
+.icon-shield   { top: 18%; left:  4%; --li-op:.08; --li-dur:14s; --li-del:0s;  --li-fy:-20px; --li-rs:-8deg;  --li-re:4deg;  color:#2563EB; }
+.icon-lock     { top: 35%; right: 3%; --li-op:.07; --li-dur:18s; --li-del:2s;  --li-fy:-14px; --li-rs:5deg;   --li-re:-4deg; color:#6366F1; }
+.icon-document { top: 60%; left:  3%; --li-op:.07; --li-dur:20s; --li-del:5s;  --li-fy:-18px; --li-rs:0deg;   --li-re:6deg;  color:#06B6D4; }
+.icon-check    { top: 80%; right: 4%; --li-op:.06; --li-dur:16s; --li-del:3s;  --li-fy:-22px; --li-rs:-5deg;  --li-re:3deg;  color:#8B5CF6; }
+.icon-circle   { top: 12%; right: 8%; --li-op:.06; --li-dur:22s; --li-del:1s;  --li-fy:-16px; --li-rs:3deg;   --li-re:-5deg; color:#2563EB; }
+.icon-extra    { top: 70%; left:  8%; --li-op:.07; --li-dur:24s; --li-del:7s;  --li-fy:-12px; --li-rs:-3deg;  --li-re:5deg;  color:#14B8A6; }
+
+/* ================================================================
+   6. CARD ENTRANCE ANIMATION (kept from original)
+================================================================ */
+@keyframes cardEntrance {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ================================================================
+   7. REDUCED MOTION
+================================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .blob-blue, .blob-cyan, .blob-ash, .blob-indigo,
+    .legal-icon, .terms-hero, .terms-sidebar, .terms-content {
+        animation: none !important;
+    }
+    .legal-icon { opacity: 0.06 !important; }
+}
+
+/* Base Typography */
+.terms-page h1, .terms-page h2, .terms-page h3, .terms-page h4 {
+    font-family: 'Lexend', sans-serif;
+    color: #0f172a;
+}
+
+/* 5. Page Hero (Transparent, Dark Text) */
+.terms-hero {
+    padding: 140px 24px 80px;
+    text-align: center;
+    background: transparent !important;
+    margin-bottom: 40px;
+    position: relative;
+    animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.terms-hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    color: #0f172a; /* Deep navy text for contrast against light bg */
+    text-shadow: 0 2px 10px rgba(255,255,255,0.5); /* Soft white glow behind text */
+}
+
+.terms-hero p {
+    font-size: 1.125rem;
+    color: #475569; /* Slate text */
+    max-width: 800px;
+    margin: 0 auto 28px;
+    line-height: 1.7;
+}
+
+.terms-meta {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #0f172a;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.8);
+    padding: 10px 20px;
+    border-radius: 99px;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+/* 6. Main Layout Container */
+.terms-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 40px;
+    position: relative;
+    align-items: flex-start;
+}
+
+/* 7. Table of Contents (Floating Glass Card) */
+.terms-sidebar {
+    flex: 0 0 320px;
+    position: sticky;
+    top: 120px;
+    height: max-content;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 32px 24px;
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.04), 0 5px 15px rgba(0,0,0,0.02);
+    border: 1px solid rgba(255, 255, 255, 1);
+    animation: cardEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+    opacity: 0;
+}
+
+.terms-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.terms-sidebar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}
+
+.toc-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #64748b;
+    margin-bottom: 24px;
+    padding-left: 12px;
+}
+
+.toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.toc-link {
+    display: block;
+    padding: 12px 16px;
+    color: #475569;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 12px;
+    margin-bottom: 4px;
+    position: relative;
+}
+
+.toc-link:hover {
+    color: #0284c7; /* MigratePay light blue accent */
+    background: #f0f9ff;
+    transform: translateX(4px);
+}
+
+.toc-link.active {
+    color: #0369a1; /* Deep MigratePay blue */
+    font-weight: 700;
+    background: rgba(14, 165, 233, 0.08);
+}
+.toc-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 16px;
+    background: #0ea5e9;
+    border-radius: 0 4px 4px 0;
+}
+
+/* 8. Main Terms Content (Readable Surface Card) */
+.terms-content {
+    flex: 1;
+    min-width: 0;
+    background: #ffffff;
+    padding: 60px 80px;
+    border-radius: 32px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.04), 0 8px 16px rgba(0,0,0,0.02);
+    border: 1px solid rgba(255, 255, 255, 1);
+    position: relative;
+    animation: cardEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s;
+    opacity: 0;
+}
+
+.terms-section {
+    margin-bottom: 60px;
+    scroll-margin-top: 140px;
+}
+.terms-section:last-child {
+    margin-bottom: 0;
+}
+
+.terms-section h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 28px;
+    letter-spacing: -0.02em;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 16px;
+    color: #0f172a;
+}
+
+.terms-section h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 40px 0 20px;
+    color: #1e293b;
+}
+
+.terms-section p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #334155; /* Strong dark readable text */
+    margin-bottom: 20px;
+}
+
+.terms-section ul, .terms-section ol {
+    margin-bottom: 24px;
+    padding-left: 28px;
+    color: #334155;
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.terms-section li {
+    margin-bottom: 10px;
+}
+.terms-section li::marker {
+    color: #0ea5e9;
+    font-weight: 700;
+}
+
+/* 9. Important Clauses */
+.clause-important {
+    background: #f8fafc;
+    border-left: 4px solid #0ea5e9;
+    padding: 24px 32px;
+    margin: 32px 0;
+    border-radius: 0 16px 16px 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+}
+
+.clause-important p {
+    margin: 0;
+    color: #0f172a;
+    font-weight: 500;
+}
+    
+.clause-important strong {
+    color: #0284c7;
+    display: block;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+}
+
+/* 10. Footer CTA */
+.terms-footer-cta {
+    margin-top: 80px;
+    background: #ffffff;
+    color: #0f172a;
+    padding: 60px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+    border: 1px solid rgba(226,232,240,0.6);
+}
+
+.terms-footer-cta h2 {
+    font-size: 2.2rem;
+    color: #0f172a;
+    margin-bottom: 16px;
+}
+    
+.terms-footer-cta p {
+    color: #475569;
+    margin-bottom: 32px;
+}
+
+.btn-contact {
+    display: inline-flex;
+    background: #0f172a;
+    color: white;
+    padding: 16px 36px;
+    border-radius: 99px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15);
+}
+
+.btn-contact:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.25);
+    color: white;
+}
+
+/* 11. Back to Top */
+.back-to-top {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 54px;
+    height: 54px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 50;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+    
+.back-to-top:hover {
+    background: #0f172a;
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.15);
+}
+
+/* 12. Mobile TOC Toggle */
+.mobile-toc-toggle {
+    display: none;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 18px 24px;
+    border-radius: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 24px;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+/* 13. Responsive */
+@media (max-width: 992px) {
+    .terms-container {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .mobile-toc-toggle {
+        display: flex;
+    }
+
+    .terms-sidebar {
+        position: static;
+        flex: none;
+        width: 100%;
+        height: auto;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .terms-sidebar.expanded {
+        max-height: 1000px;
+        margin-bottom: 40px;
+    }
+
+    .toc-list {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,1);
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .toc-link {
+        padding: 14px 16px;
+    }
+
+    .terms-content {
+        padding: 40px 24px;
+        border-radius: 24px;
+    }
+    
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    /* Reduce floating icons on mobile */
+    .icon-document, .icon-check, .icon-circle {
+        display: none;
+    }
+}

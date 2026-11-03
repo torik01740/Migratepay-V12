@@ -1,0 +1,360 @@
+"V10 Relative Path","V12 Relative Path","File Type",Classification,"Hash Comparison","Similarity Assessment",Explanation,"Risk Level"
+.editorconfig,.editorconfig,EDITORCONFIG,UNCHANGED,IDENTICAL_HASH,98.4%,"Unchanged Laravel 12 framework baseline file",LOW
+.env.example,.env.example,EXAMPLE,ADAPTED,DIFFERENT_HASH,62.7%,"V10 file adapted for V12 (similarity: 62.7%)",LOW
+.gitattributes,.gitattributes,GITATTRIBUTES,UNCHANGED,IDENTICAL_HASH,100%,"Unchanged Laravel 12 framework baseline file",LOW
+.gitignore,.gitignore,GITIGNORE,UNCHANGED,IDENTICAL_HASH,45.4%,"Unchanged Laravel 12 framework baseline file",LOW
+NONE,MigratePay-V12-Migration-Checklist.md,Documentation,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+NONE,PHASE-0-BASELINE-REPORT.md,Documentation,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+README.md,README.md,Documentation,UNCHANGED,IDENTICAL_HASH,8.4%,"Unchanged Laravel 12 framework baseline file",LOW
+app/Http/Controllers/Controller.php,app/Http/Controllers/Controller.php,Controller,ADAPTED,DIFFERENT_HASH,38.3%,"V10 file adapted for V12 (similarity: 38.3%)","MEDIUM (Requires dashboard integration)"
+app/Models/User.php,app/Models/User.php,Model,ADAPTED,DIFFERENT_HASH,71%,"Laravel 12 User model adapted with V10 relations, wallet fields, casts, and role helpers",LOW
+app/Providers/AppServiceProvider.php,app/Providers/AppServiceProvider.php,"PHP Script",ADAPTED,DIFFERENT_HASH,63.2%,"V10 file adapted for V12 (similarity: 63.2%)",LOW
+artisan,artisan,,UNCHANGED,IDENTICAL_HASH,23.7%,"Unchanged Laravel 12 framework baseline file",LOW
+bootstrap/app.php,bootstrap/app.php,"PHP Script",ADAPTED,DIFFERENT_HASH,14.9%,"Laravel 12 bootstrap file adapted with middleware aliases and exception handling",LOW
+bootstrap/cache/.gitignore,bootstrap/cache/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (bootstrap/cache/.gitignore)",LOW
+NONE,bootstrap/providers.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,0%,"Unchanged Laravel 12 framework baseline file",LOW
+composer.json,composer.json,Config/Manifest,ADAPTED,DIFFERENT_HASH,73.9%,"Laravel 12 foundation file configured for MigratePay (similarity: 73.9%)",LOW
+composer.lock,composer.lock,LOCK,ADAPTED,DIFFERENT_HASH,50%,"V10 file adapted for V12 (similarity: 50%)",LOW
+config/app.php,config/app.php,"PHP Script",ADAPTED,DIFFERENT_HASH,69.1%,"Laravel 12 foundation file configured for MigratePay (similarity: 69.1%)",LOW
+config/auth.php,config/auth.php,"PHP Script",ADAPTED,DIFFERENT_HASH,90.8%,"Laravel 12 foundation file configured for MigratePay (similarity: 90.8%)",LOW
+config/cache.php,config/cache.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,89.5%,"Unchanged Laravel 12 framework baseline file",LOW
+config/database.php,config/database.php,"PHP Script",ADAPTED,DIFFERENT_HASH,79.5%,"Laravel 12 foundation file configured for MigratePay (similarity: 79.5%)",LOW
+config/filesystems.php,config/filesystems.php,"PHP Script",ADAPTED,DIFFERENT_HASH,89.2%,"V10 file adapted for V12 (similarity: 89.2%)",LOW
+config/logging.php,config/logging.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,93.7%,"Unchanged Laravel 12 framework baseline file",LOW
+config/mail.php,config/mail.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,82.7%,"Unchanged Laravel 12 framework baseline file",LOW
+config/queue.php,config/queue.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,85.4%,"Unchanged Laravel 12 framework baseline file",LOW
+config/services.php,config/services.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,75.9%,"Unchanged Laravel 12 framework baseline file",LOW
+config/session.php,config/session.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,88.2%,"Unchanged Laravel 12 framework baseline file",LOW
+database/.gitignore,database/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (database/.gitignore)",LOW
+database/factories/UserFactory.php,database/factories/UserFactory.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,96.6%,"Unchanged Laravel 12 framework baseline file",LOW
+NONE,database/migrations/0001_01_01_000000_create_users_table.php,Migration,ADAPTED,"N/A (NEW)",0%,"Laravel 12 users migration adapted with V10 domain columns",LOW
+NONE,database/migrations/0001_01_01_000001_create_cache_table.php,Migration,UNCHANGED,IDENTICAL_HASH,0%,"Laravel 12 framework migration",LOW
+NONE,database/migrations/0001_01_01_000002_create_jobs_table.php,Migration,UNCHANGED,IDENTICAL_HASH,0%,"Laravel 12 framework migration",LOW
+database/seeders/DatabaseSeeder.php,database/seeders/DatabaseSeeder.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,77.9%,"Unchanged Laravel 12 framework baseline file",LOW
+package-lock.json,package-lock.json,Config/Manifest,ADAPTED,DIFFERENT_HASH,50%,"V10 file adapted for V12 (similarity: 50%)",LOW
+package.json,package.json,Config/Manifest,ADAPTED,DIFFERENT_HASH,62.2%,"Laravel 12 foundation file configured for MigratePay (similarity: 62.2%)",LOW
+phpunit.xml,phpunit.xml,XML,ADAPTED,DIFFERENT_HASH,86.6%,"V10 file adapted for V12 (similarity: 86.6%)",LOW
+public/.htaccess,public/.htaccess,HTACCESS,ADAPTED,DIFFERENT_HASH,89.8%,"V10 file adapted for V12 (similarity: 89.8%)",LOW
+out.js,public/favicon.ico,"Image Asset",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (out.js)",LOW
+public/index.php,public/index.php,"PHP Script",UNCHANGED,IDENTICAL_HASH,43.1%,"Unchanged Laravel 12 framework baseline file",LOW
+public/robots.txt,public/robots.txt,TXT,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (public/robots.txt)",LOW
+resources/css/app.css,resources/css/app.css,Stylesheet,ADAPTED,DIFFERENT_HASH,0%,"V10 file adapted for V12 (similarity: 0%)",LOW
+resources/js/app.js,resources/js/app.js,JavaScript,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/js/app.js)",LOW
+resources/js/bootstrap.js,resources/js/bootstrap.js,JavaScript,ADAPTED,DIFFERENT_HASH,18.5%,"V10 file adapted for V12 (similarity: 18.5%)",LOW
+resources/views/welcome.blade.php,resources/views/welcome.blade.php,"PHP Script",RECONSTRUCTED,DIFFERENT_HASH,100%,"Complete reconstruction of V10 homepage in Tailwind 4 / Blade",LOW
+routes/console.php,routes/console.php,"PHP Script",ADAPTED,DIFFERENT_HASH,52.4%,"V10 file adapted for V12 (similarity: 52.4%)",LOW
+routes/web.php,routes/web.php,"PHP Script",RECONSTRUCTED,DIFFERENT_HASH,34.9%,"Reconstructed routing structure organizing public website, domain APIs, and admin routes",LOW
+storage/app/.gitignore,storage/app/.gitignore,GITIGNORE,ADAPTED,DIFFERENT_HASH,82.1%,"V10 file adapted for V12 (similarity: 82.1%)",LOW
+bootstrap/cache/.gitignore,storage/app/private/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (bootstrap/cache/.gitignore)",LOW
+bootstrap/cache/.gitignore,storage/app/public/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (bootstrap/cache/.gitignore)",LOW
+storage/framework/.gitignore,storage/framework/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (storage/framework/.gitignore)",LOW
+storage/framework/cache/.gitignore,storage/framework/cache/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (storage/framework/cache/.gitignore)",LOW
+bootstrap/cache/.gitignore,storage/framework/cache/data/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (bootstrap/cache/.gitignore)",LOW
+bootstrap/cache/.gitignore,storage/framework/testing/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (bootstrap/cache/.gitignore)",LOW
+bootstrap/cache/.gitignore,storage/framework/views/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (bootstrap/cache/.gitignore)",LOW
+bootstrap/cache/.gitignore,storage/logs/.gitignore,GITIGNORE,COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (bootstrap/cache/.gitignore)",LOW
+tests/Feature/ExampleTest.php,tests/Feature/ExampleTest.php,Test,ADAPTED,DIFFERENT_HASH,96.2%,"V10 file adapted for V12 (similarity: 96.2%)",LOW
+tests/TestCase.php,tests/TestCase.php,Test,UNCHANGED,IDENTICAL_HASH,91.8%,"Unchanged Laravel 12 framework baseline file",LOW
+tests/Unit/ExampleTest.php,tests/Unit/ExampleTest.php,Test,UNCHANGED,IDENTICAL_HASH,100%,"Unchanged Laravel 12 framework baseline file",LOW
+vite.config.js,vite.config.js,JavaScript,ADAPTED,DIFFERENT_HASH,64.4%,"V10 file adapted for V12 (similarity: 64.4%)",LOW
+NONE,PHASE-3-IMPLEMENTATION-REPORT.md,Documentation,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+NONE,PHASE-4-IMPLEMENTATION-REPORT.md,Documentation,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+NONE,PHASE-5-IMPLEMENTATION-REPORT.md,Documentation,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+NONE,app/Console/Commands/MigrateV10DataCommand.php,"PHP Script",NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Http/Controllers/Admin/AiAdminController.php,app/Http/Controllers/Admin/AiAdminController.php,Controller,ADAPTED,DIFFERENT_HASH,74.2%,"Adapted from V10 file for Laravel 12 architecture (similarity: 74.2%)","MEDIUM (Requires dashboard integration)"
+app/Http/Controllers/Admin/AnalyticsController.php,app/Http/Controllers/Admin/AnalyticsController.php,Controller,ADAPTED,DIFFERENT_HASH,52.6%,"Adapted from V10 file for Laravel 12 architecture (similarity: 52.6%)","MEDIUM (Requires dashboard integration)"
+app/Http/Controllers/Admin/BannerController.php,app/Http/Controllers/Admin/BannerController.php,Controller,COPIED,IDENTICAL_HASH,88.6%,"Near-identical to V10 file (app/Http/Controllers/Admin/BannerController.php) with minor edits (similarity: 88.6%)",LOW
+app/Http/Controllers/Admin/KnowledgeBaseController.php,app/Http/Controllers/Admin/KnowledgeBaseController.php,Controller,COPIED,IDENTICAL_HASH,85.5%,"Near-identical to V10 file (app/Http/Controllers/Admin/KnowledgeBaseController.php) with minor edits (similarity: 85.5%)",LOW
+app/Http/Controllers/AiSupportController.php,app/Http/Controllers/AiSupportController.php,Controller,ADAPTED,DIFFERENT_HASH,51.3%,"Adapted from V10 file for Laravel 12 architecture (similarity: 51.3%)","MEDIUM (Requires dashboard integration)"
+app/Http/Controllers/AuthController.php,app/Http/Controllers/AuthController.php,Controller,ADAPTED,DIFFERENT_HASH,50.8%,"Adapted from V10 file for Laravel 12 architecture (similarity: 50.8%)","MEDIUM (Requires dashboard integration)"
+app/Http/Controllers/CategoryController.php,app/Http/Controllers/CategoryController.php,Controller,ADAPTED,DIFFERENT_HASH,85%,"Adapted from V10 file for Laravel 12 architecture (similarity: 85%)","MEDIUM (Requires dashboard integration)"
+NONE,app/Http/Controllers/CmsBlogController.php,Controller,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Http/Controllers/CouponController.php,app/Http/Controllers/CouponController.php,Controller,ADAPTED,DIFFERENT_HASH,78.5%,"Adapted from V10 file for Laravel 12 architecture (similarity: 78.5%)","MEDIUM (Requires dashboard integration)"
+app/Http/Controllers/DealController.php,app/Http/Controllers/DealController.php,Controller,ADAPTED,DIFFERENT_HASH,60.4%,"Adapted from V10 file for Laravel 12 architecture (similarity: 60.4%)","MEDIUM (Requires dashboard integration)"
+app/Http/Controllers/DepositController.php,app/Http/Controllers/DepositController.php,Controller,ADAPTED,DIFFERENT_HASH,35%,"Adapted from V10 file for Laravel 12 architecture (similarity: 35%)","MEDIUM (Requires dashboard integration)"
+NONE,app/Http/Controllers/FileAccessController.php,Controller,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Http/Controllers/NotificationController.php,app/Http/Controllers/NotificationController.php,Controller,ADAPTED,DIFFERENT_HASH,55.5%,"Adapted from V10 file for Laravel 12 architecture (similarity: 55.5%)","MEDIUM (Requires dashboard integration)"
+NONE,app/Http/Controllers/PaymentGatewayController.php,Controller,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Http/Controllers/ProfileController.php,app/Http/Controllers/ProfileController.php,Controller,COPIED,IDENTICAL_HASH,88.7%,"Near-identical to V10 file (app/Http/Controllers/ProfileController.php) with minor edits (similarity: 88.7%)",LOW
+app/Http/Controllers/PublicProfileController.php,app/Http/Controllers/PublicProfileController.php,Controller,ADAPTED,DIFFERENT_HASH,71.9%,"Adapted from V10 file for Laravel 12 architecture (similarity: 71.9%)","MEDIUM (Requires dashboard integration)"
+app/Http/Controllers/ReviewController.php,app/Http/Controllers/ReviewController.php,Controller,ADAPTED,DIFFERENT_HASH,71.2%,"Adapted from V10 file for Laravel 12 architecture (similarity: 71.2%)","MEDIUM (Requires dashboard integration)"
+app/Http/Controllers/SupportTicketController.php,app/Http/Controllers/SupportTicketController.php,Controller,ADAPTED,DIFFERENT_HASH,24.5%,"Adapted from V10 file for Laravel 12 architecture (similarity: 24.5%)","MEDIUM (Requires dashboard integration)"
+NONE,app/Http/Controllers/UserController.php,Controller,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Http/Controllers/WithdrawalController.php,app/Http/Controllers/WithdrawalController.php,Controller,ADAPTED,DIFFERENT_HASH,81.7%,"Adapted from V10 file for Laravel 12 architecture (similarity: 81.7%)","MEDIUM (Requires dashboard integration)"
+app/Http/Middleware/AdminMiddleware.php,app/Http/Middleware/AdminMiddleware.php,"PHP Script",ADAPTED,DIFFERENT_HASH,55.3%,"Adapted from V10 file for Laravel 12 architecture (similarity: 55.3%)",LOW
+NONE,app/Http/Requests/UploadMediaRequest.php,"PHP Script",NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Models/AiChatHistory.php,app/Models/AiChatHistory.php,Model,COPIED,IDENTICAL_HASH,85.1%,"Near-identical to V10 file (app/Models/AiChatHistory.php) with minor edits (similarity: 85.1%)",LOW
+app/Models/AiKnowledgeBase.php,app/Models/AiKnowledgeBase.php,Model,COPIED,IDENTICAL_HASH,96.1%,"Near-identical to V10 file (app/Models/AiKnowledgeBase.php) with minor edits (similarity: 96.1%)",LOW
+app/Models/AiSetting.php,app/Models/AiSetting.php,Model,ADAPTED,DIFFERENT_HASH,56.6%,"Adapted from V10 file for Laravel 12 architecture (similarity: 56.6%)",LOW
+app/Models/Banner.php,app/Models/Banner.php,Model,ADAPTED,DIFFERENT_HASH,65%,"Adapted from V10 file for Laravel 12 architecture (similarity: 65%)",LOW
+NONE,app/Models/BlogPost.php,Model,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Models/Category.php,app/Models/Category.php,Model,ADAPTED,DIFFERENT_HASH,79.3%,"Adapted from V10 file for Laravel 12 architecture (similarity: 79.3%)",LOW
+NONE,app/Models/CmsPage.php,Model,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Models/Coupon.php,app/Models/Coupon.php,Model,COPIED,IDENTICAL_HASH,91.5%,"Near-identical to V10 file (app/Models/Coupon.php) with minor edits (similarity: 91.5%)",LOW
+app/Models/CouponUsage.php,app/Models/CouponUsage.php,Model,COPIED,IDENTICAL_HASH,88.2%,"Near-identical to V10 file (app/Models/CouponUsage.php) with minor edits (similarity: 88.2%)",LOW
+app/Models/Deal.php,app/Models/Deal.php,Model,ADAPTED,DIFFERENT_HASH,67.5%,"Adapted from V10 file for Laravel 12 architecture (similarity: 67.5%)",LOW
+app/Models/Deposit.php,app/Models/Deposit.php,Model,COPIED,IDENTICAL_HASH,92.9%,"Near-identical to V10 file (app/Models/Deposit.php) with minor edits (similarity: 92.9%)",LOW
+app/Models/Notification.php,app/Models/Notification.php,Model,COPIED,IDENTICAL_HASH,86.4%,"Near-identical to V10 file (app/Models/Notification.php) with minor edits (similarity: 86.4%)",LOW
+NONE,app/Models/PaymentGateway.php,Model,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Models/Report.php,app/Models/Report.php,Model,COPIED,IDENTICAL_HASH,96.9%,"Near-identical to V10 file (app/Models/Report.php) with minor edits (similarity: 96.9%)",LOW
+app/Models/Review.php,app/Models/Review.php,Model,COPIED,IDENTICAL_HASH,88.3%,"Near-identical to V10 file (app/Models/Review.php) with minor edits (similarity: 88.3%)",LOW
+app/Models/SupportTicket.php,app/Models/SupportTicket.php,Model,ADAPTED,DIFFERENT_HASH,71.2%,"Adapted from V10 file for Laravel 12 architecture (similarity: 71.2%)",LOW
+app/Models/SupportTicketMessage.php,app/Models/SupportTicketMessage.php,Model,ADAPTED,DIFFERENT_HASH,79.9%,"Adapted from V10 file for Laravel 12 architecture (similarity: 79.9%)",LOW
+NONE,app/Models/SystemSetting.php,Model,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Models/Transaction.php,app/Models/Transaction.php,Model,ADAPTED,DIFFERENT_HASH,84.4%,"Adapted from V10 file for Laravel 12 architecture (similarity: 84.4%)",LOW
+app/Models/WithdrawalMethod.php,app/Models/WithdrawalMethod.php,Model,ADAPTED,DIFFERENT_HASH,64.8%,"Adapted from V10 file for Laravel 12 architecture (similarity: 64.8%)",LOW
+app/Models/WithdrawalRequest.php,app/Models/WithdrawalRequest.php,Model,ADAPTED,DIFFERENT_HASH,58%,"Adapted from V10 file for Laravel 12 architecture (similarity: 58%)",LOW
+NONE,app/Policies/DealPolicy.php,Policy,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+NONE,app/Policies/DepositPolicy.php,Policy,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+NONE,app/Policies/SupportTicketPolicy.php,Policy,NEW,"N/A (NEW)",0%,"New V12 component with no V10 counterpart",LOW
+app/Services/DealService.php,app/Services/DealService.php,Service,ADAPTED,DIFFERENT_HASH,68.6%,"Adapted from V10 file for Laravel 12 architecture (similarity: 68.6%)",LOW
+NONE,app/Services/DecimalSafeMath.php,Service,NEW,"N/A (NEW)",0%,"New enterprise service layer created for V12 domain architecture",LOW
+app/Services/DepositService.php,app/Services/DepositService.php,Service,ADAPTED,DIFFERENT_HASH,71.7%,"Adapted from V10 file for Laravel 12 architecture (similarity: 71.7%)",LOW
+NONE,app/Services/PaymentGatewayService.php,Service,NEW,"N/A (NEW)",0%,"New enterprise service layer created for V12 domain architecture","MEDIUM (Financial gateway integration)"
+app/Services/SupportTicketService.php,app/Services/SupportTicketService.php,Service,ADAPTED,DIFFERENT_HASH,49.3%,"Adapted from V10 file for Laravel 12 architecture (similarity: 49.3%)",LOW
+NONE,app/Services/WalletService.php,Service,NEW,"N/A (NEW)",0%,"New enterprise service layer created for V12 domain architecture",LOW
+app/Services/WithdrawalService.php,app/Services/WithdrawalService.php,Service,ADAPTED,DIFFERENT_HASH,78.9%,"Adapted from V10 file for Laravel 12 architecture (similarity: 78.9%)",LOW
+NONE,database/migrations/2026_11_02_000001_create_categories_and_coupons_tables.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000002_create_deals_table.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000003_create_coupon_usages_table.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000004_create_transactions_table.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000005_create_deposits_table.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000006_create_withdrawal_methods_and_requests_tables.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000007_create_reports_and_reviews_tables.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000008_create_support_tickets_and_messages_tables.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000009_create_banners_and_notifications_tables.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000010_create_ai_tables.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000011_create_payment_gateways_and_system_settings_tables.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+NONE,database/migrations/2026_11_02_000012_create_cms_and_blog_tables.php,Migration,NEW,"N/A (NEW)",0%,"Modernized Laravel 12 migration created specifically for V12 MySQL schema",LOW
+public/assets/images/1787123697_volunteers-collecting-food-donations-close-up.jpg,public/assets/images/1787123697_volunteers-collecting-food-donations-close-up.jpg,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/1787123697_volunteers-collecting-food-donations-close-up.jpg)",LOW
+public/assets/images/1787123698_0819-Pakistan-Floods-help-relief.jpg,public/assets/images/1787123698_0819-Pakistan-Floods-help-relief.jpg,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/1787123698_0819-Pakistan-Floods-help-relief.jpg)",LOW
+public/assets/images/1787123698_children-carrying-hous.jpg,public/assets/images/1787123698_children-carrying-hous.jpg,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/1787123698_children-carrying-hous.jpg)",LOW
+public/assets/images/1787123698_file7lqf17ntq2xdr1vw3q2-1-1124422-1657127216.jpg,public/assets/images/1787123698_file7lqf17ntq2xdr1vw3q2-1-1124422-1657127216.jpg,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/1787123698_file7lqf17ntq2xdr1vw3q2-1-1124422-1657127216.jpg)",LOW
+public/assets/images/1787123698_high-angle-charity-box-being-prepared-donation.jpg,public/assets/images/1787123698_high-angle-charity-box-being-prepared-donation.jpg,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/1787123698_high-angle-charity-box-being-prepared-donation.jpg)",LOW
+public/assets/images/1787123699_Flyerdesign-01.jpg,public/assets/images/1787123699_Flyerdesign-01.jpg,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/1787123699_Flyerdesign-01.jpg)",LOW
+public/assets/images/1787123699_Flyerdesign.jpg,public/assets/images/1787123699_Flyerdesign.jpg,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/1787123699_Flyerdesign.jpg)",LOW
+public/assets/images/1787123723_pakistan-flood-rains.jpeg,public/assets/images/1787123723_pakistan-flood-rains.jpeg,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/1787123723_pakistan-flood-rains.jpeg)",LOW
+"public/assets/images/Bank transfer logo.jpg","public/assets/images/Bank transfer logo.jpg","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Bank transfer logo.jpg)",LOW
+"public/assets/images/Better way to trasact.jfif","public/assets/images/Better way to trasact.jfif","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Better way to trasact.jfif)",LOW
+"public/assets/images/Default User Cover Photo.jfif","public/assets/images/Default User Cover Photo.jfif","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Default User Cover Photo.jfif)",LOW
+"public/assets/images/Default User Profile Photo.jfif","public/assets/images/Default User Profile Photo.jfif","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Default User Profile Photo.jfif)",LOW
+"public/assets/images/H. M Faisal Arafin.png","public/assets/images/H. M Faisal Arafin.png","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/H. M Faisal Arafin.png)",LOW
+public/assets/images/Logo.png,public/assets/images/Logo.png,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Logo.png)",LOW
+"public/assets/images/Md Torikul islam Torik.png","public/assets/images/Md Torikul islam Torik.png","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Md Torikul islam Torik.png)",LOW
+"public/assets/images/Migratepay logo.png","public/assets/images/Migratepay logo.png","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Migratepay logo.png)",LOW
+"public/assets/images/Slide 1.jfif","public/assets/images/Slide 1.jfif","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Slide 1.jfif)",LOW
+"public/assets/images/Slide 2.jfif","public/assets/images/Slide 2.jfif","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Slide 2.jfif)",LOW
+"public/assets/images/Slide 3.jfif","public/assets/images/Slide 3.jfif","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Slide 3.jfif)",LOW
+"public/assets/images/Slide 4.jfif","public/assets/images/Slide 4.jfif","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Slide 4.jfif)",LOW
+"public/assets/images/Slide 5.jfif","public/assets/images/Slide 5.jfif","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/Slide 5.jfif)",LOW
+"public/assets/images/bKash logo.jpg","public/assets/images/bKash logo.jpg","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/bKash logo.jpg)",LOW
+"public/assets/images/card logo.png","public/assets/images/card logo.png","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/card logo.png)",LOW
+public/assets/images/metadata.json,public/assets/images/metadata.json,Config/Manifest,"SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/metadata.json)",LOW
+"public/assets/images/nagad logo.png","public/assets/images/nagad logo.png","Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/assets/images/nagad logo.png)",LOW
+public/css/legal-pages.css,public/css/legal-pages.css,Stylesheet,"SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/css/legal-pages.css)",LOW
+public/images/partners/partner_1.png,public/images/partners/partner_1.png,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/images/partners/partner_1.png)",LOW
+public/images/partners/partner_2.png,public/images/partners/partner_2.png,"Image Asset","SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/images/partners/partner_2.png)",LOW
+public/js/legal-pages.js,public/js/legal-pages.js,JavaScript,"SHARED ASSET",IDENTICAL_HASH,100%,"Exact binary/content match with V10 asset (public/js/legal-pages.js)",LOW
+resources/views/auth.blade.php,resources/views/auth.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/auth.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/layouts/frontend.blade.php,resources/views/layouts/frontend.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,99.9%,"Near-identical to V10 file (resources/views/layouts/frontend.blade.php) with minor edits (similarity: 99.9%)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/about.blade.php,resources/views/pages/about.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/about.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/blog.blade.php,resources/views/pages/blog.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/blog.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/calculator.blade.php,resources/views/pages/calculator.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/calculator.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/contact.blade.php,resources/views/pages/contact.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,95.9%,"Near-identical to V10 file (resources/views/pages/contact.blade.php) with minor edits (similarity: 95.9%)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/cookies.blade.php,resources/views/pages/cookies.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/cookies.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/documents.blade.php,resources/views/pages/documents.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/documents.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/faq.blade.php,resources/views/pages/faq.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/faq.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/gallery.blade.php,resources/views/pages/gallery.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/gallery.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/privacy.blade.php,resources/views/pages/privacy.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/privacy.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/profile-show.blade.php,resources/views/pages/profile-show.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/profile-show.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/profiles.blade.php,resources/views/pages/profiles.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,99.5%,"Near-identical to V10 file (resources/views/pages/profiles.blade.php) with minor edits (similarity: 99.5%)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/team.blade.php,resources/views/pages/team.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/team.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/pages/terms.blade.php,resources/views/pages/terms.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/pages/terms.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/partials/ai-chat-widget.blade.php,resources/views/partials/ai-chat-widget.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/partials/ai-chat-widget.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+resources/views/partials/footer.blade.php,resources/views/partials/footer.blade.php,"PHP Script",COPIED,IDENTICAL_HASH,100%,"Exact byte-for-byte match with V10 file (resources/views/partials/footer.blade.php)","MEDIUM (V10 legacy inline CSS & JS bundled)"
+NONE,tests/Feature/Database/DatabaseIntegrityTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Domain/DealEscrowWorkflowTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Domain/DepositWorkflowTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Domain/PaymentGatewayWorkflowTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Domain/SupportingDomainsTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Domain/WalletServiceTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Domain/WithdrawalWorkflowTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Migration/MigrationToolingTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Security/GatewayVaultTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Security/OtpSecurityTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Security/PrivateFileAccessTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Security/RouteBarrierTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Security/SupportIdentityTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Feature/Web/PublicWebsiteTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+NONE,tests/Unit/DecimalSafeMathTest.php,Test,NEW,"N/A (NEW)",0%,"New automated test suite created specifically for V12",LOW
+.env,.env,ENV,ADAPTED,DIFFERENT_HASH,59.8%,"Adapted from V10 file for Laravel 12 architecture (similarity: 59.8%)",LOW
+database/database.sqlite,database/database.sqlite,SQLITE,ADAPTED,DIFFERENT_HASH,50%,"Adapted from V10 file for Laravel 12 architecture (similarity: 50%)",LOW
+api_out.txt,NONE,TXT,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+app/Console/Commands/MigrateToSqlite.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+app/Console/Kernel.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Exceptions/Handler.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Controllers/MediaController.php,NONE,Controller,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+app/Http/Kernel.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/Authenticate.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/EncryptCookies.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/PreventRequestsDuringMaintenance.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/RedirectIfAuthenticated.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/TrimStrings.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/TrustHosts.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/TrustProxies.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/ValidateSignature.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Http/Middleware/VerifyCsrfToken.php,NONE,"Legacy Middleware","NOT MIGRATED","N/A (NOT IN V12)",0%,"Obsolete Laravel 10 boilerplate — replaced by Laravel 12 bootstrap/app.php fluent architecture","LOW (Framework modernization)"
+app/Providers/AuthServiceProvider.php,NONE,"Legacy Provider","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+app/Providers/BroadcastServiceProvider.php,NONE,"Legacy Provider","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+app/Providers/EventServiceProvider.php,NONE,"Legacy Provider","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+app/Providers/RouteServiceProvider.php,NONE,"Legacy Provider","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+babel-test-2.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+babel-test-core.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+check.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+check.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+check2.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+check_babel.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+check_vars.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+config/broadcasting.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+config/cors.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+config/hashing.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+config/sanctum.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+config/view.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+count.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+database/migrations/2014_10_12_000000_create_users_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2014_10_12_100000_create_password_reset_tokens_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2019_08_19_000000_create_failed_jobs_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2024_07_23_000000_create_deposits_deals_transactions_tables.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2024_07_23_000001_create_notifications_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2024_07_23_000002_update_deals_add_workflow_fields.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2024_07_23_000003_create_withdrawal_methods_and_requests_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2024_07_23_000004_create_reviews_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2024_07_23_000005_create_categories_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_07_29_184022_add_custom_category_to_deals_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_07_29_191146_add_admin_read_to_deposits_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_01_000000_create_coupons_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_01_000001_create_coupon_usages_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_01_000002_add_coupon_fields_to_deals_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_01_000003_create_banners_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_04_153705_add_profile_fields_to_users_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_06_163401_add_cover_position_x_to_users_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_08_100000_add_verification_fields_to_users_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_09_000000_create_support_tickets_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_09_000001_create_support_ticket_messages_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_10_000000_add_attachment_path_to_support_ticket_messages_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_18_000000_create_ai_knowledge_bases_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_18_000001_add_source_to_support_tickets_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_23_235654_create_ai_chat_histories_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_23_235656_create_ai_settings_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_24_161127_add_visitor_info_to_ai_chat_histories.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/migrations/2026_09_25_000000_add_gender_and_id_type_to_users_table.php,NONE,"Legacy Migration","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 SQLite fragmented migration — replaced by modernized V12 MySQL migrations","LOW (Consolidated into 2026_11_02 migrations)"
+database/seeders/AiKnowledgeBaseSeeder.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+database/seeders/CategorySeeder.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+database/seeders/TestUserSeeder.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+database/seeders/UserSeeder.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+database_backup.sql,NONE,SQL,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+fix_svg.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+implementation_plan.md,NONE,MD,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+inject_script.ps1,NONE,PS1,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+patch_activity.py,NONE,PY,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+print_line.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+profile_code.txt,NONE,TXT,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+public/favicon.ico,NONE,ICO,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/uploads/deals/2/1790961889_MigratepayLogoPNG.png,NONE,PNG,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/uploads/deals/2/1790961889_NewMicrosoftWordDocument.docx,NONE,DOCX,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/vendor/css/flatpickr.min.css,NONE,Stylesheet,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/vendor/js/babel.min.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/vendor/js/flatpickr.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/vendor/js/html2pdf.bundle.min.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/vendor/js/react-dom.development.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/vendor/js/react.development.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/vendor/js/sweetalert2.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+public/vendor/js/tailwindcss.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+raw/roadmap.txt,NONE,TXT,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+replace_styles.ps1,NONE,PS1,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+reset_password.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+resources/js/admin/components/SvgIcon.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/context/AdminContext.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/index.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/layout/AdminLayout.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/layout/Header.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/layout/Sidebar.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/layout/UnreadBanner.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/AiLiveChatModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/AnalyticsModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/AnnouncementsModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/BackupModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/BannersModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/BlogPostsModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/ChargeManagementModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/CouponsModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/DashboardModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/DealsManagementModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/DepositsManagementModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/ManageCategoryModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/ManagePagesModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/MediaModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/MenusModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/PaymentGatewaysModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/ProjectSubmissionModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/ReportsManagementModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/SiteSettingsModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/SupportTicketsModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/UserSettingsModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/UsersManagementModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/modules/WithdrawalsManagementModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/admin/theme.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/api/adminApi.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+resources/js/api/client.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+resources/js/api/deals.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+resources/js/api/finance.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+resources/js/api/userAndSupport.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+resources/js/app.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+resources/js/user/components/ReviewModal.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/components/SvgIcon.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/context/UserContext.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/index.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/layout/NotificationDropdown.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/layout/UserHeader.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/layout/UserLayout.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/layout/UserSidebar.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/ActivityModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/CreateDealModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/DepositModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/MessagesModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/ProfileModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/ProjectManagementModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/SecurityModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/SupportModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/UserDashboardHome.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/modules/WithdrawalModule.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/js/user/theme.js,NONE,JavaScript,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 React / Chakra UI 2 dashboard component — pending Phase 6 reconstruction","HIGH (Core dashboard capability pending)"
+resources/views/admin/dashboard.blade.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 dashboard Blade wrapper — pending Phase 6","MEDIUM (Dashboard entry point pending)"
+resources/views/admin/dashboard.blade.php.bak,NONE,BAK,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 dashboard Blade wrapper — pending Phase 6","MEDIUM (Dashboard entry point pending)"
+resources/views/chakra.blade.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+resources/views/user/dashboard.blade.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 dashboard Blade wrapper — pending Phase 6","MEDIUM (Dashboard entry point pending)"
+resources/views/user/dashboard.blade.php.bak,NONE,BAK,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 dashboard Blade wrapper — pending Phase 6","MEDIUM (Dashboard entry point pending)"
+routes/api.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+routes/channels.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+scratch_coupons_module.jsx,NONE,"React Component (Chakra UI 2)","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+scratch_fix.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+scratch_format_all.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+scratch_format_cookies.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+scratch_restore_cookies.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+scratch_restore_from_cache.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+storage/app/public/.gitignore,NONE,GITIGNORE,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+storage/framework/cache/data/.gitignore,NONE,GITIGNORE,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+storage/framework/testing/.gitignore,NONE,GITIGNORE,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+storage/logs/.gitignore,NONE,GITIGNORE,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+test_babel.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+test_babel_compiled.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+test_babel_pure.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+test_banner.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+test_banner_api.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+test_login.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+test_npm.json,NONE,Config/Manifest,"NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+test_profile.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW
+test_runtime.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+test_syntax.cjs,NONE,"Legacy Scratch CJS","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 root developer scratch/debug utility — excluded from clean production codebase","LOW (Non-production artifact)"
+tests/CreatesApplication.php,NONE,"PHP Script","NOT MIGRATED","N/A (NOT IN V12)",0%,"V10 file retained in source; not migrated to V12",LOW

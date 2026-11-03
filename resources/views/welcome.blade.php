@@ -1,277 +1,2746 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MigratePay — Secure Escrow & Deal Management in Bangladesh</title>
+    <meta name="description" content="MigratePay is Bangladesh's trusted third-party mediator, protecting buyers and sellers at every step of the transaction. Secure escrow and deal management.">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Color Palette */
+            --primary: #2563EB; /* Vibrant Blue */
+            --primary-hover: #1D4ED8;
+            --secondary: #10B981; /* Emerald Green */
+            --dark: #0A1128; /* Deeper Navy */
+            --dark-light: #162447;
+            --gray-100: #F8FAFC;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-500: #64748B;
+            --gray-800: #1E293B;
+            --white: #FFFFFF;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #1D4ED8 100%);
+            --gradient-dark: linear-gradient(135deg, #0A1128 0%, #162447 100%);
+            --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%);
+            --gradient-subtle: linear-gradient(to right bottom, #F8FAFC, #EFF6FF);
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+            --shadow-md: 0 10px 30px -10px rgba(0,0,0,0.05);
+            --shadow-lg: 0 20px 40px -15px rgba(0,0,0,0.08);
+            --shadow-xl: 0 25px 50px -12px rgba(0,0,0,0.15);
+            --shadow-primary: 0 15px 35px -10px rgba(37,99,235,0.4);
+            --shadow-glow: 0 0 20px rgba(37,99,235,0.15);
+            
+            /* Typography */
+            --font-body: 'Inter', sans-serif;
+            --font-heading: 'Plus Jakarta Sans', sans-serif;
+            
+            /* Layout */
+            --max-width: 1200px;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        /* Base Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            color: var(--gray-800);
+            background-color: var(--gray-100);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: 700; color: var(--dark); line-height: 1.2; letter-spacing: -0.02em; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        img { max-width: 100%; height: auto; display: block; }
+        ul { list-style: none; }
+        
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+        
+        /* Typography Utilities */
+        .text-primary { color: var(--primary); }
+        .text-secondary { color: var(--secondary); }
+        .text-gray { color: var(--gray-500); }
+        .text-center { text-align: center; }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 16px 32px; border-radius: 100px; font-weight: 700; font-size: 15px;
+            cursor: pointer; transition: var(--transition-bounce); border: none; gap: 8px;
+            position: relative; overflow: hidden; z-index: 1; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .btn::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.1); transform: translateX(-100%) skewX(-15deg);
+            transition: transform 0.5s ease; z-index: -1;
+        }
+        .btn:hover::before { transform: translateX(100%) skewX(-15deg); }
+        .btn-primary { background: var(--gradient-primary); color: var(--white); box-shadow: var(--shadow-primary); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.6); }
+        .btn-outline { background: var(--white); color: var(--dark); border: 2px solid var(--gray-200); box-shadow: var(--shadow-sm); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .btn-white { background: var(--white); color: var(--primary); box-shadow: var(--shadow-md); }
+        .btn-white:hover { transform: translateY(-3px); box-shadow: var(--shadow-xl); color: var(--primary-hover); }
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        /* Sections */
+        .section { padding: 80px 0; position: relative; }
+        .section-light { 
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, #EEF3FB 0%, #F0F5FF 25%, #EBF4FF 50%, #F3F0FF 75%, #ECF5FB 100%);
+        }
+        .section-light::before {
+            content: ''; position: absolute; width: 900px; height: 900px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
+            top: -200px; left: -200px; border-radius: 50%; filter: blur(50px);
+            pointer-events: none; z-index: 0; animation: float 25s infinite alternate;
+        }
+        .section-light::after {
+            content: ''; position: absolute; width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+            bottom: -100px; right: -150px; border-radius: 50%; filter: blur(50px);
+            pointer-events: none; z-index: 0; animation: float-slow 30s infinite alternate-reverse;
+        }
+        .section-light > .container { position: relative; z-index: 1; }
+        .section-header { text-align: center; max-width: 700px; margin: 0 auto 50px; }
+        .section-title { font-size: 42px; margin-bottom: 24px; }
+        .section-subtitle { font-size: 18px; color: var(--gray-500); line-height: 1.7; }
+        .badge {
+            display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 100px;
+            font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 20px; background: rgba(37, 99, 235, 0.08); color: var(--primary);
+            border: 1px solid rgba(37, 99, 235, 0.15); box-shadow: var(--shadow-glow);
+        }
 
-        <!-- Styles / Scripts -->
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
-            <style>
-                /*! tailwindcss v4.0.7 | MIT License | https://tailwindcss.com */@layer theme{:root,:host{--font-sans:'Instrument Sans',ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";--font-serif:ui-serif,Georgia,Cambria,"Times New Roman",Times,serif;--font-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;--color-red-50:oklch(.971 .013 17.38);--color-red-100:oklch(.936 .032 17.717);--color-red-200:oklch(.885 .062 18.334);--color-red-300:oklch(.808 .114 19.571);--color-red-400:oklch(.704 .191 22.216);--color-red-500:oklch(.637 .237 25.331);--color-red-600:oklch(.577 .245 27.325);--color-red-700:oklch(.505 .213 27.518);--color-red-800:oklch(.444 .177 26.899);--color-red-900:oklch(.396 .141 25.723);--color-red-950:oklch(.258 .092 26.042);--color-orange-50:oklch(.98 .016 73.684);--color-orange-100:oklch(.954 .038 75.164);--color-orange-200:oklch(.901 .076 70.697);--color-orange-300:oklch(.837 .128 66.29);--color-orange-400:oklch(.75 .183 55.934);--color-orange-500:oklch(.705 .213 47.604);--color-orange-600:oklch(.646 .222 41.116);--color-orange-700:oklch(.553 .195 38.402);--color-orange-800:oklch(.47 .157 37.304);--color-orange-900:oklch(.408 .123 38.172);--color-orange-950:oklch(.266 .079 36.259);--color-amber-50:oklch(.987 .022 95.277);--color-amber-100:oklch(.962 .059 95.617);--color-amber-200:oklch(.924 .12 95.746);--color-amber-300:oklch(.879 .169 91.605);--color-amber-400:oklch(.828 .189 84.429);--color-amber-500:oklch(.769 .188 70.08);--color-amber-600:oklch(.666 .179 58.318);--color-amber-700:oklch(.555 .163 48.998);--color-amber-800:oklch(.473 .137 46.201);--color-amber-900:oklch(.414 .112 45.904);--color-amber-950:oklch(.279 .077 45.635);--color-yellow-50:oklch(.987 .026 102.212);--color-yellow-100:oklch(.973 .071 103.193);--color-yellow-200:oklch(.945 .129 101.54);--color-yellow-300:oklch(.905 .182 98.111);--color-yellow-400:oklch(.852 .199 91.936);--color-yellow-500:oklch(.795 .184 86.047);--color-yellow-600:oklch(.681 .162 75.834);--color-yellow-700:oklch(.554 .135 66.442);--color-yellow-800:oklch(.476 .114 61.907);--color-yellow-900:oklch(.421 .095 57.708);--color-yellow-950:oklch(.286 .066 53.813);--color-lime-50:oklch(.986 .031 120.757);--color-lime-100:oklch(.967 .067 122.328);--color-lime-200:oklch(.938 .127 124.321);--color-lime-300:oklch(.897 .196 126.665);--color-lime-400:oklch(.841 .238 128.85);--color-lime-500:oklch(.768 .233 130.85);--color-lime-600:oklch(.648 .2 131.684);--color-lime-700:oklch(.532 .157 131.589);--color-lime-800:oklch(.453 .124 130.933);--color-lime-900:oklch(.405 .101 131.063);--color-lime-950:oklch(.274 .072 132.109);--color-green-50:oklch(.982 .018 155.826);--color-green-100:oklch(.962 .044 156.743);--color-green-200:oklch(.925 .084 155.995);--color-green-300:oklch(.871 .15 154.449);--color-green-400:oklch(.792 .209 151.711);--color-green-500:oklch(.723 .219 149.579);--color-green-600:oklch(.627 .194 149.214);--color-green-700:oklch(.527 .154 150.069);--color-green-800:oklch(.448 .119 151.328);--color-green-900:oklch(.393 .095 152.535);--color-green-950:oklch(.266 .065 152.934);--color-emerald-50:oklch(.979 .021 166.113);--color-emerald-100:oklch(.95 .052 163.051);--color-emerald-200:oklch(.905 .093 164.15);--color-emerald-300:oklch(.845 .143 164.978);--color-emerald-400:oklch(.765 .177 163.223);--color-emerald-500:oklch(.696 .17 162.48);--color-emerald-600:oklch(.596 .145 163.225);--color-emerald-700:oklch(.508 .118 165.612);--color-emerald-800:oklch(.432 .095 166.913);--color-emerald-900:oklch(.378 .077 168.94);--color-emerald-950:oklch(.262 .051 172.552);--color-teal-50:oklch(.984 .014 180.72);--color-teal-100:oklch(.953 .051 180.801);--color-teal-200:oklch(.91 .096 180.426);--color-teal-300:oklch(.855 .138 181.071);--color-teal-400:oklch(.777 .152 181.912);--color-teal-500:oklch(.704 .14 182.503);--color-teal-600:oklch(.6 .118 184.704);--color-teal-700:oklch(.511 .096 186.391);--color-teal-800:oklch(.437 .078 188.216);--color-teal-900:oklch(.386 .063 188.416);--color-teal-950:oklch(.277 .046 192.524);--color-cyan-50:oklch(.984 .019 200.873);--color-cyan-100:oklch(.956 .045 203.388);--color-cyan-200:oklch(.917 .08 205.041);--color-cyan-300:oklch(.865 .127 207.078);--color-cyan-400:oklch(.789 .154 211.53);--color-cyan-500:oklch(.715 .143 215.221);--color-cyan-600:oklch(.609 .126 221.723);--color-cyan-700:oklch(.52 .105 223.128);--color-cyan-800:oklch(.45 .085 224.283);--color-cyan-900:oklch(.398 .07 227.392);--color-cyan-950:oklch(.302 .056 229.695);--color-sky-50:oklch(.977 .013 236.62);--color-sky-100:oklch(.951 .026 236.824);--color-sky-200:oklch(.901 .058 230.902);--color-sky-300:oklch(.828 .111 230.318);--color-sky-400:oklch(.746 .16 232.661);--color-sky-500:oklch(.685 .169 237.323);--color-sky-600:oklch(.588 .158 241.966);--color-sky-700:oklch(.5 .134 242.749);--color-sky-800:oklch(.443 .11 240.79);--color-sky-900:oklch(.391 .09 240.876);--color-sky-950:oklch(.293 .066 243.157);--color-blue-50:oklch(.97 .014 254.604);--color-blue-100:oklch(.932 .032 255.585);--color-blue-200:oklch(.882 .059 254.128);--color-blue-300:oklch(.809 .105 251.813);--color-blue-400:oklch(.707 .165 254.624);--color-blue-500:oklch(.623 .214 259.815);--color-blue-600:oklch(.546 .245 262.881);--color-blue-700:oklch(.488 .243 264.376);--color-blue-800:oklch(.424 .199 265.638);--color-blue-900:oklch(.379 .146 265.522);--color-blue-950:oklch(.282 .091 267.935);--color-indigo-50:oklch(.962 .018 272.314);--color-indigo-100:oklch(.93 .034 272.788);--color-indigo-200:oklch(.87 .065 274.039);--color-indigo-300:oklch(.785 .115 274.713);--color-indigo-400:oklch(.673 .182 276.935);--color-indigo-500:oklch(.585 .233 277.117);--color-indigo-600:oklch(.511 .262 276.966);--color-indigo-700:oklch(.457 .24 277.023);--color-indigo-800:oklch(.398 .195 277.366);--color-indigo-900:oklch(.359 .144 278.697);--color-indigo-950:oklch(.257 .09 281.288);--color-violet-50:oklch(.969 .016 293.756);--color-violet-100:oklch(.943 .029 294.588);--color-violet-200:oklch(.894 .057 293.283);--color-violet-300:oklch(.811 .111 293.571);--color-violet-400:oklch(.702 .183 293.541);--color-violet-500:oklch(.606 .25 292.717);--color-violet-600:oklch(.541 .281 293.009);--color-violet-700:oklch(.491 .27 292.581);--color-violet-800:oklch(.432 .232 292.759);--color-violet-900:oklch(.38 .189 293.745);--color-violet-950:oklch(.283 .141 291.089);--color-purple-50:oklch(.977 .014 308.299);--color-purple-100:oklch(.946 .033 307.174);--color-purple-200:oklch(.902 .063 306.703);--color-purple-300:oklch(.827 .119 306.383);--color-purple-400:oklch(.714 .203 305.504);--color-purple-500:oklch(.627 .265 303.9);--color-purple-600:oklch(.558 .288 302.321);--color-purple-700:oklch(.496 .265 301.924);--color-purple-800:oklch(.438 .218 303.724);--color-purple-900:oklch(.381 .176 304.987);--color-purple-950:oklch(.291 .149 302.717);--color-fuchsia-50:oklch(.977 .017 320.058);--color-fuchsia-100:oklch(.952 .037 318.852);--color-fuchsia-200:oklch(.903 .076 319.62);--color-fuchsia-300:oklch(.833 .145 321.434);--color-fuchsia-400:oklch(.74 .238 322.16);--color-fuchsia-500:oklch(.667 .295 322.15);--color-fuchsia-600:oklch(.591 .293 322.896);--color-fuchsia-700:oklch(.518 .253 323.949);--color-fuchsia-800:oklch(.452 .211 324.591);--color-fuchsia-900:oklch(.401 .17 325.612);--color-fuchsia-950:oklch(.293 .136 325.661);--color-pink-50:oklch(.971 .014 343.198);--color-pink-100:oklch(.948 .028 342.258);--color-pink-200:oklch(.899 .061 343.231);--color-pink-300:oklch(.823 .12 346.018);--color-pink-400:oklch(.718 .202 349.761);--color-pink-500:oklch(.656 .241 354.308);--color-pink-600:oklch(.592 .249 .584);--color-pink-700:oklch(.525 .223 3.958);--color-pink-800:oklch(.459 .187 3.815);--color-pink-900:oklch(.408 .153 2.432);--color-pink-950:oklch(.284 .109 3.907);--color-rose-50:oklch(.969 .015 12.422);--color-rose-100:oklch(.941 .03 12.58);--color-rose-200:oklch(.892 .058 10.001);--color-rose-300:oklch(.81 .117 11.638);--color-rose-400:oklch(.712 .194 13.428);--color-rose-500:oklch(.645 .246 16.439);--color-rose-600:oklch(.586 .253 17.585);--color-rose-700:oklch(.514 .222 16.935);--color-rose-800:oklch(.455 .188 13.697);--color-rose-900:oklch(.41 .159 10.272);--color-rose-950:oklch(.271 .105 12.094);--color-slate-50:oklch(.984 .003 247.858);--color-slate-100:oklch(.968 .007 247.896);--color-slate-200:oklch(.929 .013 255.508);--color-slate-300:oklch(.869 .022 252.894);--color-slate-400:oklch(.704 .04 256.788);--color-slate-500:oklch(.554 .046 257.417);--color-slate-600:oklch(.446 .043 257.281);--color-slate-700:oklch(.372 .044 257.287);--color-slate-800:oklch(.279 .041 260.031);--color-slate-900:oklch(.208 .042 265.755);--color-slate-950:oklch(.129 .042 264.695);--color-gray-50:oklch(.985 .002 247.839);--color-gray-100:oklch(.967 .003 264.542);--color-gray-200:oklch(.928 .006 264.531);--color-gray-300:oklch(.872 .01 258.338);--color-gray-400:oklch(.707 .022 261.325);--color-gray-500:oklch(.551 .027 264.364);--color-gray-600:oklch(.446 .03 256.802);--color-gray-700:oklch(.373 .034 259.733);--color-gray-800:oklch(.278 .033 256.848);--color-gray-900:oklch(.21 .034 264.665);--color-gray-950:oklch(.13 .028 261.692);--color-zinc-50:oklch(.985 0 0);--color-zinc-100:oklch(.967 .001 286.375);--color-zinc-200:oklch(.92 .004 286.32);--color-zinc-300:oklch(.871 .006 286.286);--color-zinc-400:oklch(.705 .015 286.067);--color-zinc-500:oklch(.552 .016 285.938);--color-zinc-600:oklch(.442 .017 285.786);--color-zinc-700:oklch(.37 .013 285.805);--color-zinc-800:oklch(.274 .006 286.033);--color-zinc-900:oklch(.21 .006 285.885);--color-zinc-950:oklch(.141 .005 285.823);--color-neutral-50:oklch(.985 0 0);--color-neutral-100:oklch(.97 0 0);--color-neutral-200:oklch(.922 0 0);--color-neutral-300:oklch(.87 0 0);--color-neutral-400:oklch(.708 0 0);--color-neutral-500:oklch(.556 0 0);--color-neutral-600:oklch(.439 0 0);--color-neutral-700:oklch(.371 0 0);--color-neutral-800:oklch(.269 0 0);--color-neutral-900:oklch(.205 0 0);--color-neutral-950:oklch(.145 0 0);--color-stone-50:oklch(.985 .001 106.423);--color-stone-100:oklch(.97 .001 106.424);--color-stone-200:oklch(.923 .003 48.717);--color-stone-300:oklch(.869 .005 56.366);--color-stone-400:oklch(.709 .01 56.259);--color-stone-500:oklch(.553 .013 58.071);--color-stone-600:oklch(.444 .011 73.639);--color-stone-700:oklch(.374 .01 67.558);--color-stone-800:oklch(.268 .007 34.298);--color-stone-900:oklch(.216 .006 56.043);--color-stone-950:oklch(.147 .004 49.25);--color-black:#000;--color-white:#fff;--spacing:.25rem;--breakpoint-sm:40rem;--breakpoint-md:48rem;--breakpoint-lg:64rem;--breakpoint-xl:80rem;--breakpoint-2xl:96rem;--container-3xs:16rem;--container-2xs:18rem;--container-xs:20rem;--container-sm:24rem;--container-md:28rem;--container-lg:32rem;--container-xl:36rem;--container-2xl:42rem;--container-3xl:48rem;--container-4xl:56rem;--container-5xl:64rem;--container-6xl:72rem;--container-7xl:80rem;--text-xs:.75rem;--text-xs--line-height:calc(1/.75);--text-sm:.875rem;--text-sm--line-height:calc(1.25/.875);--text-base:1rem;--text-base--line-height: 1.5 ;--text-lg:1.125rem;--text-lg--line-height:calc(1.75/1.125);--text-xl:1.25rem;--text-xl--line-height:calc(1.75/1.25);--text-2xl:1.5rem;--text-2xl--line-height:calc(2/1.5);--text-3xl:1.875rem;--text-3xl--line-height: 1.2 ;--text-4xl:2.25rem;--text-4xl--line-height:calc(2.5/2.25);--text-5xl:3rem;--text-5xl--line-height:1;--text-6xl:3.75rem;--text-6xl--line-height:1;--text-7xl:4.5rem;--text-7xl--line-height:1;--text-8xl:6rem;--text-8xl--line-height:1;--text-9xl:8rem;--text-9xl--line-height:1;--font-weight-thin:100;--font-weight-extralight:200;--font-weight-light:300;--font-weight-normal:400;--font-weight-medium:500;--font-weight-semibold:600;--font-weight-bold:700;--font-weight-extrabold:800;--font-weight-black:900;--tracking-tighter:-.05em;--tracking-tight:-.025em;--tracking-normal:0em;--tracking-wide:.025em;--tracking-wider:.05em;--tracking-widest:.1em;--leading-tight:1.25;--leading-snug:1.375;--leading-normal:1.5;--leading-relaxed:1.625;--leading-loose:2;--radius-xs:.125rem;--radius-sm:.25rem;--radius-md:.375rem;--radius-lg:.5rem;--radius-xl:.75rem;--radius-2xl:1rem;--radius-3xl:1.5rem;--radius-4xl:2rem;--shadow-2xs:0 1px #0000000d;--shadow-xs:0 1px 2px 0 #0000000d;--shadow-sm:0 1px 3px 0 #0000001a,0 1px 2px -1px #0000001a;--shadow-md:0 4px 6px -1px #0000001a,0 2px 4px -2px #0000001a;--shadow-lg:0 10px 15px -3px #0000001a,0 4px 6px -4px #0000001a;--shadow-xl:0 20px 25px -5px #0000001a,0 8px 10px -6px #0000001a;--shadow-2xl:0 25px 50px -12px #00000040;--inset-shadow-2xs:inset 0 1px #0000000d;--inset-shadow-xs:inset 0 1px 1px #0000000d;--inset-shadow-sm:inset 0 2px 4px #0000000d;--drop-shadow-xs:0 1px 1px #0000000d;--drop-shadow-sm:0 1px 2px #00000026;--drop-shadow-md:0 3px 3px #0000001f;--drop-shadow-lg:0 4px 4px #00000026;--drop-shadow-xl:0 9px 7px #0000001a;--drop-shadow-2xl:0 25px 25px #00000026;--ease-in:cubic-bezier(.4,0,1,1);--ease-out:cubic-bezier(0,0,.2,1);--ease-in-out:cubic-bezier(.4,0,.2,1);--animate-spin:spin 1s linear infinite;--animate-ping:ping 1s cubic-bezier(0,0,.2,1)infinite;--animate-pulse:pulse 2s cubic-bezier(.4,0,.6,1)infinite;--animate-bounce:bounce 1s infinite;--blur-xs:4px;--blur-sm:8px;--blur-md:12px;--blur-lg:16px;--blur-xl:24px;--blur-2xl:40px;--blur-3xl:64px;--perspective-dramatic:100px;--perspective-near:300px;--perspective-normal:500px;--perspective-midrange:800px;--perspective-distant:1200px;--aspect-video:16/9;--default-transition-duration:.15s;--default-transition-timing-function:cubic-bezier(.4,0,.2,1);--default-font-family:var(--font-sans);--default-font-feature-settings:var(--font-sans--font-feature-settings);--default-font-variation-settings:var(--font-sans--font-variation-settings);--default-mono-font-family:var(--font-mono);--default-mono-font-feature-settings:var(--font-mono--font-feature-settings);--default-mono-font-variation-settings:var(--font-mono--font-variation-settings)}}@layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}::file-selector-button{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;line-height:1.5;font-family:var(--default-font-family,ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji");font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}body{line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1em}small{font-size:80%}sub,sup{vertical-align:baseline;font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring{outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{vertical-align:middle;display:block}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::placeholder{opacity:1;color:color-mix(in oklab,currentColor 50%,transparent)}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit{padding-block:0}::-webkit-datetime-edit-year-field{padding-block:0}::-webkit-datetime-edit-month-field{padding-block:0}::-webkit-datetime-edit-day-field{padding-block:0}::-webkit-datetime-edit-hour-field{padding-block:0}::-webkit-datetime-edit-minute-field{padding-block:0}::-webkit-datetime-edit-second-field{padding-block:0}::-webkit-datetime-edit-millisecond-field{padding-block:0}::-webkit-datetime-edit-meridiem-field{padding-block:0}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]){-webkit-appearance:button;-moz-appearance:button;appearance:button}::file-selector-button{-webkit-appearance:button;-moz-appearance:button;appearance:button}::-webkit-inner-spin-button{height:auto}::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}}@layer components;@layer utilities{.absolute{position:absolute}.relative{position:relative}.static{position:static}.inset-0{inset:calc(var(--spacing)*0)}.-mt-\[4\.9rem\]{margin-top:-4.9rem}.-mb-px{margin-bottom:-1px}.mb-1{margin-bottom:calc(var(--spacing)*1)}.mb-2{margin-bottom:calc(var(--spacing)*2)}.mb-4{margin-bottom:calc(var(--spacing)*4)}.mb-6{margin-bottom:calc(var(--spacing)*6)}.-ml-8{margin-left:calc(var(--spacing)*-8)}.flex{display:flex}.hidden{display:none}.inline-block{display:inline-block}.inline-flex{display:inline-flex}.table{display:table}.aspect-\[335\/376\]{aspect-ratio:335/376}.h-1{height:calc(var(--spacing)*1)}.h-1\.5{height:calc(var(--spacing)*1.5)}.h-2{height:calc(var(--spacing)*2)}.h-2\.5{height:calc(var(--spacing)*2.5)}.h-3{height:calc(var(--spacing)*3)}.h-3\.5{height:calc(var(--spacing)*3.5)}.h-14{height:calc(var(--spacing)*14)}.h-14\.5{height:calc(var(--spacing)*14.5)}.min-h-screen{min-height:100vh}.w-1{width:calc(var(--spacing)*1)}.w-1\.5{width:calc(var(--spacing)*1.5)}.w-2{width:calc(var(--spacing)*2)}.w-2\.5{width:calc(var(--spacing)*2.5)}.w-3{width:calc(var(--spacing)*3)}.w-3\.5{width:calc(var(--spacing)*3.5)}.w-\[448px\]{width:448px}.w-full{width:100%}.max-w-\[335px\]{max-width:335px}.max-w-none{max-width:none}.flex-1{flex:1}.shrink-0{flex-shrink:0}.translate-y-0{--tw-translate-y:calc(var(--spacing)*0);translate:var(--tw-translate-x)var(--tw-translate-y)}.transform{transform:var(--tw-rotate-x)var(--tw-rotate-y)var(--tw-rotate-z)var(--tw-skew-x)var(--tw-skew-y)}.flex-col{flex-direction:column}.flex-col-reverse{flex-direction:column-reverse}.items-center{align-items:center}.justify-center{justify-content:center}.justify-end{justify-content:flex-end}.gap-3{gap:calc(var(--spacing)*3)}.gap-4{gap:calc(var(--spacing)*4)}:where(.space-x-1>:not(:last-child)){--tw-space-x-reverse:0;margin-inline-start:calc(calc(var(--spacing)*1)*var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing)*1)*calc(1 - var(--tw-space-x-reverse)))}.overflow-hidden{overflow:hidden}.rounded-full{border-radius:3.40282e38px}.rounded-sm{border-radius:var(--radius-sm)}.rounded-t-lg{border-top-left-radius:var(--radius-lg);border-top-right-radius:var(--radius-lg)}.rounded-br-lg{border-bottom-right-radius:var(--radius-lg)}.rounded-bl-lg{border-bottom-left-radius:var(--radius-lg)}.border{border-style:var(--tw-border-style);border-width:1px}.border-\[\#19140035\]{border-color:#19140035}.border-\[\#e3e3e0\]{border-color:#e3e3e0}.border-black{border-color:var(--color-black)}.border-transparent{border-color:#0000}.bg-\[\#1b1b18\]{background-color:#1b1b18}.bg-\[\#FDFDFC\]{background-color:#fdfdfc}.bg-\[\#dbdbd7\]{background-color:#dbdbd7}.bg-\[\#fff2f2\]{background-color:#fff2f2}.bg-white{background-color:var(--color-white)}.p-6{padding:calc(var(--spacing)*6)}.px-5{padding-inline:calc(var(--spacing)*5)}.py-1{padding-block:calc(var(--spacing)*1)}.py-1\.5{padding-block:calc(var(--spacing)*1.5)}.py-2{padding-block:calc(var(--spacing)*2)}.pb-12{padding-bottom:calc(var(--spacing)*12)}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading,var(--text-sm--line-height))}.text-\[13px\]{font-size:13px}.leading-\[20px\]{--tw-leading:20px;line-height:20px}.leading-normal{--tw-leading:var(--leading-normal);line-height:var(--leading-normal)}.font-medium{--tw-font-weight:var(--font-weight-medium);font-weight:var(--font-weight-medium)}.text-\[\#1b1b18\]{color:#1b1b18}.text-\[\#706f6c\]{color:#706f6c}.text-\[\#F53003\],.text-\[\#f53003\]{color:#f53003}.text-white{color:var(--color-white)}.underline{text-decoration-line:underline}.underline-offset-4{text-underline-offset:4px}.opacity-100{opacity:1}.shadow-\[0px_0px_1px_0px_rgba\(0\,0\,0\,0\.03\)\,0px_1px_2px_0px_rgba\(0\,0\,0\,0\.06\)\]{--tw-shadow:0px 0px 1px 0px var(--tw-shadow-color,#00000008),0px 1px 2px 0px var(--tw-shadow-color,#0000000f);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.shadow-\[inset_0px_0px_0px_1px_rgba\(26\,26\,0\,0\.16\)\]{--tw-shadow:inset 0px 0px 0px 1px var(--tw-shadow-color,#1a1a0029);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.\!filter{filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)!important}.filter{filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)}.transition-all{transition-property:all;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-opacity{transition-property:opacity;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.delay-300{transition-delay:.3s}.duration-750{--tw-duration:.75s;transition-duration:.75s}.not-has-\[nav\]\:hidden:not(:has(:is(nav))){display:none}.before\:absolute:before{content:var(--tw-content);position:absolute}.before\:top-0:before{content:var(--tw-content);top:calc(var(--spacing)*0)}.before\:top-1\/2:before{content:var(--tw-content);top:50%}.before\:bottom-0:before{content:var(--tw-content);bottom:calc(var(--spacing)*0)}.before\:bottom-1\/2:before{content:var(--tw-content);bottom:50%}.before\:left-\[0\.4rem\]:before{content:var(--tw-content);left:.4rem}.before\:border-l:before{content:var(--tw-content);border-left-style:var(--tw-border-style);border-left-width:1px}.before\:border-\[\#e3e3e0\]:before{content:var(--tw-content);border-color:#e3e3e0}@media (hover:hover){.hover\:border-\[\#1915014a\]:hover{border-color:#1915014a}.hover\:border-\[\#19140035\]:hover{border-color:#19140035}.hover\:border-black:hover{border-color:var(--color-black)}.hover\:bg-black:hover{background-color:var(--color-black)}}@media (width>=64rem){.lg\:-mt-\[6\.6rem\]{margin-top:-6.6rem}.lg\:mb-0{margin-bottom:calc(var(--spacing)*0)}.lg\:mb-6{margin-bottom:calc(var(--spacing)*6)}.lg\:-ml-px{margin-left:-1px}.lg\:ml-0{margin-left:calc(var(--spacing)*0)}.lg\:block{display:block}.lg\:aspect-auto{aspect-ratio:auto}.lg\:w-\[438px\]{width:438px}.lg\:max-w-4xl{max-width:var(--container-4xl)}.lg\:grow{flex-grow:1}.lg\:flex-row{flex-direction:row}.lg\:justify-center{justify-content:center}.lg\:rounded-t-none{border-top-left-radius:0;border-top-right-radius:0}.lg\:rounded-tl-lg{border-top-left-radius:var(--radius-lg)}.lg\:rounded-r-lg{border-top-right-radius:var(--radius-lg);border-bottom-right-radius:var(--radius-lg)}.lg\:rounded-br-none{border-bottom-right-radius:0}.lg\:p-8{padding:calc(var(--spacing)*8)}.lg\:p-20{padding:calc(var(--spacing)*20)}}@media (prefers-color-scheme:dark){.dark\:block{display:block}.dark\:hidden{display:none}.dark\:border-\[\#3E3E3A\]{border-color:#3e3e3a}.dark\:border-\[\#eeeeec\]{border-color:#eeeeec}.dark\:bg-\[\#0a0a0a\]{background-color:#0a0a0a}.dark\:bg-\[\#1D0002\]{background-color:#1d0002}.dark\:bg-\[\#3E3E3A\]{background-color:#3e3e3a}.dark\:bg-\[\#161615\]{background-color:#161615}.dark\:bg-\[\#eeeeec\]{background-color:#eeeeec}.dark\:text-\[\#1C1C1A\]{color:#1c1c1a}.dark\:text-\[\#A1A09A\]{color:#a1a09a}.dark\:text-\[\#EDEDEC\]{color:#ededec}.dark\:text-\[\#F61500\]{color:#f61500}.dark\:text-\[\#FF4433\]{color:#f43}.dark\:shadow-\[inset_0px_0px_0px_1px_\#fffaed2d\]{--tw-shadow:inset 0px 0px 0px 1px var(--tw-shadow-color,#fffaed2d);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.dark\:before\:border-\[\#3E3E3A\]:before{content:var(--tw-content);border-color:#3e3e3a}@media (hover:hover){.dark\:hover\:border-\[\#3E3E3A\]:hover{border-color:#3e3e3a}.dark\:hover\:border-\[\#62605b\]:hover{border-color:#62605b}.dark\:hover\:border-white:hover{border-color:var(--color-white)}.dark\:hover\:bg-white:hover{background-color:var(--color-white)}}}@starting-style{.starting\:translate-y-4{--tw-translate-y:calc(var(--spacing)*4);translate:var(--tw-translate-x)var(--tw-translate-y)}}@starting-style{.starting\:translate-y-6{--tw-translate-y:calc(var(--spacing)*6);translate:var(--tw-translate-x)var(--tw-translate-y)}}@starting-style{.starting\:opacity-0{opacity:0}}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes ping{75%,to{opacity:0;transform:scale(2)}}@keyframes pulse{50%{opacity:.5}}@keyframes bounce{0%,to{animation-timing-function:cubic-bezier(.8,0,1,1);transform:translateY(-25%)}50%{animation-timing-function:cubic-bezier(0,0,.2,1);transform:none}}@property --tw-translate-x{syntax:"*";inherits:false;initial-value:0}@property --tw-translate-y{syntax:"*";inherits:false;initial-value:0}@property --tw-translate-z{syntax:"*";inherits:false;initial-value:0}@property --tw-rotate-x{syntax:"*";inherits:false;initial-value:rotateX(0)}@property --tw-rotate-y{syntax:"*";inherits:false;initial-value:rotateY(0)}@property --tw-rotate-z{syntax:"*";inherits:false;initial-value:rotateZ(0)}@property --tw-skew-x{syntax:"*";inherits:false;initial-value:skewX(0)}@property --tw-skew-y{syntax:"*";inherits:false;initial-value:skewY(0)}@property --tw-space-x-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-leading{syntax:"*";inherits:false}@property --tw-font-weight{syntax:"*";inherits:false}@property --tw-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-shadow-color{syntax:"*";inherits:false}@property --tw-inset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-shadow-color{syntax:"*";inherits:false}@property --tw-ring-color{syntax:"*";inherits:false}@property --tw-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-ring-color{syntax:"*";inherits:false}@property --tw-inset-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-ring-inset{syntax:"*";inherits:false}@property --tw-ring-offset-width{syntax:"<length>";inherits:false;initial-value:0}@property --tw-ring-offset-color{syntax:"*";inherits:false;initial-value:#fff}@property --tw-ring-offset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-blur{syntax:"*";inherits:false}@property --tw-brightness{syntax:"*";inherits:false}@property --tw-contrast{syntax:"*";inherits:false}@property --tw-grayscale{syntax:"*";inherits:false}@property --tw-hue-rotate{syntax:"*";inherits:false}@property --tw-invert{syntax:"*";inherits:false}@property --tw-opacity{syntax:"*";inherits:false}@property --tw-saturate{syntax:"*";inherits:false}@property --tw-sepia{syntax:"*";inherits:false}@property --tw-drop-shadow{syntax:"*";inherits:false}@property --tw-duration{syntax:"*";inherits:false}@property --tw-content{syntax:"*";inherits:false;initial-value:""}
-            </style>
-        @endif
-    </head>
-    <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
-        <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
-            @if (Route::has('login'))
-                <nav class="flex items-center justify-end gap-4">
-                    @auth
-                        <a
-                            href="{{ url('/dashboard') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
-                        >
-                            Dashboard
-                        </a>
-                    @else
-                        <a
-                            href="{{ route('login') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
-                        >
-                            Log in
-                        </a>
+        /* Animations */
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
+        @keyframes float-slow { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(2deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(37, 99, 235, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); } }
+        @keyframes scaleIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+        .reveal-right { opacity: 0; transform: translateX(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+        
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+        .delay-400 { transition-delay: 0.4s; }
 
-                        @if (Route::has('register'))
-                            <a
-                                href="{{ route('register') }}"
-                                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                Register
-                            </a>
-                        @endif
-                    @endauth
-                </nav>
+        /* New Header Styles from Global Nav */
+        header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .pre-header { background: linear-gradient(90deg, #0f172a, #3b82f6, #8b5cf6); color: white; padding: 10px 0; font-size: 12px; font-weight: 600; transition: height 0.3s ease, opacity 0.3s ease, padding 0.3s ease; overflow: hidden; }
+        .pre-header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .pre-header-left { display: flex; align-items: center; gap: 12px; }
+        .social-icons-header { display: flex; gap: 8px; }
+        .social-icons-header a { width: 28px; height: 28px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; color: white; }
+        .social-icons-header a:hover { background: rgba(255,255,255,0.4); transform: scale(1.1); box-shadow: 0 0 10px rgba(255,255,255,0.2); color: white; }
+        .social-icons-header svg { width: 14px; height: 14px; fill: currentColor; }
+        .social-icons-header a:last-child svg { fill: none; stroke: currentColor; stroke-width: 2; }
+        
+        .pre-header-right { display: flex; gap: 24px; align-items: center; }
+        .pre-header-item { display: flex; align-items: center; gap: 6px; opacity: 0.9; }
+        .pre-header-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        .main-header-wrapper { padding: 16px 24px; transition: padding 0.3s ease; }
+        header.scrolled .pre-header { height: 0; opacity: 0; padding: 0; }
+        header.scrolled .main-header-wrapper { padding: 10px 24px; }
+        
+        .main-header { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 100px; padding: 10px 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.8); transition: all 0.3s ease; position: relative; }
+        header.scrolled .main-header { box-shadow: 0 15px 40px rgba(0,0,0,0.1); background: rgba(255, 255, 255, 0.95); }
+
+        .logo { font-size: 22px; font-weight: 900; color: #0f172a; display: flex; align-items: center; gap: 10px; letter-spacing: -0.03em; }
+        .logo svg { width: 28px; height: 28px; fill: #3b82f6; }
+
+        .nav-links { display: flex; gap: 4px; align-items: center; }
+        .nav-item { font-weight: 800; color: #0f172a; transition: all 0.3s ease; font-size: 13px; position: relative; padding: 10px 16px; border-radius: 100px; letter-spacing: 0.05em; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+        .nav-item::after { content: ''; position: absolute; bottom: 6px; left: 16px; right: 16px; height: 2px; background: linear-gradient(90deg, #3b82f6, #ec4899); border-radius: 2px; transform: scaleX(0); transition: transform 0.3s ease; transform-origin: center; }
+        .nav-item:hover { color: #3b82f6; background: rgba(59,130,246,0.05); }
+        .nav-item:hover::after { transform: scaleX(1); }
+        
+        .dropdown { position: relative; }
+        .dropdown-menu { position: absolute; top: calc(100% + 15px); left: 50%; transform: translateX(-50%) translateY(15px); background: #ffffff; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); padding: 12px; min-width: 220px; opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(226, 232, 240, 0.8); z-index: 100; }
+        .dropdown-menu::before { content: ''; position: absolute; top: -1px; left: 24px; right: 24px; height: 2px; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899); border-radius: 2px; }
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .dropdown-link { display: block; padding: 12px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; color: #475569; transition: all 0.2s ease; }
+        .dropdown-link:hover { background: rgba(248, 250, 252, 0.8); color: #3b82f6; transform: translateX(4px); }
+
+        .btn-login-header { background: linear-gradient(135deg, #3b82f6, #8b5cf6); background-size: 200% auto; color: white !important; padding: 12px 28px; border-radius: 100px; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3); border: none; display: inline-flex; align-items: center; gap: 8px; margin-left: 12px; }
+        .btn-login-header::after { display: none; }
+        .btn-login-header:hover { background-position: right center; transform: translateY(-2px); box-shadow: 0 12px 25px rgba(139, 92, 246, 0.4); color: white; }
+
+        .mobile-menu-toggle { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 10px; z-index: 1001; }
+        .mobile-menu-toggle span { display: block; width: 24px; height: 2px; background: #0f172a; transition: all 0.3s; border-radius: 2px; }
+        .mobile-nav-panel { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.4s ease; backdrop-filter: blur(20px); }
+        .mobile-nav-panel.active { opacity: 1; visibility: visible; }
+        .mobile-nav-inner { display: flex; flex-direction: column; gap: 24px; align-items: center; width: 100%; max-width: 300px; transform: translateY(30px); transition: transform 0.4s ease; }
+        .mobile-nav-panel.active .mobile-nav-inner { transform: translateY(0); }
+        
+        .trust-badge { position: absolute; bottom: -30px; right: 40px; background: white; padding: 6px 16px; border-radius: 100px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); font-size: 10px; font-weight: 800; color: #023047; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px; border: 1px solid #f1f5f9; z-index: -1; animation: slideDownBadge 1s forwards 0.5s; opacity: 0; pointer-events: none; }
+        @keyframes slideDownBadge { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        @media (max-width: 1024px) {
+            .nav-links { display: none; }
+            .mobile-menu-toggle { display: flex; }
+            .pre-header { display: none; }
+            .trust-badge { display: none; }
+            .main-header-wrapper { padding: 16px 20px; }
+            header.scrolled .main-header-wrapper { padding: 10px 20px; }
+        }
+
+        /* ================= Hero Section ================= */
+        .hero { padding: 180px 0 120px; background: var(--gradient-subtle); position: relative; overflow: hidden; min-height: 100vh; display: flex; align-items: center; }
+        .hero-bg-shape-1 { position: absolute; top: -20%; right: -10%; width: 60%; height: 120%; background: radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 60%); z-index: 0; pointer-events: none; animation: float 15s ease-in-out infinite; }
+        .hero-bg-shape-2 { position: absolute; bottom: -10%; left: -10%; width: 50%; height: 80%; background: radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 60%); z-index: 0; pointer-events: none; animation: float-slow 20s ease-in-out infinite reverse; }
+        
+        .hero-container { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
+        .hero-content { animation: scaleIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .hero-content h1 { font-size: 56px; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em; color: var(--dark); text-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .hero-content h1 span { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-content p { font-size: 18px; color: var(--gray-500); margin-bottom: 40px; max-width: 500px; line-height: 1.7; }
+        .hero-actions { display: flex; gap: 20px; }
+        
+        /* ================= Hero Animation Container ================= */
+        .hero-animation-container {
+            position: relative;
+            width: 100%;
+            height: 520px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .anim-char {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10;
+        }
+        .anim-char-buyer { left: 40px; top: 130px; }
+        .anim-char-seller { right: 40px; top: 230px; }
+
+        .char-avatar { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 24px; box-shadow: var(--shadow-md); }
+        .char-label { margin-top: 10px; font-weight: 700; font-size: 15px; color: var(--gray-500); }
+
+        .anim-scene {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: scale(0.95);
+        }
+
+        /* Scene States */
+        #heroAnim[data-scene="1"] .anim-scene-1,
+        #heroAnim[data-scene="2"] .anim-scene-2,
+        #heroAnim[data-scene="3"] .anim-scene-3,
+        #heroAnim[data-scene="4"] .anim-scene-4,
+        #heroAnim[data-scene="5"] .anim-scene-5,
+        #heroAnim[data-scene="6"] .anim-scene-6,
+        #heroAnim[data-scene="7"] .anim-scene-7,
+        #heroAnim[data-scene="8"] .anim-scene-8,
+        #heroAnim[data-scene="9"] .anim-scene-9 {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Character Positioning across scenes */
+        #heroAnim[data-scene="5"] .anim-char-buyer, #heroAnim[data-scene="6"] .anim-char-buyer,
+        #heroAnim[data-scene="7"] .anim-char-buyer, #heroAnim[data-scene="8"] .anim-char-buyer,
+        #heroAnim[data-scene="9"] .anim-char-buyer { left: 20px; }
+
+        #heroAnim[data-scene="5"] .anim-char-seller, #heroAnim[data-scene="6"] .anim-char-seller,
+        #heroAnim[data-scene="7"] .anim-char-seller, #heroAnim[data-scene="8"] .anim-char-seller,
+        #heroAnim[data-scene="9"] .anim-char-seller { right: 20px; }
+
+        /* Scene 1 Styles */
+        .anim-chat { background: white; padding: 14px 22px; border-radius: 20px; font-weight: 600; font-size: 15px; max-width: 220px; position: absolute; box-shadow: var(--shadow-md); border: 1px solid var(--gray-200); color: var(--dark); z-index: 10; }
+        .chat-left { left: 120px; top: 130px; border-bottom-left-radius: 4px; }
+        .chat-right { right: 120px; top: 250px; border-bottom-right-radius: 4px; background: var(--gradient-primary); color: white; border: none; }
+        .anim-deal-amount { position: absolute; bottom: 80px; background: rgba(37,99,235,0.05); color: var(--primary); font-weight: 800; padding: 12px 28px; border-radius: 100px; border: 1px solid rgba(37,99,235,0.15); box-shadow: var(--shadow-glow); }
+
+        /* Scene 2 Styles */
+        .anim-question { position: absolute; font-size: 48px; font-weight: 900; color: #F59E0B; animation: float 2.5s infinite; filter: drop-shadow(0 4px 6px rgba(245, 158, 11, 0.3)); z-index: 5; }
+        .anim-q-left { left: 140px; top: 60px; }
+        .anim-q-right { right: 140px; top: 150px; }
+        .anim-thought { position: absolute; background: white; border: 1px solid var(--gray-200); padding: 16px; border-radius: 20px; font-weight: 700; font-size: 14px; max-width: 200px; box-shadow: var(--shadow-lg); text-align: center; color: var(--dark); z-index: 10; }
+        .thought-sub { font-size: 12px; color: #EF4444; font-weight: 600; display: block; margin-top: 8px; background: rgba(239, 68, 68, 0.05); padding: 6px; border-radius: 8px; }
+        .anim-thought-left { left: 120px; top: 120px; border-bottom-left-radius: 4px; }
+        .anim-thought-right { right: 120px; top: 250px; border-bottom-right-radius: 4px; }
+
+        /* Scene 3 Styles */
+        .anim-risk-card { background: white; border: 2px dashed #EF4444; padding: 34px; border-radius: 24px; text-align: center; width: 280px; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.15); animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 20px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+        .risk-amount { font-size: 28px; font-weight: 800; color: var(--dark); margin-bottom: 12px; }
+        .risk-arrow { font-size: 15px; font-weight: 700; color: var(--gray-500); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .risk-arrow::before { content: '→'; color: #EF4444; }
+        .risk-arrow::after { content: '←'; color: #EF4444; }
+        .risk-warnings { display: flex; flex-direction: column; gap: 10px; }
+        .risk-badge { background: var(--gray-800); color: white; font-size: 12px; font-weight: 800; padding: 8px 14px; border-radius: 8px; letter-spacing: 1px; }
+        .risk-badge-red { background: #EF4444; }
+
+        /* Scene 4 Styles */
+        .anim-mp-layer { position: absolute; left: 50%; transform: translateX(-50%); top: 50px; display: flex; flex-direction: column; align-items: center; z-index: 5; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .anim-mp-layer.active-layer { top: 30px; transform: translateX(-50%) scale(0.85); }
+        .mp-logo { background: var(--dark); color: white; padding: 12px 28px; border-radius: 100px; font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-xl); border: 1px solid rgba(255,255,255,0.1); }
+        .mp-logo::before { content: ''; display: block; width: 18px; height: 18px; background: var(--primary); border-radius: 4px; }
+        .mp-msg { margin-top: 16px; background: rgba(37,99,235,0.1); color: var(--primary); padding: 8px 20px; border-radius: 100px; font-weight: 700; font-size: 14px; }
+
+        .anim-structured-deal { margin-top: 120px; background: white; border: 1px solid var(--gray-200); padding: 28px; border-radius: 24px; width: 280px; box-shadow: var(--shadow-xl); }
+        .sd-title { font-weight: 800; font-size: 18px; margin-bottom: 18px; color: var(--dark); border-bottom: 1px solid var(--gray-100); padding-bottom: 14px; }
+        .sd-row { display: flex; justify-content: space-between; font-size: 15px; color: var(--gray-500); font-weight: 500; margin-bottom: 10px; }
+        .sd-row span { font-weight: 700; color: var(--dark); }
+        .sd-status { margin-top: 20px; background: rgba(16,185,129,0.1); color: #10B981; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 14px; text-align: center; }
+
+        /* Scene 5 Styles */
+        .anim-payment-flow { margin-top: 90px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        .flow-step { background: white; border: 1px solid var(--gray-200); padding: 14px 28px; border-radius: 14px; font-weight: 700; font-size: 15px; box-shadow: var(--shadow-md); width: 220px; text-align: center; color: var(--dark); }
+        .flow-buyer { border-left: 5px solid var(--primary); }
+        .flow-mp { background: var(--dark); color: white; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; }
+        .flow-status { border-left: 5px solid #10B981; background: rgba(16,185,129,0.05); }
+        .flow-arrow { font-weight: 900; color: var(--gray-300); }
+
+        /* Scene 6 Styles */
+        .anim-seller-working { position: absolute; right: 70px; top: 160px; background: var(--gray-800); color: white; padding: 14px 24px; border-radius: 100px; font-weight: 700; font-size: 15px; box-shadow: var(--shadow-lg); border-bottom-right-radius: 4px; z-index: 10; }
+        .anim-progress-card { margin-top: 90px; background: white; border: 1px solid var(--gray-200); padding: 28px; border-radius: 24px; width: 300px; box-shadow: var(--shadow-xl); display: flex; flex-direction: column; gap: 20px; }
+        .prog-step { display: flex; align-items: center; font-size: 15px; font-weight: 600; color: var(--gray-500); }
+        .prog-step::before { content: ''; display: block; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--gray-300); margin-right: 14px; }
+        .prog-step.done { color: var(--dark); }
+        .prog-step.done::before { background: var(--primary); border-color: var(--primary); }
+        .prog-step.active { color: var(--primary); }
+        .prog-step.active::before { border-color: var(--primary); border-width: 5px; }
+        .loader-dots { animation: pulse-dots 1.5s infinite; }
+
+        /* Scene 8 Styles */
+        .anim-review-card { position: absolute; left: 120px; top: 100px; background: white; border: 1px solid var(--primary); padding: 24px; border-radius: 20px; box-shadow: var(--shadow-xl); width: 220px; text-align: center; z-index: 10; }
+        .rev-status { font-weight: 800; color: var(--dark); margin-bottom: 12px; font-size: 15px; }
+        .rev-action { font-size: 14px; font-weight: 600; color: var(--primary); background: rgba(37,99,235,0.1); padding: 8px; border-radius: 8px; }
+
+        /* Scene 8 Styles */
+        .anim-success-card { margin-top: 70px; background: var(--gradient-primary); padding: 40px; border-radius: 24px; color: white; text-align: center; box-shadow: var(--shadow-primary); }
+        .success-icon { width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; margin: 0 auto 20px; }
+        .success-title { font-size: 24px; font-weight: 800; }
+        .anim-protected { position: absolute; background: rgba(16,185,129,0.1); color: #10B981; font-weight: 800; font-size: 13px; padding: 8px 16px; border-radius: 100px; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(16,185,129,0.3); }
+        .anim-protected::before { content: '✓'; }
+        .p-buyer { left: 10px; top: 240px; }
+        .p-seller { right: 10px; top: 340px; }
+
+        /* Pagination Dots */
+        .hero-pagination { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 20; }
+        .hero-pagination .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-300); cursor: pointer; transition: var(--transition); }
+        .hero-pagination .dot.active { width: 24px; border-radius: 4px; background: var(--primary); }
+
+        /* ================= Social Media Hook ================= */
+        .social-deal-section { background: var(--gradient-dark); padding: 100px 0; color: white; overflow: hidden; position: relative; }
+        .social-deal-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(139,92,246,0.15) 0%, transparent 60%); pointer-events: none; }
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
+        .social-content h2 { font-size: 48px; margin-bottom: 24px; line-height: 1.1; font-weight: 900; color: white; }
+        .social-content p { font-size: 18px; color: var(--gray-300); margin-bottom: 40px; line-height: 1.8; max-width: 500px; }
+        .social-content .badge { background: rgba(139,92,246,0.2); color: #c4b5fd; border-color: rgba(139,92,246,0.3); }
+        .social-visual { position: relative; height: 480px; display: flex; align-items: center; justify-content: center; }
+        .sv-card { position: absolute; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 24px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); width: 260px; animation: floatCard 6s infinite ease-in-out; }
+        .sv-card-fb { top: 0; left: 0; animation-delay: 0s; border-top: 4px solid #1877F2; }
+        .sv-card-li { bottom: 0; right: 0; animation-delay: 3s; border-top: 4px solid #0A66C2; }
+        .sv-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .sv-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--gray-800); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .sv-avatar svg { width: 24px; height: 24px; color: white; }
+        .sv-info h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: white; }
+        .sv-info p { font-size: 12px; color: var(--gray-400); margin: 0; }
+        .sv-msg { background: rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 12px; font-size: 14px; color: var(--gray-200); line-height: 1.5; font-style: italic; }
+        .sv-connector { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 10; }
+        .sv-mp-logo { width: 80px; height: 80px; border-radius: 24px; background: var(--white); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(37,99,235,0.4); z-index: 2; position: relative; }
+        .sv-mp-logo svg { width: 40px; height: 40px; }
+        .sv-line { width: 2px; height: 80px; background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.1) 100%); animation: pulse-line 2s infinite; }
+        @keyframes pulse-line { 0% { opacity: 0.3; transform: scaleY(0.8); } 50% { opacity: 1; transform: scaleY(1); } 100% { opacity: 0.3; transform: scaleY(0.8); } }
+
+        @media (max-width: 992px) {
+            .social-grid { grid-template-columns: 1fr; gap: 40px; }
+            .social-visual { height: 400px; transform: scale(0.9); }
+            .sv-card-fb { left: 10%; }
+            .sv-card-li { right: 10%; }
+        }
+        @media (max-width: 768px) {
+            .social-visual { transform: scale(0.8); height: 350px; }
+            .sv-card-fb { left: 0; }
+            .sv-card-li { right: 0; }
+        }
+        .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .problem-content h2 { font-size: 44px; margin-bottom: 24px; line-height: 1.1; }
+        .problem-content p { font-size: 18px; color: var(--gray-500); margin-bottom: 40px; line-height: 1.8; }
+        .problem-list { display: flex; flex-direction: column; gap: 20px; }
+        .problem-item { display: flex; gap: 20px; align-items: flex-start; background: var(--white); padding: 20px; border-radius: 16px; border: 1px solid var(--gray-200); transition: var(--transition); }
+        .problem-item:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: rgba(239, 68, 68, 0.3); }
+        .problem-icon { width: 32px; height: 32px; background: rgba(239, 68, 68, 0.1); color: #EF4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .problem-item p { font-size: 16px; color: var(--dark); margin: 0; font-weight: 500; }
+        
+        .solution-box { background: var(--gradient-dark); padding: 50px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: var(--shadow-xl); }
+        .solution-box::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 200%; background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 60%); pointer-events: none; }
+        .solution-icon { width: 64px; height: 64px; background: rgba(255,255,255,0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; color: var(--primary); backdrop-filter: blur(10px); }
+        .solution-box h3 { color: var(--white); margin-bottom: 20px; font-size: 32px; position: relative; z-index: 1; }
+        .solution-box p { color: var(--gray-300); font-size: 18px; margin-bottom: 40px; line-height: 1.8; position: relative; z-index: 1; }
+        .solution-box .btn { width: 100%; position: relative; z-index: 1; }
+
+        /* ================= Why MigratePay ================= */
+        .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; perspective: 1000px; }
+        .benefit-card { padding: 40px; background: var(--white); border-radius: 24px; border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); transition: var(--transition-bounce); position: relative; z-index: 1; overflow: hidden; }
+        .benefit-card::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gradient-primary); transform: scaleX(0); transition: transform 0.4s ease; transform-origin: left; }
+        .benefit-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: transparent; }
+        .benefit-card:hover::after { transform: scaleX(1); }
+        .benefit-icon { width: 70px; height: 70px; border-radius: 20px; background: rgba(37, 99, 235, 0.05); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 30px; transition: var(--transition-bounce); }
+        .benefit-card:hover .benefit-icon { background: var(--primary); color: var(--white); transform: scale(1.1) rotate(5deg); box-shadow: var(--shadow-primary); }
+        .benefit-card h3 { font-size: 22px; margin-bottom: 16px; }
+        .benefit-card p { color: var(--gray-500); font-size: 16px; line-height: 1.7; }
+
+        /* ================= How It Works ================= */
+        /* ================= Process Slider ================= */
+        .process-slider-section { position: relative; padding: 100px 0; overflow: hidden; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 50%, #e0e7ff 100%); }
+        .process-slider-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 80% 20%, rgba(34,211,238,0.1), transparent 40%), radial-gradient(circle at 20% 80%, rgba(99,102,241,0.05), transparent 40%); pointer-events: none; }
+        .process-slider-container { position: relative; max-width: 1200px; margin: 60px auto 0; z-index: 2; }
+        
+        .process-connector { position: absolute; top: 24px; left: 10%; right: 10%; height: 4px; background: rgba(203, 213, 225, 0.4); border-radius: 4px; z-index: 1; }
+        .process-connector-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--gradient-primary); border-radius: 4px; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 10px rgba(37,99,235,0.4); }
+        
+        .process-slider-track { display: flex; gap: 20px; position: relative; z-index: 2; align-items: stretch; }
+        
+        .process-card { flex: 1; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); border-radius: 20px; padding: 30px 24px; border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 4px 15px rgba(0,0,0,0.02); opacity: 0.6; transform: translateY(0); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; text-align: center; position: relative; display: flex; flex-direction: column; align-items: center; }
+        
+        .process-card.active { opacity: 1; transform: translateY(-8px); background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%); border-color: rgba(37,99,235,0.3); box-shadow: 0 20px 40px rgba(37,99,235,0.12), inset 0 2px 0 rgba(37,99,235,0.5); z-index: 10; }
+        
+        .process-step-num { width: 48px; height: 48px; background: #f1f5f9; color: var(--gray-400); font-size: 18px; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; z-index: 2; flex-shrink: 0; }
+        .process-card.active .process-step-num { background: var(--gradient-primary); color: white; transform: scale(1.15); box-shadow: 0 0 20px rgba(37,99,235,0.4); border-color: white; }
+        
+        .process-card h3 { font-size: 18px; font-weight: 800; color: var(--gray-500); margin-bottom: 12px; transition: all 0.4s; line-height: 1.3; }
+        .process-card.active h3 { color: var(--dark); }
+        
+        .process-card p { font-size: 14px; color: var(--gray-400); line-height: 1.6; transition: all 0.4s; margin: 0; }
+        .process-card.active p { color: var(--gray-600); }
+        
+        @media (max-width: 1024px) {
+            .process-slider-track { overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 30px; margin: 0 -20px; padding-left: 20px; padding-right: 20px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+            .process-slider-track::-webkit-scrollbar { display: none; }
+            .process-card { flex: 0 0 280px; scroll-snap-align: center; }
+            .process-connector { display: none; }
+        }
+        @media (prefers-reduced-motion) {
+            .process-slider-section::before { display: none; }
+            .process-card, .process-step-num, .process-connector-fill { transition: none !important; transform: none !important; }
+        }
+
+
+        /* ================= Use Cases ================= */
+        .usecases-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .usecase-card { padding: 40px 24px; text-align: center; background: var(--white); border-radius: 24px; border: 1px solid var(--gray-200); transition: var(--transition-bounce); }
+        .usecase-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+        .usecase-icon { width: 70px; height: 70px; margin: 0 auto 24px; background: var(--gray-100); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 32px; transition: var(--transition); }
+        .usecase-card:hover .usecase-icon { background: var(--primary); color: var(--white); transform: scale(1.1); box-shadow: var(--shadow-primary); }
+        .usecase-card h4 { font-size: 18px; }
+
+        /* ================= What If Something Goes Wrong ================= */
+        .dispute-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .dispute-img { border-radius: 30px; overflow: hidden; box-shadow: var(--shadow-xl); border: 1px solid var(--gray-200); position: relative; background: var(--white); }
+        .dispute-list { margin-top: 40px; display: flex; flex-direction: column; gap: 30px; }
+        .dispute-item { display: flex; gap: 24px; background: var(--white); padding: 24px; border-radius: 20px; border: 1px solid var(--gray-200); transition: var(--transition); }
+        .dispute-item:hover { box-shadow: var(--shadow-md); transform: translateX(10px); border-color: rgba(37,99,235,0.2); }
+        .dispute-icon { width: 60px; height: 60px; border-radius: 16px; background: rgba(37,99,235,0.08); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 24px; }
+        .dispute-text h4 { font-size: 20px; margin-bottom: 10px; }
+        .dispute-text p { color: var(--gray-500); font-size: 16px; margin: 0; line-height: 1.7; }
+        
+        .mock-ui { padding: 40px; background: var(--gray-100); }
+        .mock-card { background: white; padding: 24px; border-radius: 16px; box-shadow: var(--shadow-sm); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition); border: 1px solid var(--gray-200); }
+        .mock-card:hover { transform: scale(1.02); box-shadow: var(--shadow-md); }
+
+        /* ================= Testimonials ================= */
+        .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .testimonial-card { background: var(--white); padding: 40px; border-radius: 24px; border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); transition: var(--transition); position: relative; overflow: hidden; }
+        .testimonial-card::before { content: '"'; position: absolute; top: 10px; right: 20px; font-size: 120px; font-family: serif; color: var(--gray-100); z-index: 0; line-height: 1; opacity: 0.5; }
+        .testimonial-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); }
+        .stars { color: #F59E0B; margin-bottom: 24px; display: flex; gap: 4px; position: relative; z-index: 1; }
+        .testimonial-text { font-size: 16px; color: var(--dark); font-weight: 500; margin-bottom: 30px; line-height: 1.8; position: relative; z-index: 1; }
+        .testimonial-author { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; }
+        .author-avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--white); font-size: 20px; box-shadow: var(--shadow-sm); }
+        .author-info h4 { font-size: 18px; margin-bottom: 4px; }
+        .author-info p { font-size: 14px; color: var(--gray-500); margin: 0; font-weight: 500; }
+
+        /* ================= FAQ ================= */
+        .faq-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; align-items: start; }
+        @media (max-width: 768px) { .faq-container { grid-template-columns: 1fr; } }
+        .faq-item { border-radius: 20px; background: var(--white); overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.03); position: relative; z-index: 1; }
+        .faq-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--gradient-primary); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0; }
+        .faq-item:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.06); transform: translateY(-2px); }
+        .faq-item.is-open { box-shadow: 0 20px 40px rgba(37,99,235,0.12); border-color: rgba(37,99,235,0.2); transform: scale(1.02); z-index: 10; }
+        .faq-item.is-open::before { width: 6px; }
+        
+        .faq-question { padding: 28px 32px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 800; font-size: 19px; color: var(--dark); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1; }
+        .faq-item.is-open .faq-question { color: var(--primary); padding-left: 40px; }
+        
+        .faq-question svg { transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); color: var(--gray-400); background: var(--gray-100); border-radius: 50%; padding: 6px; width: 36px; height: 36px; flex-shrink: 0; margin-left: 20px; }
+        .faq-item:hover .faq-question svg { color: var(--primary); background: rgba(37,99,235,0.1); }
+        .faq-item.is-open .faq-question svg { transform: rotate(180deg); background: var(--primary); color: var(--white); box-shadow: 0 5px 15px rgba(37,99,235,0.4); }
+        
+        .faq-answer { padding: 0 32px; max-height: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); color: var(--gray-500); font-size: 16px; line-height: 1.8; position: relative; z-index: 1; opacity: 0; transform: translateY(-10px); }
+        .faq-item.is-open .faq-answer { padding: 0 40px 32px; max-height: 500px; opacity: 1; transform: translateY(0); }
+
+        /* ================= CTA Section ================= */
+        .cta-section { background: var(--gradient-primary); padding: 80px 0; text-align: center; position: relative; overflow: hidden; }
+        .cta-bg-shape { position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events: none; }
+        .cta-container { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .cta-section h2 { color: var(--white); font-size: 52px; margin-bottom: 24px; }
+        .cta-section p { color: rgba(255,255,255,0.9); font-size: 22px; margin-bottom: 40px; line-height: 1.6; }
+        .cta-actions { display: flex; gap: 20px; justify-content: center; }
+        
+        /* ================= Footer ================= */
+        footer { background: var(--dark); color: var(--gray-300); padding: 100px 0 40px; position: relative; overflow: hidden; }
+        footer::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gradient-primary); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 80px; margin-bottom: 80px; position: relative; z-index: 1; }
+        .footer-brand .logo { color: var(--white); margin-bottom: 24px; font-size: 28px; }
+        .footer-brand p { font-size: 16px; margin-bottom: 30px; max-width: 350px; line-height: 1.8; }
+        .footer-heading { color: var(--white); font-size: 20px; margin-bottom: 30px; font-weight: 700; }
+        .footer-links { display: flex; flex-direction: column; gap: 16px; }
+        .footer-links a { color: var(--gray-300); font-size: 16px; transition: var(--transition); display: inline-flex; width: fit-content; }
+        .footer-links a:hover { color: var(--primary); transform: translateX(5px); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; display: flex; justify-content: space-between; align-items: center; font-size: 15px; position: relative; z-index: 1; }
+        
+        .social-icons { display: flex; gap: 16px; }
+        .social-icons a { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: var(--white); transition: var(--transition-bounce); }
+        .social-icons a:hover { background: var(--primary); transform: translateY(-5px); box-shadow: var(--shadow-primary); }
+
+        /* ================= The Comparison Matrix ================= */
+        .comparison-section {
+            background: linear-gradient(180deg, var(--gray-100) 0%, #FFFFFF 100%);
+            position: relative;
+        }
+        .comparison-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.15fr;
+            gap: 24px;
+            align-items: stretch;
+            margin-top: 50px;
+        }
+        .compare-col {
+            background: var(--white);
+            border-radius: 24px;
+            border: 1px solid var(--gray-200);
+            padding: 36px 28px;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+        .compare-col:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        .compare-col.danger-col {
+            background: linear-gradient(180deg, #FFF5F5 0%, #FFFFFF 100%);
+            border-color: #FED7D7;
+        }
+        .compare-col.warning-col {
+            background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+            border-color: var(--gray-300);
+        }
+        .compare-col.featured-col {
+            background: linear-gradient(180deg, #EFF6FF 0%, #FFFFFF 100%);
+            border: 2px solid var(--primary);
+            box-shadow: 0 20px 40px -10px rgba(37,99,235,0.22);
+            transform: scale(1.03);
+            z-index: 2;
+        }
+        .compare-col.featured-col:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 25px 50px -10px rgba(37,99,235,0.32);
+        }
+        .compare-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 6px 12px;
+            border-radius: 100px;
+            width: fit-content;
+            margin-bottom: 16px;
+        }
+        .pill-danger { background: rgba(239, 68, 68, 0.12); color: #DC2626; }
+        .pill-warning { background: rgba(245, 158, 11, 0.15); color: #D97706; }
+        .pill-featured { background: var(--gradient-primary); color: #FFFFFF; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        
+        .compare-col h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        .compare-subtitle {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 24px;
+            min-height: 42px;
+            line-height: 1.5;
+        }
+        .compare-fee-tag {
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .featured-col .compare-fee-tag {
+            background: rgba(37,99,235,0.08);
+            color: var(--primary);
+        }
+        .compare-features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+        .compare-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--gray-800);
+        }
+        .compare-icon-bad {
+            color: #EF4444;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .compare-icon-mid {
+            color: #F59E0B;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .compare-icon-good {
+            color: #10B981;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* ================= The 3 Guarantees ================= */
+        .guarantees-section {
+            background: var(--dark);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            padding: 100px 0;
+        }
+        .guarantees-section::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .guarantees-section .section-title {
+            color: var(--white);
+        }
+        .guarantees-section .section-subtitle {
+            color: var(--gray-300);
+        }
+        .guarantees-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            position: relative;
+            z-index: 2;
+        }
+        .guarantee-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 38px 32px;
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .guarantee-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .guarantee-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(37, 99, 235, 0.5);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .guarantee-card:hover::before {
+            opacity: 1;
+        }
+        .guarantee-icon-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: rgba(37, 99, 235, 0.15);
+            color: #60A5FA;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            transition: var(--transition);
+        }
+        .guarantee-card:hover .guarantee-icon-box {
+            transform: scale(1.1);
+            background: var(--primary);
+            color: #FFFFFF;
+            box-shadow: 0 0 25px rgba(37, 99, 235, 0.6);
+        }
+        .guarantee-card h3 {
+            color: var(--white);
+            font-size: 22px;
+            margin-bottom: 14px;
+        }
+        .guarantee-card p {
+            color: var(--gray-300);
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+        .guarantee-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #10B981;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 6px 14px;
+            border-radius: 100px;
+            width: fit-content;
+        }
+
+        /* ================= Interactive Calculator ================= */
+        .calculator-section {
+            background: var(--white);
+            position: relative;
+        }
+        .calc-home-wrapper {
+            max-width: 1050px;
+            margin: 0 auto;
+            background: var(--gray-100);
+            border-radius: 28px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            align-items: stretch;
+        }
+        .calc-home-controls {
+            padding: 36px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .calc-input-label {
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .calc-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .calc-input-prefix {
+            position: absolute;
+            left: 20px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+        .calc-amount-input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            font-size: 24px;
+            font-weight: 800;
+            font-family: var(--font-heading);
+            color: var(--dark);
+            background: var(--white);
+            border: 2px solid var(--gray-300);
+            border-radius: 16px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .calc-amount-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+        }
+        .calc-presets-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .calc-preset-chip {
+            padding: 7px 14px;
+            background: var(--white);
+            border: 1px solid var(--gray-300);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .calc-preset-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .calc-preset-chip.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(37,99,235,0.3);
+        }
+        .calc-payer-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            background: var(--white);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid var(--gray-200);
+        }
+        .calc-payer-btn {
+            padding: 10px 8px;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--gray-500);
+            transition: var(--transition);
+        }
+        .calc-payer-btn.active {
+            background: var(--gradient-primary);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+        }
+
+        /* Fee Schedule Box (Fills empty space) */
+        .calc-schedule-box {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+        .calc-schedule-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .calc-schedule-sub {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        .calc-schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .calc-tier-card {
+            background: var(--gray-100);
+            border: 1.5px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 10px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .calc-tier-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .calc-tier-card.active {
+            background: rgba(37, 99, 235, 0.08);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+        .tier-range {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-500);
+            margin-bottom: 2px;
+        }
+        .calc-tier-card.active .tier-range {
+            color: var(--primary);
+        }
+        .tier-pct {
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--dark);
+            font-family: var(--font-heading);
+        }
+        .calc-tier-card.active .tier-pct {
+            color: var(--primary);
+        }
+        .tier-best {
+            color: #10B981;
+        }
+        .calc-extra-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--gray-500);
+            padding-top: 2px;
+        }
+        .calc-extra-info svg {
+            color: #10B981;
+            flex-shrink: 0;
+        }
+
+        .calc-home-result {
+            background: var(--gradient-dark);
+            color: var(--white);
+            padding: 36px 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        .calc-home-result::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -40%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .calc-res-header {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #93C5FD;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .calc-res-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+        .calc-res-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            color: var(--gray-300);
+        }
+        .calc-res-row span:last-child {
+            font-weight: 700;
+            color: var(--white);
+        }
+        .calc-res-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.12);
+            margin: 4px 0;
+        }
+        .calc-highlight-box {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .calc-highlight-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .calc-highlight-item .label {
+            font-size: 13px;
+            color: var(--gray-300);
+            font-weight: 600;
+        }
+        .calc-highlight-item .val {
+            font-size: 22px;
+            font-weight: 900;
+            color: #10B981;
+            font-family: var(--font-heading);
+        }
+        .calc-highlight-item.buyer-val .val {
+            color: #60A5FA;
+        }
+        .calc-guarantee-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--gray-300);
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .calc-guarantee-note svg {
+            color: #10B981;
+            flex-shrink: 0;
+        }
+
+        /* ================= Security Credentials Strip ================= */
+        .security-strip-section {
+            background: var(--dark);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 40px 0;
+        }
+        .security-strip-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        .security-strip-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .security-strip-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(37,99,235,0.12);
+            color: #60A5FA;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(37,99,235,0.25);
+        }
+        .security-strip-text h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 2px;
+        }
+        .security-strip-text p {
+            font-size: 12px;
+            color: var(--gray-400);
+            margin: 0;
+        }
+
+        /* ================= Responsive ================= */
+        @media (max-width: 1200px) {
+            .hero-content h1 { font-size: 52px; }
+            .problem-content h2, .cta-section h2 { font-size: 40px; }
+            .dispute-grid { gap: 40px; }
+            .footer-grid { gap: 40px; }
+            .hero-container { grid-template-columns: 1fr 1fr; gap: 40px; }
+        }
+
+        @media (max-width: 1024px) {
+            .hero-container, .problem-grid, .comparison-container, .dispute-grid { grid-template-columns: 1fr; }
+            .benefits-grid, .usecases-grid, .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+            .comparison-cards-grid { grid-template-columns: 1fr; gap: 30px; }
+            .compare-col.featured-col { transform: none; }
+            .compare-col.featured-col:hover { transform: translateY(-5px); }
+            .guarantees-grid { grid-template-columns: 1fr; }
+            .calc-home-wrapper { grid-template-columns: 1fr; }
+            .security-strip-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+            .hero { padding-top: 150px; text-align: center; }
+            .hero-content p { margin: 0 auto 40px; }
+            .hero-actions { justify-content: center; }
+            .hero-animation-container { height: 450px; margin-top: 40px; transform: scale(0.9); transform-origin: top center; }
+            .anim-char-buyer { left: 10px; }
+            .anim-char-seller { right: 10px; }
+            .chat-left { left: 60px; }
+            .chat-right { right: 60px; }
+            .anim-q-left { left: 70px; }
+            .anim-q-right { right: 70px; }
+            .anim-thought-left { left: 40px; }
+            .anim-thought-right { right: 40px; }
+            .anim-review-card { left: 40px; }
+            .anim-seller-working { right: 40px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .problem-content { text-align: center; }
+            .problem-item { text-align: left; }
+        }
+        /* ================= Our Partners Section ================= */
+        .partners-section {
+            padding: 100px 0;
+            position: relative;
+            background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 50%, #cffafe 100%);
+            overflow: hidden;
+            z-index: 1;
+        }
+        .partners-bg-orbs {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1;
+            overflow: hidden;
+        }
+        .partners-bg-orbs::before, .partners-bg-orbs::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        .partners-bg-orbs::before {
+            background: rgba(167, 139, 250, 0.4);
+            top: -200px; left: -100px;
+        }
+        .partners-bg-orbs::after {
+            background: rgba(56, 189, 248, 0.4);
+            bottom: -200px; right: -100px;
+            animation-delay: -10s;
+        }
+        .partners-header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 2;
+        }
+        .partners-eyebrow {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+            padding: 6px 16px;
+            border-radius: 100px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+        .partners-header h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        .partners-header p {
+            font-size: 18px;
+            color: var(--gray-500);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .partners-marquee-container {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow: hidden;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            padding: 20px 0;
+            z-index: 2;
+        }
+        .partners-marquee {
+            display: flex;
+            gap: 30px;
+            width: max-content;
+            animation: marqueeScroll 40s linear infinite;
+        }
+        .partners-marquee:hover {
+            animation-play-state: paused;
+        }
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-50% - 15px)); }
+        }
+        
+        .partner-card {
+            width: 260px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            flex-shrink: 0;
+            padding: 20px;
+        }
+        .partner-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(37,99,235,0.08);
+            border-color: rgba(37,99,235,0.2);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .partner-placeholder {
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--gray-400);
+            font-family: var(--font-heading);
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+        .partner-card:hover .partner-placeholder {
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .partners-section { padding: 60px 0; }
+            .partners-header h2 { font-size: 32px; }
+            .partner-card { width: 200px; height: 100px; }
+            .partner-placeholder { font-size: 16px; }
+        }
+        @media (max-width: 480px) {
+            .partners-header h2 { font-size: 28px; }
+            .partner-card { width: 160px; height: 80px; }
+            .partner-placeholder { font-size: 14px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .partners-marquee { animation-duration: 120s; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu, .header-actions { display: none; }
+            .mobile-menu-btn { display: block; }
+            .benefits-grid, .usecases-grid, .testimonials-grid, .footer-grid { grid-template-columns: 1fr; }
+            .calc-home-controls, .calc-home-result { padding: 28px 20px; }
+            .calc-payer-tabs { grid-template-columns: 1fr; }
+            .security-strip-grid { grid-template-columns: 1fr; gap: 20px; }
+            .section { padding: 50px 0; }
+            .section-header { margin-bottom: 40px; }
+            .cta-section { padding: 60px 0; }
+            .hero-content h1 { font-size: 36px; line-height: 1.15; }
+            .section-title { font-size: 28px; line-height: 1.25; }
+            .problem-content h2 { font-size: 32px; line-height: 1.2; }
+            .solution-box h3 { font-size: 26px; }
+            .cta-content h2 { font-size: 32px; line-height: 1.25; }
+            .compare-card h2 { font-size: 32px; }
+            .benefit-card h3 { font-size: 20px; }
+            
+            .cta-actions { flex-direction: column; }
+            .hero-animation-container { transform: scale(0.75); margin-top: 20px; margin-bottom: -100px; border: none; box-shadow: none; background: transparent; }
+            @media (prefers-reduced-motion) {
+                .hero-animation-container { display: none; }
+            }
+            /* Process slider mobile */
+            .process-slider-section { padding: 60px 0; }
+            .process-slider-container { margin-top: 40px; }
+            .compare-card { padding: 40px 30px; }
+            .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+        }
+
+        /* --- Micro Mobile Adjustments (< 480px) --- */
+        @media (max-width: 480px) {
+            .hero-content h1 { font-size: 30px; line-height: 1.2; word-break: break-word; }
+            .section-title { font-size: 24px; line-height: 1.3; word-break: break-word; }
+            .problem-content h2 { font-size: 26px; line-height: 1.25; word-break: break-word; }
+            .solution-box h3 { font-size: 22px; word-break: break-word; }
+            .cta-content h2 { font-size: 26px; line-height: 1.3; }
+            .compare-card h2 { font-size: 26px; line-height: 1.25; }
+            .section { padding: 40px 0; }
+            .container { padding: 0 16px; }
+            .process-step-num { width: 36px; height: 36px; font-size: 14px; margin-bottom: 16px; }
+            .process-card h3 { font-size: 16px; }
+            .btn { padding: 12px 24px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PHP Banner Logic (Preserved) -->
+    @if(isset($activeBanner) && $activeBanner)
+    @php
+        $design = is_array($activeBanner->design) ? $activeBanner->design : json_decode($activeBanner->design, true) ?? [];
+        $elements = is_array($activeBanner->elements) ? $activeBanner->elements : json_decode($activeBanner->elements, true) ?? [];
+        $bgColor = $design['bg_color'] ?? '#0f172a';
+        $textColor = $design['text_color'] ?? '#ffffff';
+    @endphp
+    <div id="marketing-banner" style="background-color: {{ $bgColor }}; color: {{ $textColor }}; display: flex; align-items: center; justify-content: center; gap: 24px; padding: 12px 24px; position: relative; transition: all 0.3s ease; flex-wrap: wrap; z-index: 2000;">
+        @foreach($elements as $element)
+            @if($element['type'] === 'heading')
+                <strong style="font-size: {{ $element['fontSize'] ?? 16 }}px; font-weight: {{ $element['fontWeight'] ?? 800 }}; letter-spacing: 0.05em; text-transform: uppercase;">{{ $element['content'] }}</strong>
+            @elseif($element['type'] === 'description')
+                <span style="font-size: {{ $element['fontSize'] ?? 14 }}px; font-weight: 500;">{{ $element['content'] }}</span>
+            @elseif($element['type'] === 'button')
+                <a href="{{ $element['link'] ?? '#' }}" style="background: {{ $textColor }}; color: {{ $bgColor }}; padding: 6px 20px; border-radius: 100px; font-weight: 800; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                    {{ str_replace('→', '', $element['content']) }}
+                    @if(str_contains($element['content'], '→') || str_contains($element['content'], '➔'))
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    @endif
+                </a>
             @endif
-        </header>
-        <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
-            <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
-                <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
-                    <h1 class="mb-1 font-medium">Let's get started</h1>
-                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">Laravel has an incredibly rich ecosystem. <br>We suggest starting with the following.</p>
-                    <ul class="flex flex-col mb-4 lg:mb-6">
-                        <li class="flex items-center gap-4 py-2 relative before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A] before:top-1/2 before:bottom-0 before:left-[0.4rem] before:absolute">
-                            <span class="relative py-1 bg-white dark:bg-[#161615]">
-                                <span class="flex items-center justify-center rounded-full bg-[#FDFDFC] dark:bg-[#161615] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.03),0px_1px_2px_0px_rgba(0,0,0,0.06)] w-3.5 h-3.5 border dark:border-[#3E3E3A] border-[#e3e3e0]">
-                                    <span class="rounded-full bg-[#dbdbd7] dark:bg-[#3E3E3A] w-1.5 h-1.5"></span>
-                                </span>
-                            </span>
-                            <span>
-                                Read the
-                                <a href="https://laravel.com/docs" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
-                                    <span>Documentation</span>
-                                    <svg
-                                        width="10"
-                                        height="11"
-                                        viewBox="0 0 10 11"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="w-2.5 h-2.5"
-                                    >
-                                        <path
-                                            d="M7.70833 6.95834V2.79167H3.54167M2.5 8L7.5 3.00001"
-                                            stroke="currentColor"
-                                            stroke-linecap="square"
-                                        />
-                                    </svg>
-                                </a>
-                            </span>
-                        </li>
-                        <li class="flex items-center gap-4 py-2 relative before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A] before:bottom-1/2 before:top-0 before:left-[0.4rem] before:absolute">
-                            <span class="relative py-1 bg-white dark:bg-[#161615]">
-                                <span class="flex items-center justify-center rounded-full bg-[#FDFDFC] dark:bg-[#161615] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.03),0px_1px_2px_0px_rgba(0,0,0,0.06)] w-3.5 h-3.5 border dark:border-[#3E3E3A] border-[#e3e3e0]">
-                                    <span class="rounded-full bg-[#dbdbd7] dark:bg-[#3E3E3A] w-1.5 h-1.5"></span>
-                                </span>
-                            </span>
-                            <span>
-                                Watch video tutorials at
-                                <a href="https://laracasts.com" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
-                                    <span>Laracasts</span>
-                                    <svg
-                                        width="10"
-                                        height="11"
-                                        viewBox="0 0 10 11"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="w-2.5 h-2.5"
-                                    >
-                                        <path
-                                            d="M7.70833 6.95834V2.79167H3.54167M2.5 8L7.5 3.00001"
-                                            stroke="currentColor"
-                                            stroke-linecap="square"
-                                        />
-                                    </svg>
-                                </a>
-                            </span>
-                        </li>
-                    </ul>
-                    <ul class="flex gap-3 text-sm leading-normal">
-                        <li>
-                            <a href="https://cloud.laravel.com" target="_blank" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">
-                                Deploy now
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bg-[#fff2f2] dark:bg-[#1D0002] relative lg:-ml-px -mb-px lg:mb-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg aspect-[335/376] lg:aspect-auto w-full lg:w-[438px] shrink-0 overflow-hidden">
-                    {{-- Laravel Logo --}}
-                    <svg class="w-full text-[#F53003] dark:text-[#F61500] transition-all translate-y-0 opacity-100 max-w-none duration-750 starting:opacity-0 starting:translate-y-6" viewBox="0 0 438 104" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.2036 -3H0V102.197H49.5189V86.7187H17.2036V-3Z" fill="currentColor" />
-                        <path d="M110.256 41.6337C108.061 38.1275 104.945 35.3731 100.905 33.3681C96.8667 31.3647 92.8016 30.3618 88.7131 30.3618C83.4247 30.3618 78.5885 31.3389 74.201 33.2923C69.8111 35.2456 66.0474 37.928 62.9059 41.3333C59.7643 44.7401 57.3198 48.6726 55.5754 53.1293C53.8287 57.589 52.9572 62.274 52.9572 67.1813C52.9572 72.1925 53.8287 76.8995 55.5754 81.3069C57.3191 85.7173 59.7636 89.6241 62.9059 93.0293C66.0474 96.4361 69.8119 99.1155 74.201 101.069C78.5885 103.022 83.4247 103.999 88.7131 103.999C92.8016 103.999 96.8667 102.997 100.905 100.994C104.945 98.9911 108.061 96.2359 110.256 92.7282V102.195H126.563V32.1642H110.256V41.6337ZM108.76 75.7472C107.762 78.4531 106.366 80.8078 104.572 82.8112C102.776 84.8161 100.606 86.4183 98.0637 87.6206C95.5202 88.823 92.7004 89.4238 89.6103 89.4238C86.5178 89.4238 83.7252 88.823 81.2324 87.6206C78.7388 86.4183 76.5949 84.8161 74.7998 82.8112C73.004 80.8078 71.6319 78.4531 70.6856 75.7472C69.7356 73.0421 69.2644 70.1868 69.2644 67.1821C69.2644 64.1758 69.7356 61.3205 70.6856 58.6154C71.6319 55.9102 73.004 53.5571 74.7998 51.5522C76.5949 49.5495 78.738 47.9451 81.2324 46.7427C83.7252 45.5404 86.5178 44.9396 89.6103 44.9396C92.7012 44.9396 95.5202 45.5404 98.0637 46.7427C100.606 47.9451 102.776 49.5487 104.572 51.5522C106.367 53.5571 107.762 55.9102 108.76 58.6154C109.756 61.3205 110.256 64.1758 110.256 67.1821C110.256 70.1868 109.756 73.0421 108.76 75.7472Z" fill="currentColor" />
-                        <path d="M242.805 41.6337C240.611 38.1275 237.494 35.3731 233.455 33.3681C229.416 31.3647 225.351 30.3618 221.262 30.3618C215.974 30.3618 211.138 31.3389 206.75 33.2923C202.36 35.2456 198.597 37.928 195.455 41.3333C192.314 44.7401 189.869 48.6726 188.125 53.1293C186.378 57.589 185.507 62.274 185.507 67.1813C185.507 72.1925 186.378 76.8995 188.125 81.3069C189.868 85.7173 192.313 89.6241 195.455 93.0293C198.597 96.4361 202.361 99.1155 206.75 101.069C211.138 103.022 215.974 103.999 221.262 103.999C225.351 103.999 229.416 102.997 233.455 100.994C237.494 98.9911 240.611 96.2359 242.805 92.7282V102.195H259.112V32.1642H242.805V41.6337ZM241.31 75.7472C240.312 78.4531 238.916 80.8078 237.122 82.8112C235.326 84.8161 233.156 86.4183 230.614 87.6206C228.07 88.823 225.251 89.4238 222.16 89.4238C219.068 89.4238 216.275 88.823 213.782 87.6206C211.289 86.4183 209.145 84.8161 207.35 82.8112C205.554 80.8078 204.182 78.4531 203.236 75.7472C202.286 73.0421 201.814 70.1868 201.814 67.1821C201.814 64.1758 202.286 61.3205 203.236 58.6154C204.182 55.9102 205.554 53.5571 207.35 51.5522C209.145 49.5495 211.288 47.9451 213.782 46.7427C216.275 45.5404 219.068 44.9396 222.16 44.9396C225.251 44.9396 228.07 45.5404 230.614 46.7427C233.156 47.9451 235.326 49.5487 237.122 51.5522C238.917 53.5571 240.312 55.9102 241.31 58.6154C242.306 61.3205 242.806 64.1758 242.806 67.1821C242.805 70.1868 242.305 73.0421 241.31 75.7472Z" fill="currentColor" />
-                        <path d="M438 -3H421.694V102.197H438V-3Z" fill="currentColor" />
-                        <path d="M139.43 102.197H155.735V48.2834H183.712V32.1665H139.43V102.197Z" fill="currentColor" />
-                        <path d="M324.49 32.1665L303.995 85.794L283.498 32.1665H266.983L293.748 102.197H314.242L341.006 32.1665H324.49Z" fill="currentColor" />
-                        <path d="M376.571 30.3656C356.603 30.3656 340.797 46.8497 340.797 67.1828C340.797 89.6597 356.094 104 378.661 104C391.29 104 399.354 99.1488 409.206 88.5848L398.189 80.0226C398.183 80.031 389.874 90.9895 377.468 90.9895C363.048 90.9895 356.977 79.3111 356.977 73.269H411.075C413.917 50.1328 398.775 30.3656 376.571 30.3656ZM357.02 61.0967C357.145 59.7487 359.023 43.3761 376.442 43.3761C393.861 43.3761 395.978 59.7464 396.099 61.0967H357.02Z" fill="currentColor" />
-                    </svg>
-
-                    {{-- Light Mode 12 SVG --}}
-                    <svg class="w-[448px] max-w-none relative -mt-[4.9rem] -ml-8 lg:ml-0 lg:-mt-[6.6rem] dark:hidden" viewBox="0 0 440 376" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M188.263 355.73L188.595 355.73C195.441 348.845 205.766 339.761 219.569 328.477C232.93 317.193 242.978 308.205 249.714 301.511C256.34 294.626 260.867 287.358 263.296 279.708C265.725 272.058 264.565 264.121 259.816 255.896C254.516 246.716 247.062 239.352 237.454 233.805C227.957 228.067 217.908 225.198 207.307 225.198C196.927 225.197 190.136 227.97 186.934 233.516C183.621 238.872 184.726 246.331 190.247 255.894L125.647 255.891C116.371 239.825 112.395 225.481 113.72 212.858C115.265 200.235 121.559 190.481 132.602 183.596C143.754 176.52 158.607 172.982 177.159 172.983C196.594 172.984 215.863 176.523 234.968 183.6C253.961 190.486 271.299 200.241 286.98 212.864C302.661 225.488 315.14 239.833 324.416 255.899C333.03 270.817 336.841 283.918 335.847 295.203C335.075 306.487 331.376 316.336 324.75 324.751C318.346 333.167 308.408 343.494 294.936 355.734L377.094 355.737L405.917 405.656L217.087 405.649L188.263 355.73Z" fill="black" />
-                            <path d="M9.11884 226.339L-13.7396 226.338L-42.7286 176.132L43.0733 176.135L175.595 405.649L112.651 405.647L9.11884 226.339Z" fill="black" />
-                            <path d="M188.263 355.73L188.595 355.73C195.441 348.845 205.766 339.761 219.569 328.477C232.93 317.193 242.978 308.205 249.714 301.511C256.34 294.626 260.867 287.358 263.296 279.708C265.725 272.058 264.565 264.121 259.816 255.896C254.516 246.716 247.062 239.352 237.454 233.805C227.957 228.067 217.908 225.198 207.307 225.198C196.927 225.197 190.136 227.97 186.934 233.516C183.621 238.872 184.726 246.331 190.247 255.894L125.647 255.891C116.371 239.825 112.395 225.481 113.72 212.858C115.265 200.235 121.559 190.481 132.602 183.596C143.754 176.52 158.607 172.982 177.159 172.983C196.594 172.984 215.863 176.523 234.968 183.6C253.961 190.486 271.299 200.241 286.98 212.864C302.661 225.488 315.14 239.833 324.416 255.899C333.03 270.817 336.841 283.918 335.847 295.203C335.075 306.487 331.376 316.336 324.75 324.751C318.346 333.167 308.408 343.494 294.936 355.734L377.094 355.737L405.917 405.656L217.087 405.649L188.263 355.73Z" stroke="#1B1B18" stroke-width="1" />
-                            <path d="M9.11884 226.339L-13.7396 226.338L-42.7286 176.132L43.0733 176.135L175.595 405.649L112.651 405.647L9.11884 226.339Z" stroke="#1B1B18" stroke-width="1" />
-                            <path d="M204.592 327.449L204.923 327.449C211.769 320.564 222.094 311.479 235.897 300.196C249.258 288.912 259.306 279.923 266.042 273.23C272.668 266.345 277.195 259.077 279.624 251.427C282.053 243.777 280.893 235.839 276.145 227.615C270.844 218.435 263.39 211.071 253.782 205.524C244.285 199.786 234.236 196.917 223.635 196.916C213.255 196.916 206.464 199.689 203.262 205.235C199.949 210.59 201.054 218.049 206.575 227.612L141.975 227.61C132.699 211.544 128.723 197.2 130.048 184.577C131.593 171.954 137.887 162.2 148.93 155.315C160.083 148.239 174.935 144.701 193.487 144.702C212.922 144.703 232.192 148.242 251.296 155.319C270.289 162.205 287.627 171.96 303.308 184.583C318.989 197.207 331.468 211.552 340.745 227.618C349.358 242.536 353.169 255.637 352.175 266.921C351.403 278.205 347.704 288.055 341.078 296.47C334.674 304.885 324.736 315.213 311.264 327.453L393.422 327.456L422.246 377.375L233.415 377.368L204.592 327.449Z" fill="#F8B803" />
-                            <path d="M25.447 198.058L2.58852 198.057L-26.4005 147.851L59.4015 147.854L191.923 377.368L128.979 377.365L25.447 198.058Z" fill="#F8B803" />
-                            <path d="M204.592 327.449L204.923 327.449C211.769 320.564 222.094 311.479 235.897 300.196C249.258 288.912 259.306 279.923 266.042 273.23C272.668 266.345 277.195 259.077 279.624 251.427C282.053 243.777 280.893 235.839 276.145 227.615C270.844 218.435 263.39 211.071 253.782 205.524C244.285 199.786 234.236 196.917 223.635 196.916C213.255 196.916 206.464 199.689 203.262 205.235C199.949 210.59 201.054 218.049 206.575 227.612L141.975 227.61C132.699 211.544 128.723 197.2 130.048 184.577C131.593 171.954 137.887 162.2 148.93 155.315C160.083 148.239 174.935 144.701 193.487 144.702C212.922 144.703 232.192 148.242 251.296 155.319C270.289 162.205 287.627 171.96 303.308 184.583C318.989 197.207 331.468 211.552 340.745 227.618C349.358 242.536 353.169 255.637 352.175 266.921C351.403 278.205 347.704 288.055 341.078 296.47C334.674 304.885 324.736 315.213 311.264 327.453L393.422 327.456L422.246 377.375L233.415 377.368L204.592 327.449Z" stroke="#1B1B18" stroke-width="1" />
-                            <path d="M25.447 198.058L2.58852 198.057L-26.4005 147.851L59.4015 147.854L191.923 377.368L128.979 377.365L25.447 198.058Z" stroke="#1B1B18" stroke-width="1" />
-                        </g>
-                        <g style="mix-blend-mode: hard-light" class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M217.342 305.363L217.673 305.363C224.519 298.478 234.844 289.393 248.647 278.11C262.008 266.826 272.056 257.837 278.792 251.144C285.418 244.259 289.945 236.991 292.374 229.341C294.803 221.691 293.643 213.753 288.895 205.529C283.594 196.349 276.14 188.985 266.532 183.438C257.035 177.7 246.986 174.831 236.385 174.83C226.005 174.83 219.214 177.603 216.012 183.149C212.699 188.504 213.804 195.963 219.325 205.527L154.725 205.524C145.449 189.458 141.473 175.114 142.798 162.491C144.343 149.868 150.637 140.114 161.68 133.229C172.833 126.153 187.685 122.615 206.237 122.616C225.672 122.617 244.942 126.156 264.046 133.233C283.039 140.119 300.377 149.874 316.058 162.497C331.739 175.121 344.218 189.466 353.495 205.532C362.108 220.45 365.919 233.551 364.925 244.835C364.153 256.12 360.454 265.969 353.828 274.384C347.424 282.799 337.486 293.127 324.014 305.367L406.172 305.37L434.996 355.289L246.165 355.282L217.342 305.363Z" fill="#F0ACB8" />
-                            <path d="M38.197 175.972L15.3385 175.971L-13.6505 125.765L72.1515 125.768L204.673 355.282L141.729 355.279L38.197 175.972Z" fill="#F0ACB8" />
-                            <path d="M217.342 305.363L217.673 305.363C224.519 298.478 234.844 289.393 248.647 278.11C262.008 266.826 272.056 257.837 278.792 251.144C285.418 244.259 289.945 236.991 292.374 229.341C294.803 221.691 293.643 213.753 288.895 205.529C283.594 196.349 276.14 188.985 266.532 183.438C257.035 177.7 246.986 174.831 236.385 174.83C226.005 174.83 219.214 177.603 216.012 183.149C212.699 188.504 213.804 195.963 219.325 205.527L154.725 205.524C145.449 189.458 141.473 175.114 142.798 162.491C144.343 149.868 150.637 140.114 161.68 133.229C172.833 126.153 187.685 122.615 206.237 122.616C225.672 122.617 244.942 126.156 264.046 133.233C283.039 140.119 300.377 149.874 316.058 162.497C331.739 175.121 344.218 189.466 353.495 205.532C362.108 220.45 365.919 233.551 364.925 244.835C364.153 256.12 360.454 265.969 353.828 274.384C347.424 282.799 337.486 293.127 324.014 305.367L406.172 305.37L434.996 355.289L246.165 355.282L217.342 305.363Z" stroke="#1B1B18" stroke-width="1" />
-                            <path d="M38.197 175.972L15.3385 175.971L-13.6505 125.765L72.1515 125.768L204.673 355.282L141.729 355.279L38.197 175.972Z" stroke="#1B1B18" stroke-width="1" />
-                        </g>
-                        <g style="mix-blend-mode: plus-darker" class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M230.951 281.792L231.282 281.793C238.128 274.907 248.453 265.823 262.256 254.539C275.617 243.256 285.666 234.267 292.402 227.573C299.027 220.688 303.554 213.421 305.983 205.771C308.412 198.12 307.253 190.183 302.504 181.959C297.203 172.778 289.749 165.415 280.142 159.868C270.645 154.13 260.596 151.26 249.995 151.26C239.615 151.26 232.823 154.033 229.621 159.579C226.309 164.934 227.413 172.393 232.935 181.956L168.335 181.954C159.058 165.888 155.082 151.543 156.407 138.92C157.953 126.298 164.247 116.544 175.289 109.659C186.442 102.583 201.294 99.045 219.846 99.0457C239.281 99.0464 258.551 102.585 277.655 109.663C296.649 116.549 313.986 126.303 329.667 138.927C345.349 151.551 357.827 165.895 367.104 181.961C375.718 196.88 379.528 209.981 378.535 221.265C377.762 232.549 374.063 242.399 367.438 250.814C361.033 259.229 351.095 269.557 337.624 281.796L419.782 281.8L448.605 331.719L259.774 331.712L230.951 281.792Z" fill="#F3BEC7" />
-                            <path d="M51.8063 152.402L28.9479 152.401L-0.0411453 102.195L85.7608 102.198L218.282 331.711L155.339 331.709L51.8063 152.402Z" fill="#F3BEC7" />
-                            <path d="M230.951 281.792L231.282 281.793C238.128 274.907 248.453 265.823 262.256 254.539C275.617 243.256 285.666 234.267 292.402 227.573C299.027 220.688 303.554 213.421 305.983 205.771C308.412 198.12 307.253 190.183 302.504 181.959C297.203 172.778 289.749 165.415 280.142 159.868C270.645 154.13 260.596 151.26 249.995 151.26C239.615 151.26 232.823 154.033 229.621 159.579C226.309 164.934 227.413 172.393 232.935 181.956L168.335 181.954C159.058 165.888 155.082 151.543 156.407 138.92C157.953 126.298 164.247 116.544 175.289 109.659C186.442 102.583 201.294 99.045 219.846 99.0457C239.281 99.0464 258.551 102.585 277.655 109.663C296.649 116.549 313.986 126.303 329.667 138.927C345.349 151.551 357.827 165.895 367.104 181.961C375.718 196.88 379.528 209.981 378.535 221.265C377.762 232.549 374.063 242.399 367.438 250.814C361.033 259.229 351.095 269.557 337.624 281.796L419.782 281.8L448.605 331.719L259.774 331.712L230.951 281.792Z" stroke="#1B1B18" stroke-width="1" />
-                            <path d="M51.8063 152.402L28.9479 152.401L-0.0411453 102.195L85.7608 102.198L218.282 331.711L155.339 331.709L51.8063 152.402Z" stroke="#1B1B18" stroke-width="1" />
-                        </g>
-                        <g class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M188.467 355.363L188.798 355.363C195.644 348.478 205.969 339.393 219.772 328.11C233.133 316.826 243.181 307.837 249.917 301.144C253.696 297.217 256.792 293.166 259.205 288.991C261.024 285.845 262.455 282.628 263.499 279.341C265.928 271.691 264.768 263.753 260.02 255.529C254.719 246.349 247.265 238.985 237.657 233.438C228.16 227.7 218.111 224.831 207.51 224.83C197.13 224.83 190.339 227.603 187.137 233.149C183.824 238.504 184.929 245.963 190.45 255.527L125.851 255.524C116.574 239.458 112.598 225.114 113.923 212.491C114.615 206.836 116.261 201.756 118.859 197.253C122.061 191.704 126.709 187.03 132.805 183.229C143.958 176.153 158.81 172.615 177.362 172.616C196.797 172.617 216.067 176.156 235.171 183.233C254.164 190.119 271.502 199.874 287.183 212.497C302.864 225.121 315.343 239.466 324.62 255.532C333.233 270.45 337.044 283.551 336.05 294.835C335.46 303.459 333.16 311.245 329.151 318.194C327.915 320.337 326.515 322.4 324.953 324.384C318.549 332.799 308.611 343.127 295.139 355.367L377.297 355.37L406.121 405.289L217.29 405.282L188.467 355.363Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M9.32197 225.972L-13.5365 225.971L-42.5255 175.765L43.2765 175.768L175.798 405.282L112.854 405.279L9.32197 225.972Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M345.247 111.915C329.566 99.2919 312.229 89.5371 293.235 82.6512L235.167 183.228C254.161 190.114 271.498 199.869 287.179 212.492L345.247 111.915Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M382.686 154.964C373.41 138.898 360.931 124.553 345.25 111.93L287.182 212.506C302.863 225.13 315.342 239.475 324.618 255.541L382.686 154.964Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M293.243 82.6472C274.139 75.57 254.869 72.031 235.434 72.0303L177.366 172.607C196.801 172.608 216.071 176.147 235.175 183.224L293.243 82.6472Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M394.118 194.257C395.112 182.973 391.301 169.872 382.688 154.953L324.619 255.53C333.233 270.448 337.044 283.55 336.05 294.834L394.118 194.257Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M235.432 72.0311C216.88 72.0304 202.027 75.5681 190.875 82.6442L132.806 183.221C143.959 176.145 158.812 172.607 177.363 172.608L235.432 72.0311Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M265.59 124.25C276.191 124.251 286.24 127.12 295.737 132.858L237.669 233.435C228.172 227.697 218.123 224.828 207.522 224.827L265.59 124.25Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M295.719 132.859C305.326 138.406 312.78 145.77 318.081 154.95L260.013 255.527C254.712 246.347 247.258 238.983 237.651 233.436L295.719 132.859Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M387.218 217.608C391.227 210.66 393.527 202.874 394.117 194.25L336.049 294.827C335.459 303.451 333.159 311.237 329.15 318.185L387.218 217.608Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M245.211 132.577C248.413 127.03 255.204 124.257 265.584 124.258L207.516 224.835C197.136 224.834 190.345 227.607 187.143 233.154L245.211 132.577Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M318.094 154.945C322.842 163.17 324.002 171.107 321.573 178.757L263.505 279.334C265.934 271.684 264.774 263.746 260.026 255.522L318.094 154.945Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M176.925 96.6737C180.127 91.1249 184.776 86.4503 190.871 82.6499L132.803 183.227C126.708 187.027 122.059 191.702 118.857 197.25L176.925 96.6737Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M387.226 217.606C385.989 219.749 384.59 221.813 383.028 223.797L324.96 324.373C326.522 322.39 327.921 320.326 329.157 318.183L387.226 217.606Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M317.269 188.408C319.087 185.262 320.519 182.045 321.562 178.758L263.494 279.335C262.451 282.622 261.019 285.839 259.201 288.985L317.269 188.408Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M245.208 132.573C241.895 137.928 243 145.387 248.522 154.95L190.454 255.527C184.932 245.964 183.827 238.505 187.14 233.15L245.208 132.573Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M176.93 96.6719C174.331 101.175 172.686 106.255 171.993 111.91L113.925 212.487C114.618 206.831 116.263 201.752 118.862 197.249L176.93 96.6719Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M317.266 188.413C314.853 192.589 311.757 196.64 307.978 200.566L249.91 301.143C253.689 297.216 256.785 293.166 259.198 288.99L317.266 188.413Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M464.198 304.708L435.375 254.789L377.307 355.366L406.13 405.285L464.198 304.708Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M353.209 254.787C366.68 242.548 376.618 232.22 383.023 223.805L324.955 324.382C318.55 332.797 308.612 343.124 295.141 355.364L353.209 254.787Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M435.37 254.787L353.212 254.784L295.144 355.361L377.302 355.364L435.37 254.787Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M183.921 154.947L248.521 154.95L190.453 255.527L125.853 255.524L183.921 154.947Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M171.992 111.914C170.668 124.537 174.643 138.881 183.92 154.947L125.852 255.524C116.575 239.458 112.599 225.114 113.924 212.491L171.992 111.914Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M307.987 200.562C301.251 207.256 291.203 216.244 277.842 227.528L219.774 328.105C233.135 316.821 243.183 307.832 249.919 301.139L307.987 200.562Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M15.5469 75.1797L44.5359 125.386L-13.5321 225.963L-42.5212 175.756L15.5469 75.1797Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M277.836 227.536C264.033 238.82 253.708 247.904 246.862 254.789L188.794 355.366C195.64 348.481 205.965 339.397 219.768 328.113L277.836 227.536Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M275.358 304.706L464.189 304.713L406.12 405.29L217.29 405.283L275.358 304.706Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M44.5279 125.39L67.3864 125.39L9.31834 225.967L-13.5401 225.966L44.5279 125.39Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M101.341 75.1911L233.863 304.705L175.795 405.282L43.2733 175.768L101.341 75.1911ZM15.5431 75.19L-42.525 175.767L43.277 175.77L101.345 75.1932L15.5431 75.19Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M246.866 254.784L246.534 254.784L188.466 355.361L188.798 355.361L246.866 254.784Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M246.539 254.781L275.362 304.701L217.294 405.277L188.471 355.358L246.539 254.781Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M67.3906 125.391L170.923 304.698L112.855 405.275L9.32257 225.967L67.3906 125.391Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                            <path d="M170.921 304.699L233.865 304.701L175.797 405.278L112.853 405.276L170.921 304.699Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="bevel" />
-                        </g>
-                        <g style="mix-blend-mode: hard-light" class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M246.544 254.79L246.875 254.79C253.722 247.905 264.046 238.82 277.849 227.537C291.21 216.253 301.259 207.264 307.995 200.57C314.62 193.685 319.147 186.418 321.577 178.768C324.006 171.117 322.846 163.18 318.097 154.956C312.796 145.775 305.342 138.412 295.735 132.865C286.238 127.127 276.189 124.258 265.588 124.257C255.208 124.257 248.416 127.03 245.214 132.576C241.902 137.931 243.006 145.39 248.528 154.953L183.928 154.951C174.652 138.885 170.676 124.541 172 111.918C173.546 99.2946 179.84 89.5408 190.882 82.6559C202.035 75.5798 216.887 72.0421 235.439 72.0428C254.874 72.0435 274.144 75.5825 293.248 82.6598C312.242 89.5457 329.579 99.3005 345.261 111.924C360.942 124.548 373.421 138.892 382.697 154.958C391.311 169.877 395.121 182.978 394.128 194.262C393.355 205.546 389.656 215.396 383.031 223.811C376.627 232.226 366.688 242.554 353.217 254.794L435.375 254.797L464.198 304.716L275.367 304.709L246.544 254.79Z" fill="#F0ACB8" />
-                            <path d="M246.544 254.79L246.875 254.79C253.722 247.905 264.046 238.82 277.849 227.537C291.21 216.253 301.259 207.264 307.995 200.57C314.62 193.685 319.147 186.418 321.577 178.768C324.006 171.117 322.846 163.18 318.097 154.956C312.796 145.775 305.342 138.412 295.735 132.865C286.238 127.127 276.189 124.258 265.588 124.257C255.208 124.257 248.416 127.03 245.214 132.576C241.902 137.931 243.006 145.39 248.528 154.953L183.928 154.951C174.652 138.885 170.676 124.541 172 111.918C173.546 99.2946 179.84 89.5408 190.882 82.6559C202.035 75.5798 216.887 72.0421 235.439 72.0428C254.874 72.0435 274.144 75.5825 293.248 82.6598C312.242 89.5457 329.579 99.3005 345.261 111.924C360.942 124.548 373.421 138.892 382.697 154.958C391.311 169.877 395.121 182.978 394.128 194.262C393.355 205.546 389.656 215.396 383.031 223.811C376.627 232.226 366.688 242.554 353.217 254.794L435.375 254.797L464.198 304.716L275.367 304.709L246.544 254.79Z" stroke="#1B1B18" stroke-width="1" stroke-linejoin="round" />
-                        </g>
-                        <g style="mix-blend-mode: hard-light" class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M67.41 125.402L44.5515 125.401L15.5625 75.1953L101.364 75.1985L233.886 304.712L170.942 304.71L67.41 125.402Z" fill="#F0ACB8" />
-                            <path d="M67.41 125.402L44.5515 125.401L15.5625 75.1953L101.364 75.1985L233.886 304.712L170.942 304.71L67.41 125.402Z" stroke="#1B1B18" stroke-width="1" />
-                        </g>
-                    </svg>
-
-                    {{-- Dark Mode 12 SVG --}}
-                    <svg class="w-[448px] max-w-none relative -mt-[4.9rem] -ml-8 lg:ml-0 lg:-mt-[6.6rem] hidden dark:block" viewBox="0 0 440 376" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M188.263 355.73L188.595 355.73C195.441 348.845 205.766 339.761 219.569 328.477C232.93 317.193 242.978 308.205 249.714 301.511C256.34 294.626 260.867 287.358 263.296 279.708C265.725 272.058 264.565 264.121 259.816 255.896C254.516 246.716 247.062 239.352 237.454 233.805C227.957 228.067 217.908 225.198 207.307 225.198C196.927 225.197 190.136 227.97 186.934 233.516C183.621 238.872 184.726 246.331 190.247 255.894L125.647 255.891C116.371 239.825 112.395 225.481 113.72 212.858C115.265 200.235 121.559 190.481 132.602 183.596C143.754 176.52 158.607 172.982 177.159 172.983C196.594 172.984 215.863 176.523 234.968 183.6C253.961 190.486 271.299 200.241 286.98 212.864C302.661 225.488 315.14 239.833 324.416 255.899C333.03 270.817 336.841 283.918 335.847 295.203C335.075 306.487 331.376 316.336 324.75 324.751C318.346 333.167 308.408 343.494 294.936 355.734L377.094 355.737L405.917 405.656L217.087 405.649L188.263 355.73Z" fill="black"/>
-                            <path d="M9.11884 226.339L-13.7396 226.338L-42.7286 176.132L43.0733 176.135L175.595 405.649L112.651 405.647L9.11884 226.339Z" fill="black"/>
-                            <path d="M188.263 355.73L188.595 355.73C195.441 348.845 205.766 339.761 219.569 328.477C232.93 317.193 242.978 308.205 249.714 301.511C256.34 294.626 260.867 287.358 263.296 279.708C265.725 272.058 264.565 264.121 259.816 255.896C254.516 246.716 247.062 239.352 237.454 233.805C227.957 228.067 217.908 225.198 207.307 225.198C196.927 225.197 190.136 227.97 186.934 233.516C183.621 238.872 184.726 246.331 190.247 255.894L125.647 255.891C116.371 239.825 112.395 225.481 113.72 212.858C115.265 200.235 121.559 190.481 132.602 183.596C143.754 176.52 158.607 172.982 177.159 172.983C196.594 172.984 215.863 176.523 234.968 183.6C253.961 190.486 271.299 200.241 286.98 212.864C302.661 225.488 315.14 239.833 324.416 255.899C333.03 270.817 336.841 283.918 335.847 295.203C335.075 306.487 331.376 316.336 324.75 324.751C318.346 333.167 308.408 343.494 294.936 355.734L377.094 355.737L405.917 405.656L217.087 405.649L188.263 355.73Z" stroke="#FF750F" stroke-width="1"/>
-                            <path d="M9.11884 226.339L-13.7396 226.338L-42.7286 176.132L43.0733 176.135L175.595 405.649L112.651 405.647L9.11884 226.339Z" stroke="#FF750F" stroke-width="1"/>
-                            <path d="M204.592 327.449L204.923 327.449C211.769 320.564 222.094 311.479 235.897 300.196C249.258 288.912 259.306 279.923 266.042 273.23C272.668 266.345 277.195 259.077 279.624 251.427C282.053 243.777 280.893 235.839 276.145 227.615C270.844 218.435 263.39 211.071 253.782 205.524C244.285 199.786 234.236 196.917 223.635 196.916C213.255 196.916 206.464 199.689 203.262 205.235C199.949 210.59 201.054 218.049 206.575 227.612L141.975 227.61C132.699 211.544 128.723 197.2 130.048 184.577C131.593 171.954 137.887 162.2 148.93 155.315C160.083 148.239 174.935 144.701 193.487 144.702C212.922 144.703 232.192 148.242 251.296 155.319C270.289 162.205 287.627 171.96 303.308 184.583C318.989 197.207 331.468 211.552 340.745 227.618C349.358 242.536 353.169 255.637 352.175 266.921C351.403 278.205 347.704 288.055 341.078 296.47C334.674 304.885 324.736 315.213 311.264 327.453L393.422 327.456L422.246 377.375L233.415 377.368L204.592 327.449Z" fill="#391800"/>
-                            <path d="M25.447 198.058L2.58852 198.057L-26.4005 147.851L59.4015 147.854L191.923 377.368L128.979 377.365L25.447 198.058Z" fill="#391800"/>
-                            <path d="M204.592 327.449L204.923 327.449C211.769 320.564 222.094 311.479 235.897 300.196C249.258 288.912 259.306 279.923 266.042 273.23C272.668 266.345 277.195 259.077 279.624 251.427C282.053 243.777 280.893 235.839 276.145 227.615C270.844 218.435 263.39 211.071 253.782 205.524C244.285 199.786 234.236 196.917 223.635 196.916C213.255 196.916 206.464 199.689 203.262 205.235C199.949 210.59 201.054 218.049 206.575 227.612L141.975 227.61C132.699 211.544 128.723 197.2 130.048 184.577C131.593 171.954 137.887 162.2 148.93 155.315C160.083 148.239 174.935 144.701 193.487 144.702C212.922 144.703 232.192 148.242 251.296 155.319C270.289 162.205 287.627 171.96 303.308 184.583C318.989 197.207 331.468 211.552 340.745 227.618C349.358 242.536 353.169 255.637 352.175 266.921C351.403 278.205 347.704 288.055 341.078 296.47C334.674 304.885 324.736 315.213 311.264 327.453L393.422 327.456L422.246 377.375L233.415 377.368L204.592 327.449Z" stroke="#FF750F" stroke-width="1"/>
-                            <path d="M25.447 198.058L2.58852 198.057L-26.4005 147.851L59.4015 147.854L191.923 377.368L128.979 377.365L25.447 198.058Z" stroke="#FF750F" stroke-width="1"/>
-                        </g>
-                        <g class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4" style="mix-blend-mode:hard-light">
-                            <path d="M217.342 305.363L217.673 305.363C224.519 298.478 234.844 289.393 248.647 278.11C262.008 266.826 272.056 257.837 278.792 251.144C285.418 244.259 289.945 236.991 292.374 229.341C294.803 221.691 293.643 213.753 288.895 205.529C283.594 196.349 276.14 188.985 266.532 183.438C257.035 177.7 246.986 174.831 236.385 174.83C226.005 174.83 219.214 177.603 216.012 183.149C212.699 188.504 213.804 195.963 219.325 205.527L154.725 205.524C145.449 189.458 141.473 175.114 142.798 162.491C144.343 149.868 150.637 140.114 161.68 133.229C172.833 126.153 187.685 122.615 206.237 122.616C225.672 122.617 244.942 126.156 264.046 133.233C283.039 140.119 300.377 149.874 316.058 162.497C331.739 175.121 344.218 189.466 353.495 205.532C362.108 220.45 365.919 233.551 364.925 244.835C364.153 256.12 360.454 265.969 353.828 274.384C347.424 282.799 337.486 293.127 324.014 305.367L406.172 305.37L434.996 355.289L246.165 355.282L217.342 305.363Z" fill="#733000"/>
-                            <path d="M38.197 175.972L15.3385 175.971L-13.6505 125.765L72.1515 125.768L204.673 355.282L141.729 355.279L38.197 175.972Z" fill="#733000"/>
-                            <path d="M217.342 305.363L217.673 305.363C224.519 298.478 234.844 289.393 248.647 278.11C262.008 266.826 272.056 257.837 278.792 251.144C285.418 244.259 289.945 236.991 292.374 229.341C294.803 221.691 293.643 213.753 288.895 205.529C283.594 196.349 276.14 188.985 266.532 183.438C257.035 177.7 246.986 174.831 236.385 174.83C226.005 174.83 219.214 177.603 216.012 183.149C212.699 188.504 213.804 195.963 219.325 205.527L154.725 205.524C145.449 189.458 141.473 175.114 142.798 162.491C144.343 149.868 150.637 140.114 161.68 133.229C172.833 126.153 187.685 122.615 206.237 122.616C225.672 122.617 244.942 126.156 264.046 133.233C283.039 140.119 300.377 149.874 316.058 162.497C331.739 175.121 344.218 189.466 353.495 205.532C362.108 220.45 365.919 233.551 364.925 244.835C364.153 256.12 360.454 265.969 353.828 274.384C347.424 282.799 337.486 293.127 324.014 305.367L406.172 305.37L434.996 355.289L246.165 355.282L217.342 305.363Z" stroke="#FF750F" stroke-width="1"/>
-                            <path d="M38.197 175.972L15.3385 175.971L-13.6505 125.765L72.1515 125.768L204.673 355.282L141.729 355.279L38.197 175.972Z" stroke="#FF750F" stroke-width="1"/>
-                        </g>
-                        <g class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M217.342 305.363L217.673 305.363C224.519 298.478 234.844 289.393 248.647 278.11C262.008 266.826 272.056 257.837 278.792 251.144C285.418 244.259 289.945 236.991 292.374 229.341C294.803 221.691 293.643 213.753 288.895 205.529C283.594 196.349 276.14 188.985 266.532 183.438C257.035 177.7 246.986 174.831 236.385 174.83C226.005 174.83 219.214 177.603 216.012 183.149C212.699 188.504 213.804 195.963 219.325 205.527L154.726 205.524C145.449 189.458 141.473 175.114 142.798 162.491C144.343 149.868 150.637 140.114 161.68 133.229C172.833 126.153 187.685 122.615 206.237 122.616C225.672 122.617 244.942 126.156 264.046 133.233C283.039 140.119 300.377 149.874 316.058 162.497C331.739 175.121 344.218 189.466 353.495 205.532C362.108 220.45 365.919 233.551 364.925 244.835C364.153 256.12 360.454 265.969 353.828 274.384C347.424 282.799 337.486 293.127 324.014 305.367L406.172 305.37L434.996 355.289L246.165 355.282L217.342 305.363Z" stroke="#FF750F" stroke-width="1"/>
-                            <path d="M38.197 175.972L15.3385 175.971L-13.6505 125.765L72.1515 125.768L204.673 355.282L141.729 355.279L38.197 175.972Z" stroke="#FF750F" stroke-width="1"/>
-                        </g>
-                        <g class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4">
-                            <path d="M188.467 355.363L188.798 355.363C195.644 348.478 205.969 339.393 219.772 328.11C233.133 316.826 243.181 307.837 249.917 301.144C253.696 297.217 256.792 293.166 259.205 288.991C261.024 285.845 262.455 282.628 263.499 279.341C265.928 271.691 264.768 263.753 260.02 255.529C254.719 246.349 247.265 238.985 237.657 233.438C228.16 227.7 218.111 224.831 207.51 224.83C197.13 224.83 190.339 227.603 187.137 233.149C183.824 238.504 184.929 245.963 190.45 255.527L125.851 255.524C116.574 239.458 112.598 225.114 113.923 212.491C114.615 206.836 116.261 201.756 118.859 197.253C122.061 191.704 126.709 187.03 132.805 183.229C143.958 176.153 158.81 172.615 177.362 172.616C196.797 172.617 216.067 176.156 235.171 183.233C254.164 190.119 271.502 199.874 287.183 212.497C302.864 225.121 315.343 239.466 324.62 255.532C333.233 270.45 337.044 283.551 336.05 294.835C335.46 303.459 333.16 311.245 329.151 318.194C327.915 320.337 326.515 322.4 324.953 324.384C318.549 332.799 308.611 343.127 295.139 355.367L377.297 355.37L406.121 405.289L217.29 405.282L188.467 355.363Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M9.32197 225.972L-13.5365 225.971L-42.5255 175.765L43.2765 175.768L175.798 405.282L112.854 405.279L9.32197 225.972Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M345.247 111.915C329.566 99.2919 312.229 89.5371 293.235 82.6512L235.167 183.228C254.161 190.114 271.498 199.869 287.179 212.492L345.247 111.915Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M382.686 154.964C373.41 138.898 360.931 124.553 345.25 111.93L287.182 212.506C302.863 225.13 315.342 239.475 324.618 255.541L382.686 154.964Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M293.243 82.6472C274.139 75.57 254.869 72.031 235.434 72.0303L177.366 172.607C196.801 172.608 216.071 176.147 235.175 183.224L293.243 82.6472Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M394.118 194.257C395.112 182.973 391.301 169.872 382.688 154.953L324.619 255.53C333.233 270.448 337.044 283.55 336.05 294.834L394.118 194.257Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M235.432 72.0311C216.88 72.0304 202.027 75.5681 190.875 82.6442L132.806 183.221C143.959 176.145 158.812 172.607 177.363 172.608L235.432 72.0311Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M265.59 124.25C276.191 124.251 286.24 127.12 295.737 132.858L237.669 233.435C228.172 227.697 218.123 224.828 207.522 224.827L265.59 124.25Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M295.719 132.859C305.326 138.406 312.78 145.77 318.081 154.95L260.013 255.527C254.712 246.347 247.258 238.983 237.651 233.436L295.719 132.859Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M387.218 217.608C391.227 210.66 393.527 202.874 394.117 194.25L336.049 294.827C335.459 303.451 333.159 311.237 329.15 318.185L387.218 217.608Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M245.211 132.577C248.413 127.03 255.204 124.257 265.584 124.258L207.516 224.835C197.136 224.834 190.345 227.607 187.143 233.154L245.211 132.577Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M318.094 154.945C322.842 163.17 324.002 171.107 321.573 178.757L263.505 279.334C265.934 271.684 264.774 263.746 260.026 255.522L318.094 154.945Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M176.925 96.6737C180.127 91.1249 184.776 86.4503 190.871 82.6499L132.803 183.227C126.708 187.027 122.059 191.702 118.857 197.25L176.925 96.6737Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M387.226 217.606C385.989 219.749 384.59 221.813 383.028 223.797L324.96 324.373C326.522 322.39 327.921 320.326 329.157 318.183L387.226 217.606Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M317.269 188.408C319.087 185.262 320.519 182.045 321.562 178.758L263.494 279.335C262.451 282.622 261.019 285.839 259.201 288.985L317.269 188.408Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M245.208 132.573C241.895 137.928 243 145.387 248.522 154.95L190.454 255.527C184.932 245.964 183.827 238.505 187.14 233.15L245.208 132.573Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M176.93 96.6719C174.331 101.175 172.686 106.255 171.993 111.91L113.925 212.487C114.618 206.831 116.263 201.752 118.862 197.249L176.93 96.6719Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M317.266 188.413C314.853 192.589 311.757 196.64 307.978 200.566L249.91 301.143C253.689 297.216 256.785 293.166 259.198 288.99L317.266 188.413Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M464.198 304.708L435.375 254.789L377.307 355.366L406.13 405.285L464.198 304.708Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M353.209 254.787C366.68 242.548 376.618 232.22 383.023 223.805L324.955 324.382C318.55 332.797 308.612 343.124 295.141 355.364L353.209 254.787Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M435.37 254.787L353.212 254.784L295.144 355.361L377.302 355.364L435.37 254.787Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M183.921 154.947L248.521 154.95L190.453 255.527L125.853 255.524L183.921 154.947Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M171.992 111.914C170.668 124.537 174.643 138.881 183.92 154.947L125.852 255.524C116.575 239.458 112.599 225.114 113.924 212.491L171.992 111.914Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M307.987 200.562C301.251 207.256 291.203 216.244 277.842 227.528L219.774 328.105C233.135 316.821 243.183 307.832 249.919 301.139L307.987 200.562Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M15.5469 75.1797L44.5359 125.386L-13.5321 225.963L-42.5212 175.756L15.5469 75.1797Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M277.836 227.536C264.033 238.82 253.708 247.904 246.862 254.789L188.794 355.366C195.64 348.481 205.965 339.397 219.768 328.113L277.836 227.536Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M275.358 304.706L464.189 304.713L406.12 405.29L217.29 405.283L275.358 304.706Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M44.5279 125.39L67.3864 125.39L9.31834 225.967L-13.5401 225.966L44.5279 125.39Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M101.341 75.1911L233.863 304.705L175.795 405.282L43.2733 175.768L101.341 75.1911ZM15.5431 75.19L-42.525 175.767L43.277 175.77L101.345 75.1932L15.5431 75.19Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M246.866 254.784L246.534 254.784L188.466 355.361L188.798 355.361L246.866 254.784Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M246.539 254.781L275.362 304.701L217.294 405.277L188.471 355.358L246.539 254.781Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M67.3906 125.391L170.923 304.698L112.855 405.275L9.32257 225.967L67.3906 125.391Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                            <path d="M170.921 304.699L233.865 304.701L175.797 405.278L112.853 405.276L170.921 304.699Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="bevel"/>
-                        </g>
-                        <g class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4" style="mix-blend-mode:hard-light">
-                            <path d="M246.544 254.79L246.875 254.79C253.722 247.905 264.046 238.82 277.849 227.537C291.21 216.253 301.259 207.264 307.995 200.57C314.62 193.685 319.147 186.418 321.577 178.768C324.006 171.117 322.846 163.18 318.097 154.956C312.796 145.775 305.342 138.412 295.735 132.865C286.238 127.127 276.189 124.258 265.588 124.257C255.208 124.257 248.416 127.03 245.214 132.576C241.902 137.931 243.006 145.39 248.528 154.953L183.928 154.951C174.652 138.885 170.676 124.541 172 111.918C173.546 99.2946 179.84 89.5408 190.882 82.6559C202.035 75.5798 216.887 72.0421 235.439 72.0428C254.874 72.0435 274.144 75.5825 293.248 82.6598C312.242 89.5457 329.579 99.3005 345.261 111.924C360.942 124.548 373.421 138.892 382.697 154.958C391.311 169.877 395.121 182.978 394.128 194.262C393.355 205.546 389.656 215.396 383.031 223.811C376.627 232.226 366.688 242.554 353.217 254.794L435.375 254.797L464.198 304.716L275.367 304.709L246.544 254.79Z" fill="#4B0600"/>
-                            <path d="M246.544 254.79L246.875 254.79C253.722 247.905 264.046 238.82 277.849 227.537C291.21 216.253 301.259 207.264 307.995 200.57C314.62 193.685 319.147 186.418 321.577 178.768C324.006 171.117 322.846 163.18 318.097 154.956C312.796 145.775 305.342 138.412 295.735 132.865C286.238 127.127 276.189 124.258 265.588 124.257C255.208 124.257 248.416 127.03 245.214 132.576C241.902 137.931 243.006 145.39 248.528 154.953L183.928 154.951C174.652 138.885 170.676 124.541 172 111.918C173.546 99.2946 179.84 89.5408 190.882 82.6559C202.035 75.5798 216.887 72.0421 235.439 72.0428C254.874 72.0435 274.144 75.5825 293.248 82.6598C312.242 89.5457 329.579 99.3005 345.261 111.924C360.942 124.548 373.421 138.892 382.697 154.958C391.311 169.877 395.121 182.978 394.128 194.262C393.355 205.546 389.656 215.396 383.031 223.811C376.627 232.226 366.688 242.554 353.217 254.794L435.375 254.797L464.198 304.716L275.367 304.709L246.544 254.79Z" stroke="#FF750F" stroke-width="1" stroke-linejoin="round"/>
-                        </g>
-                        <g class="transition-all delay-300 translate-y-0 opacity-100 duration-750 starting:opacity-0 starting:translate-y-4" style="mix-blend-mode:hard-light">
-                            <path d="M67.41 125.402L44.5515 125.401L15.5625 75.1953L101.364 75.1985L233.886 304.712L170.942 304.71L67.41 125.402Z" fill="#4B0600"/>
-                            <path d="M67.41 125.402L44.5515 125.401L15.5625 75.1953L101.364 75.1985L233.886 304.712L170.942 304.71L67.41 125.402Z" stroke="#FF750F" stroke-width="1"/>
-                        </g>
-                    </svg>
-                    <div class="absolute inset-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]"></div>
-                </div>
-            </main>
-        </div>
-
-        @if (Route::has('login'))
-            <div class="h-14.5 hidden lg:block"></div>
+        @endforeach
+        
+        @if($design['show_close'] ?? true)
+            <button onclick="document.getElementById('marketing-banner').style.display='none'; document.getElementById('site-header').style.top='0';" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: none; border: none; color: {{ $textColor }}; cursor: pointer; font-size: 20px; opacity: 0.7; padding: 5px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
         @endif
-    </body>
+    </div>
+    @endif
+
+    <!-- Header -->
+    <header id="site-header">
+        <div class="pre-header">
+            <div class="container pre-header-inner">
+                <div class="pre-header-left">
+                    <span>Follow Us:</span>
+                    <div class="social-icons-header">
+                        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+                        <a href="#" aria-label="Twitter / X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+                        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg></a>
+                        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                    </div>
+                </div>
+                <div class="pre-header-right">
+                    <div class="pre-header-item"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> support@migratepay.com</div>
+                    <div class="pre-header-item"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> +880 1712 345 678</div>
+                    <div class="pre-header-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Dhaka, Bangladesh</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-header-wrapper">
+            <div class="container main-header">
+                <a href="/" class="logo">
+                    <img src="/assets/images/Migratepay logo.png" alt="Migratepay Logo" style="height: 60px; width: auto;" />
+                </a>
+                
+                <nav class="nav-links" id="dynamic-nav-container">
+                    <!-- Navigation items will be injected here by JavaScript -->
+                    <a href="{{ route('auth') }}" class="btn-login-header">
+                        Login
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </nav>
+
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Nav Panel -->
+    <div class="mobile-nav-panel" id="mobile-nav-panel">
+        <div class="mobile-nav-inner" id="mobile-nav-inner">
+            <!-- Items injected by JS -->
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg-shape-1"></div>
+        <div class="hero-bg-shape-2"></div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="badge">Bangladesh's Smarter Way to Handle Online Deals</div>
+                <h1>Don't Just Trust the Deal.<br><span>Protect It.</span></h1>
+                <p>Buying from a stranger? Hiring someone online? Selling to a new customer? MigratePay helps both sides manage the deal through a structured escrow and mediation process.</p>
+                <div class="hero-actions">
+                    <a href="{{ route('auth') }}" class="btn btn-primary">Start a Deal <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 8px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                    <a href="#how-it-works" class="btn btn-outline">See How It Works</a>
+                </div>
+            </div>
+            
+            <div class="hero-animation-container" id="heroAnim" data-scene="1">
+                <!-- Character Left (Buyer) -->
+                <div class="anim-char anim-char-buyer">
+                    <div class="char-avatar" style="background: var(--primary);">B</div>
+                    <div class="char-label">Buyer</div>
+                </div>
+                
+                <!-- Character Right (Seller) -->
+                <div class="anim-char anim-char-seller">
+                    <div class="char-avatar" style="background: var(--secondary);">S</div>
+                    <div class="char-label">Seller</div>
+                </div>
+
+                <!-- Scene 1: Stranger Deal -->
+                <div class="anim-scene anim-scene-1">
+                    <div class="anim-chat chat-left">Can you build this website for me?</div>
+                    <div class="anim-chat chat-right">Sure. I'll deliver it in 7 days.</div>
+                    <div class="anim-deal-amount">Deal Amount: ৳30,000</div>
+                </div>
+
+                <!-- Scene 2: Confusion -->
+                <div class="anim-scene anim-scene-2">
+                    <div class="anim-question anim-q-left">?</div>
+                    <div class="anim-question anim-q-right">?</div>
+                    <div class="anim-thought anim-thought-left">Should I pay first?<br><span class="thought-sub">What if they disappear after I pay?</span></div>
+                    <div class="anim-thought anim-thought-right">What if I finish the work and don't get paid?<br><span class="thought-sub">What if they refuse to pay?</span></div>
+                </div>
+
+                <!-- Scene 3: Risk -->
+                <div class="anim-scene anim-scene-3">
+                    <div class="anim-risk-card">
+                        <div class="risk-amount">৳30,000</div>
+                        <div class="risk-arrow">Direct Payment</div>
+                        <div class="risk-warnings">
+                            <div class="risk-badge">UNKNOWN SELLER</div>
+                            <div class="risk-badge">NO STRUCTURED DEAL</div>
+                            <div class="risk-badge risk-badge-red">WHO GOES FIRST?</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scene 4: The Proposal -->
+                <div class="anim-scene anim-scene-4">
+                    <div class="anim-chat chat-left" style="top: 100px;">Let's complete the deal in MigratePay.</div>
+                    <div class="anim-chat chat-right" style="top: 200px; max-width: 250px; border-radius: 20px; border-bottom-right-radius: 4px;">Sure! It's highly secure and much cheaper than freelancing sites.</div>
+                </div>
+
+                <!-- Scene 5: MigratePay Appears -->
+                <div class="anim-scene anim-scene-5">
+                    <div class="anim-mp-layer">
+                        <div class="mp-logo">MigratePay</div>
+                        <div class="mp-msg">Let's structure the deal.</div>
+                    </div>
+                    <div class="anim-structured-deal">
+                        <div class="sd-title">Website Development</div>
+                        <div class="sd-row">Amount: <span>৳30,000</span></div>
+                        <div class="sd-row">Delivery: <span>7 Days</span></div>
+                        <div class="sd-status">Status: Deal Created</div>
+                    </div>
+                </div>
+
+                <!-- Scene 6: Payment Secured -->
+                <div class="anim-scene anim-scene-6">
+                    <div class="anim-mp-layer active-layer">
+                        <div class="mp-logo">MigratePay</div>
+                    </div>
+                    <div class="anim-payment-flow">
+                        <div class="flow-step flow-buyer">Buyer Payment</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step flow-mp">MigratePay Vault <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step flow-status">Deal in Progress</div>
+                    </div>
+                </div>
+
+                <!-- Scene 7: Seller Works -->
+                <div class="anim-scene anim-scene-7">
+                    <div class="anim-mp-layer active-layer">
+                        <div class="mp-logo">MigratePay</div>
+                    </div>
+                    <div class="anim-seller-working">
+                        <div class="seller-laptop">💻 Working...</div>
+                    </div>
+                    <div class="anim-progress-card">
+                        <div class="prog-step done">Deal Started</div>
+                        <div class="prog-step active">Work in Progress <span class="loader-dots">...</span></div>
+                        <div class="prog-step">Delivered</div>
+                    </div>
+                </div>
+
+                <!-- Scene 8: Delivery & Review -->
+                <div class="anim-scene anim-scene-8">
+                    <div class="anim-mp-layer active-layer">
+                        <div class="mp-logo">MigratePay</div>
+                    </div>
+                    <div class="anim-chat chat-right">Project delivered.</div>
+                    <div class="anim-review-card">
+                        <div class="rev-status">Delivery Received</div>
+                        <div class="rev-action">Reviewing Deal...</div>
+                    </div>
+                </div>
+
+                <!-- Scene 9: Successful Deal -->
+                <div class="anim-scene anim-scene-9">
+                    <div class="anim-mp-layer active-layer">
+                        <div class="mp-logo">MigratePay</div>
+                    </div>
+                    <div class="anim-success-card">
+                        <div class="success-icon">✓</div>
+                        <div class="success-title">Deal Completed</div>
+                    </div>
+                    <div class="anim-protected p-buyer">Protected</div>
+                    <div class="anim-protected p-seller">Protected</div>
+                </div>
+                
+                <!-- Scene 10 is an empty state to transition back seamlessly -->
+                <div class="anim-scene anim-scene-10"></div>
+                
+                <div class="hero-pagination" id="heroDots">
+                    <div class="dot active" data-target="1"></div>
+                    <div class="dot" data-target="2"></div>
+                    <div class="dot" data-target="3"></div>
+                    <div class="dot" data-target="4"></div>
+                    <div class="dot" data-target="5"></div>
+                    <div class="dot" data-target="6"></div>
+                    <div class="dot" data-target="7"></div>
+                    <div class="dot" data-target="8"></div>
+                    <div class="dot" data-target="9"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Hook -->
+    <section class="section social-deal-section">
+        <div class="container">
+            <div class="social-grid">
+                <div class="social-content reveal-left">
+                    <div class="badge">Create Demand</div>
+                    <h2>Found a Match on Social Media?</h2>
+                    <p>You've connected with the right expert or the perfect client on Facebook or LinkedIn. But how do you handle the payment without risking your money or your hard work?</p>
+                    <p style="color: var(--gray-400); font-size: 16px; margin-bottom: 30px;">Direct bank transfers offer no protection. Escrow platforms charge enormous fees. Don't let a great connection turn into a risky transaction.</p>
+                    <a href="{{ route('auth') }}" class="btn btn-primary" style="background: var(--white); color: var(--dark);">Bring the Deal to MigratePay</a>
+                </div>
+                
+                <div class="social-visual reveal-right delay-200">
+                    <div class="sv-card sv-card-fb">
+                        <div class="sv-header">
+                            <div class="sv-avatar" style="background: #1877F2;">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                            </div>
+                            <div class="sv-info">
+                                <h4>Expert Found</h4>
+                                <p>Facebook Group</p>
+                            </div>
+                        </div>
+                        <div class="sv-msg">"I can fix your website issue today. My fee is ৳10,000 in advance."</div>
+                    </div>
+                    
+                    <div class="sv-connector">
+                        <div class="sv-line"></div>
+                        <div class="sv-mp-logo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                <polyline points="9 12 11 14 15 10"></polyline>
+                            </svg>
+                        </div>
+                        <div class="sv-line"></div>
+                    </div>
+                    
+                    <div class="sv-card sv-card-li">
+                        <div class="sv-header">
+                            <div class="sv-avatar" style="background: #0A66C2;">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                            </div>
+                            <div class="sv-info">
+                                <h4>Client Found</h4>
+                                <p>LinkedIn Messages</p>
+                            </div>
+                        </div>
+                        <div class="sv-msg">"We love your portfolio. We are ready to hire you for this project."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Matrix Section -->
+    <section class="section comparison-section" id="comparison">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Direct Comparison</div>
+                <h2 class="section-title">The Smartest Way to Close Online Deals</h2>
+                <p class="section-subtitle">Direct transfers leave you exposed to scams. Freelance marketplaces charge 20% fees and restrict your communication. MigratePay gives you total security with minimal cost.</p>
+            </div>
+            
+            <div class="comparison-cards-grid">
+                <!-- Direct Transfer Card -->
+                <div class="compare-col danger-col reveal delay-100">
+                    <span class="compare-pill pill-danger">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        High Risk
+                    </span>
+                    <h3>Direct Transfer</h3>
+                    <p class="compare-subtitle">bKash, Nagad, Bank Wire, or Crypto sent directly to a stranger online.</p>
+                    <div class="compare-fee-tag" style="color: #DC2626;">Hidden Cost: 100% Capital at Risk</div>
+                    <div class="compare-features-list">
+                        <div class="compare-item">
+                            <span class="compare-icon-bad"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                            <span><strong>No Escrow Holding:</strong> Buyer pays in advance, seller can vanish instantly.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-bad"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                            <span><strong>Unpaid Deliveries:</strong> Seller delivers work, but buyer blocks without paying.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-bad"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                            <span><strong>Zero Recourse:</strong> Bank or MFS will not refund peer-to-peer transfers.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-bad"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                            <span><strong>Constant Hesitation:</strong> "Who sends first?" deadlock delays or ruins deals.</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; color: #DC2626; font-weight: 600; text-align: center; margin-top: auto; padding-top: 10px;">
+                        ⚠️ Over 40% of internet deals report fraud or payment disputes.
+                    </div>
+                </div>
+
+                <!-- Traditional Marketplaces Card -->
+                <div class="compare-col warning-col reveal delay-200">
+                    <span class="compare-pill pill-warning">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        Expensive & Rigid
+                    </span>
+                    <h3>Fiverr / Upwork</h3>
+                    <p class="compare-subtitle">Traditional freelance marketplaces designed for hiring strangers inside their walled garden.</p>
+                    <div class="compare-fee-tag" style="color: #D97706;">Platform Cost: Up to 20% Fee</div>
+                    <div class="compare-features-list">
+                        <div class="compare-item">
+                            <span class="compare-icon-mid"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>
+                            <span><strong>Excessive Cut:</strong> 20% cut taken from earnings on deals you found yourself.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-mid"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>
+                            <span><strong>Strict Policies:</strong> Bringing clients from Facebook/LinkedIn can get you permanently banned.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-mid"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>
+                            <span><strong>14-Day Payout Delay:</strong> Mandatory holding periods before withdrawing your hard-earned funds.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-mid"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>
+                            <span><strong>Automated Bots:</strong> Frustrating canned support when dealing with misunderstandings.</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; color: var(--gray-500); text-align: center; margin-top: auto; padding-top: 10px;">
+                        Great for finding new clients, terrible for deals you already negotiated.
+                    </div>
+                </div>
+
+                <!-- MigratePay Card (Featured) -->
+                <div class="compare-col featured-col reveal delay-300">
+                    <span class="compare-pill pill-featured">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        The Golden Standard
+                    </span>
+                    <h3>MigratePay</h3>
+                    <p class="compare-subtitle">A neutral deal vault for transactions agreed on Facebook, LinkedIn, WhatsApp, or anywhere.</p>
+                    <div class="compare-fee-tag">Escrow Fee: From Only 3% (Tiered)</div>
+                    <div class="compare-features-list">
+                        <div class="compare-item">
+                            <span class="compare-icon-good"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                            <span><strong>100% Vault Security:</strong> Funds locked safely before work starts; released only upon approval.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-good"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                            <span><strong>Keep 97%+ of Your Earnings:</strong> A tiny fraction of freelance marketplace commissions.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-good"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                            <span><strong>Bring Any Outside Client:</strong> Welcome deals from Facebook, Telegram, WhatsApp, or X.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-good"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                            <span><strong>Real Human Dispute Review:</strong> Real moderators inspect files and evidence when issues arise.</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="compare-icon-good"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                            <span><strong>Instant Local Payouts:</strong> Withdraw straight to bKash, Nagad, or Bank Wire.</span>
+                        </div>
+                    </div>
+                    <a href="{{ route('auth') }}" class="btn btn-primary" style="width: 100%; margin-top: auto;">Start Protected Deal</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Statement -->
+    <section class="section section-light">
+        <div class="container">
+            <div class="problem-grid">
+                <div class="problem-content reveal-left">
+                    <h2>Online Deals Shouldn't Be a Matter of Trusting a Stranger.</h2>
+                    <p>Completing transactions with someone you met online is risky. Relying on verbal promises and screenshots often leads to stress and financial loss.</p>
+                    
+                    <div class="problem-list">
+                        <div class="problem-item">
+                            <div class="problem-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+                            <p>Buyer pays in advance, but the seller disappears.</p>
+                        </div>
+                        <div class="problem-item">
+                            <div class="problem-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+                            <p>Freelancers complete work but struggle to collect payment.</p>
+                        </div>
+                        <div class="problem-item">
+                            <div class="problem-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+                            <p>Disputes become impossible to resolve without a neutral party.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="solution-box reveal-right delay-200">
+                    <div class="solution-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3>The MigratePay Solution</h3>
+                    <p>We sit securely between the buyer and seller. The buyer deposits funds into our platform. The seller delivers the agreed work. Once approved, we release the funds. It's that simple.</p>
+                    <a href="{{ route('auth') }}" class="btn btn-primary">Protect Your Next Deal</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 Guarantees Section -->
+    <section class="guarantees-section" id="guarantees">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge" style="background: rgba(37, 99, 235, 0.2); color: #93C5FD; border-color: rgba(37, 99, 235, 0.4);">Our Ironclad Promise</div>
+                <h2 class="section-title">The 3 Guarantees Backing Every Transaction</h2>
+                <p class="section-subtitle">MigratePay acts as an unyielding neutral referee. Here is how we ensure that neither buyers nor sellers can ever be cheated.</p>
+            </div>
+            
+            <div class="guarantees-grid">
+                <!-- Guarantee 1 -->
+                <div class="guarantee-card reveal delay-100">
+                    <div class="guarantee-icon-box">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            <circle cx="12" cy="16" r="1.5"></circle>
+                        </svg>
+                    </div>
+                    <h3>1. Neutral Escrow Vault</h3>
+                    <p>Buyer money never goes directly to the seller until you inspect the delivered work. At the same time, the seller never begins work until funds are confirmed inside our isolated holding vault. Neither party can run away.</p>
+                    <div class="guarantee-tag">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Zero Advance Payment Risk
+                    </div>
+                </div>
+
+                <!-- Guarantee 2 -->
+                <div class="guarantee-card reveal delay-200">
+                    <div class="guarantee-icon-box">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <h3>2. Human Dispute Tribunal</h3>
+                    <p>When disagreements happen, you aren't evaluated by mindless AI or canned bot responses. Our dedicated human dispute team analyzes original deal terms, work submissions, and chat screenshots within hours for a fair outcome.</p>
+                    <div class="guarantee-tag">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Fair Evidence-Based Arbitration
+                    </div>
+                </div>
+
+                <!-- Guarantee 3 -->
+                <div class="guarantee-card reveal delay-300">
+                    <div class="guarantee-icon-box">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                    </div>
+                    <h3>3. Anti-Chargeback Protection</h3>
+                    <p>Once a buyer reviews and approves the delivered work, the funds are irrevocably released to the seller. Freelancers and service providers are 100% immune to malicious bank chargebacks or buyer regret weeks later.</p>
+                    <div class="guarantee-tag">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        100% Protected Seller Payouts
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why MigratePay (Benefits) -->
+    <section class="section" id="benefits">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Platform Benefits</div>
+                <h2 class="section-title">Why Use MigratePay?</h2>
+                <p class="section-subtitle">A structured platform designed to protect both parties and ensure fair online transactions.</p>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card reveal delay-100">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                    <h3>Buyer Protection</h3>
+                    <p>Reduce the risk of sending money directly to an unknown seller. Funds are held until terms are met.</p>
+                </div>
+                <div class="benefit-card reveal delay-200">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                    <h3>Seller Protection</h3>
+                    <p>Give sellers confidence that a buyer has committed funds according to the deal terms before work begins.</p>
+                </div>
+                <div class="benefit-card reveal delay-300">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+                    <h3>Neutral Mediation</h3>
+                    <p>MigratePay sits between both parties instead of representing only the buyer or seller.</p>
+                </div>
+                <div class="benefit-card reveal delay-100">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+                    <h3>Clear Deal Terms</h3>
+                    <p>Both parties agree on the exact transaction conditions and delivery requirements before proceeding.</p>
+                </div>
+                <div class="benefit-card reveal delay-200">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                    <h3>Live Deal Tracking</h3>
+                    <p>Users can see the progress and current status of their deal organized in a structured dashboard.</p>
+                </div>
+                <div class="benefit-card reveal delay-300">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 17 22 12"></polyline></svg></div>
+                    <h3>Dispute Handling</h3>
+                    <p>If disagreements arise, we provide a structured process for handling them according to platform rules.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="process-slider-section" id="how-it-works">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Simple Process</div>
+                <h2 class="section-title">How MigratePay Works</h2>
+                <p class="section-subtitle">A transparent, step-by-step escrow process that eliminates payment anxiety.</p>
+            </div>
+            
+            <div class="process-slider-container">
+                <div class="process-connector">
+                    <div class="process-connector-fill" id="processConnector" style="width: 10%;"></div>
+                </div>
+                
+                <div class="process-slider-track" id="processTrack">
+                    <!-- Step 1 -->
+                    <div class="process-card active" data-step="1">
+                        <div class="process-step-num">01</div>
+                        <h3>Create a Deal</h3>
+                        <p>Buyer and seller agree on the transaction terms, delivery timeline, and create a deal through MigratePay.</p>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="process-card" data-step="2">
+                        <div class="process-step-num">02</div>
+                        <h3>Buyer Secures the Payment</h3>
+                        <p>The buyer deposits the agreed amount. MigratePay securely holds these funds.</p>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="process-card" data-step="3">
+                        <div class="process-step-num">03</div>
+                        <h3>Seller Completes the Work</h3>
+                        <p>Knowing the funds are secured, the seller delivers the agreed product, service, or work.</p>
+                    </div>
+                    
+                    <!-- Step 4 -->
+                    <div class="process-card" data-step="4">
+                        <div class="process-step-num">04</div>
+                        <h3>Buyer Reviews</h3>
+                        <p>The buyer checks the delivery to ensure it meets the agreed deal conditions.</p>
+                    </div>
+                    
+                    <!-- Step 5 -->
+                    <div class="process-card" data-step="5">
+                        <div class="process-step-num">05</div>
+                        <h3>Deal Completed</h3>
+                        <p>Once the buyer is satisfied, MigratePay releases the funds to the seller. Transaction complete!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Escrow Calculator Section -->
+    <section class="section calculator-section" id="calculator">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Transparent Pricing</div>
+                <h2 class="section-title">Calculate Your Deal Protection Fee</h2>
+                <p class="section-subtitle">No hidden charges, no surprises. See exactly what the buyer deposits and what the seller takes home with bank-grade escrow security.</p>
+            </div>
+            
+            <div class="calc-home-wrapper reveal">
+                <!-- Controls Left -->
+                <div class="calc-home-controls">
+                    <div>
+                        <div class="calc-input-label">
+                            <span>Deal Amount (BDT)</span>
+                            <span style="font-size: 12px; color: var(--primary); font-weight: 700;">Tiered Rates: 3% - 5%</span>
+                        </div>
+                        <div class="calc-input-wrapper">
+                            <span class="calc-input-prefix">৳</span>
+                            <input type="number" id="calcHomeAmount" class="calc-amount-input" value="30000" min="1000" step="500">
+                        </div>
+                        <div class="calc-presets-row">
+                            <button type="button" class="calc-preset-chip" data-amount="5000">৳5,000</button>
+                            <button type="button" class="calc-preset-chip" data-amount="10000">৳10,000</button>
+                            <button type="button" class="calc-preset-chip" data-amount="15000">৳15,000</button>
+                            <button type="button" class="calc-preset-chip active" data-amount="30000">৳30,000</button>
+                            <button type="button" class="calc-preset-chip" data-amount="60000">৳60,000</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="calc-input-label">
+                            <span>Who Covers The Escrow Fee?</span>
+                        </div>
+                        <div class="calc-payer-tabs">
+                            <button type="button" class="calc-payer-btn active" data-payer="shared_50">Split 50/50 (Standard)</button>
+                            <button type="button" class="calc-payer-btn" data-payer="buyer_100">Buyer Pays 100%</button>
+                            <button type="button" class="calc-payer-btn" data-payer="seller_100">Seller Pays 100%</button>
+                        </div>
+                    </div>
+
+                    <div class="calc-schedule-box">
+                        <div class="calc-schedule-title">
+                            <span>Platform Fee Schedule</span>
+                            <span class="calc-schedule-sub" id="calcTierText">Applied: 3% (deals over ৳15k)</span>
+                        </div>
+                        <div class="calc-schedule-grid">
+                            <div class="calc-tier-card" id="tierCard1" data-amount="3000">
+                                <div class="tier-range">৳1k – ৳5k</div>
+                                <div class="tier-pct">5.0%</div>
+                            </div>
+                            <div class="calc-tier-card" id="tierCard2" data-amount="8000">
+                                <div class="tier-range">৳5k – ৳10k</div>
+                                <div class="tier-pct">4.5%</div>
+                            </div>
+                            <div class="calc-tier-card" id="tierCard3" data-amount="12000">
+                                <div class="tier-range">৳10k – ৳15k</div>
+                                <div class="tier-pct">4.0%</div>
+                            </div>
+                            <div class="calc-tier-card active" id="tierCard4" data-amount="30000">
+                                <div class="tier-range">৳15k+</div>
+                                <div class="tier-pct tier-best">3.0%</div>
+                            </div>
+                        </div>
+                        <div class="calc-extra-info">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <span>No hidden charges · Free human dispute arbitration · Instant MFS payouts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Results Right -->
+                <div class="calc-home-result">
+                    <div>
+                        <div class="calc-res-header">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            Deal Settlement Breakdown
+                        </div>
+
+                        <div class="calc-res-breakdown">
+                            <div class="calc-res-row">
+                                <span>Agreed Deal Value</span>
+                                <span id="calcValAmount">৳30,000</span>
+                            </div>
+                            <div class="calc-res-row">
+                                <span>Total Escrow Fee (<span id="calcValRate">3%</span>)</span>
+                                <span id="calcValFee">৳900</span>
+                            </div>
+                            <div class="calc-res-divider"></div>
+                        </div>
+
+                        <div class="calc-highlight-box">
+                            <div class="calc-highlight-item buyer-val">
+                                <div>
+                                    <div class="label">Buyer Deposits</div>
+                                    <small style="color: var(--gray-400); font-size: 11px;" id="calcBuyerSub">Deal + 50% fee</small>
+                                </div>
+                                <div class="val" id="calcBuyerPays">৳30,450</div>
+                            </div>
+                            <div style="height: 1px; background: rgba(255,255,255,0.08);"></div>
+                            <div class="calc-highlight-item">
+                                <div>
+                                    <div class="label">Seller Takes Home</div>
+                                    <small style="color: var(--gray-400); font-size: 11px;" id="calcSellerSub">Deal - 50% fee</small>
+                                </div>
+                                <div class="val" id="calcSellerGets">৳29,550</div>
+                            </div>
+                        </div>
+
+                        <div class="calc-guarantee-note">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <span>Funds securely locked until buyer approves delivery.</span>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('auth') }}" class="btn btn-primary" style="margin-top: 28px; width: 100%; background: var(--white); color: var(--dark);">
+                        Start This Deal Now
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Credentials Strip -->
+    <section class="security-strip-section">
+        <div class="container">
+            <div class="security-strip-grid reveal">
+                <div class="security-strip-item">
+                    <div class="security-strip-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    </div>
+                    <div class="security-strip-text">
+                        <h4>Bank-Grade 256-Bit SSL</h4>
+                        <p>End-to-end encrypted transactions</p>
+                    </div>
+                </div>
+
+                <div class="security-strip-item">
+                    <div class="security-strip-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                    </div>
+                    <div class="security-strip-text">
+                        <h4>Dual-Key Release</h4>
+                        <p>Payout only with mutual confirmation</p>
+                    </div>
+                </div>
+
+                <div class="security-strip-item">
+                    <div class="security-strip-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                    </div>
+                    <div class="security-strip-text">
+                        <h4>Instant Local Payouts</h4>
+                        <p>bKash, Nagad, Cards & Bank Wire</p>
+                    </div>
+                </div>
+
+                <div class="security-strip-item">
+                    <div class="security-strip-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                    </div>
+                    <div class="security-strip-text">
+                        <h4>KYC Verified Profiles</h4>
+                        <p>Verified deal counterparties</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Use Cases (Digital Only) -->
+    <section class="section section-light" id="use-cases">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Versatile Escrow</div>
+                <h2 class="section-title">What Can MigratePay Be Used For?</h2>
+                <p class="section-subtitle">Our platform protects a wide variety of agreed digital transactions and services in Bangladesh.</p>
+            </div>
+            
+            <div class="usecases-grid">
+                <div class="usecase-card reveal delay-100">
+                    <div class="usecase-icon">💻</div>
+                    <h4>Freelance Projects</h4>
+                </div>
+                <div class="usecase-card reveal delay-200">
+                    <div class="usecase-icon">🌐</div>
+                    <h4>Website Development</h4>
+                </div>
+                <div class="usecase-card reveal delay-300">
+                    <div class="usecase-icon">🎨</div>
+                    <h4>Graphic Design</h4>
+                </div>
+                <div class="usecase-card reveal delay-400">
+                    <div class="usecase-icon">📱</div>
+                    <h4>App Development</h4>
+                </div>
+                <div class="usecase-card reveal delay-100">
+                    <div class="usecase-icon">📝</div>
+                    <h4>Copywriting</h4>
+                </div>
+                <div class="usecase-card reveal delay-200">
+                    <div class="usecase-icon">📈</div>
+                    <h4>SEO Services</h4>
+                </div>
+                <div class="usecase-card reveal delay-300">
+                    <div class="usecase-icon">🔗</div>
+                    <h4>Domain Transactions</h4>
+                </div>
+                <div class="usecase-card reveal delay-400">
+                    <div class="usecase-icon">🤝</div>
+                    <h4>B2B Service Deals</h4>
+                </div>
+            </div>
+            <p class="text-center text-gray reveal delay-400" style="margin-top: 40px; font-size: 14px; font-weight: 500;">* All transactions are subject to MigratePay's terms and deal rules.</p>
+        </div>
+    </section>
+
+
+    <!-- Testimonials -->
+    <section class="section section-light">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Success Stories</div>
+                <h2 class="section-title">Trusted by Users in Bangladesh</h2>
+                <p class="section-subtitle">See what our users have to say about securing their digital deals with MigratePay.</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card reveal delay-100">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"As a freelance web developer, I used to worry about not getting paid after finishing a project. MigratePay fixed that. Now I only start working once the funds are secured in escrow."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">T</div>
+                        <div class="author-info">
+                            <h4>Tanvir Hasan</h4>
+                            <p>Freelance Developer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal delay-200">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"I bought a premium domain name from a Facebook group. Instead of sending money blindly, we used MigratePay. It gave me the peace of mind to verify the domain transfer before the seller received the money."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background: linear-gradient(135deg, #10B981, #059669);">N</div>
+                        <div class="author-info">
+                            <h4>Nusrat Jahan</h4>
+                            <p>Digital Buyer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal delay-300">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"Our agency uses MigratePay for all new client deals. It looks professional, builds trust instantly, and keeps our transaction records perfectly organized in one dashboard."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9);">S</div>
+                        <div class="author-info">
+                            <h4>Saif Rahman</h4>
+                            <p>Agency Owner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Got Questions?</div>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+            </div>
+            
+            <div class="faq-container">
+                <div class="faq-item reveal delay-100">
+                    <div class="faq-question">What is MigratePay? <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                    <div class="faq-answer">MigratePay is a secure escrow and deal-management mediation platform operating in Bangladesh. We act as a trusted third party that holds funds temporarily while a transaction takes place between a buyer and a seller.</div>
+                </div>
+                <div class="faq-item reveal delay-200">
+                    <div class="faq-question">How does the escrow process protect me? <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                    <div class="faq-answer">If you are a buyer, your money is safe because the seller doesn't get paid until they deliver the agreed work. If you are a seller, your time is safe because you know the buyer has already deposited the funds before you start working.</div>
+                </div>
+                <div class="faq-item reveal delay-300">
+                    <div class="faq-question">When is the payment released? <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                    <div class="faq-answer">Funds are released to the seller only after the seller submits the work and the buyer reviews and approves the delivery, according to the agreed terms of the deal.</div>
+                </div>
+                <div class="faq-item reveal delay-400">
+                    <div class="faq-question">What happens if there is a dispute? <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                    <div class="faq-answer">If the buyer and seller cannot agree, either party can report an issue. Our administrative team will review the deal terms, messages, and delivery evidence to make a fair resolution based on our platform rules.</div>
+                </div>
+                <div class="faq-item reveal delay-500">
+                    <div class="faq-question">Can we communicate on WhatsApp or Messenger? <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                    <div class="faq-answer">Yes, you can communicate on any external platform. <strong>However, you must share all critical proofs, work submissions, and revisions via the MigratePay deal chatbox.</strong> If a dispute or conflict arises, the MigratePay team can only mediate and resolve issues based on the evidence provided inside the official deal chatbox.</div>
+                </div>
+                <div class="faq-item reveal delay-600">
+                    <div class="faq-question">Can I use MigratePay for freelance work? <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                    <div class="faq-answer">Absolutely. MigratePay is highly suited for freelance projects, digital services, website development, and other custom orders where payment security is needed.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Partners Section -->
+    <section class="partners-section">
+        <div class="partners-bg-orbs"></div>
+        <div class="container">
+            <div class="partners-header reveal">
+                <span class="partners-eyebrow">Trusted Partners</span>
+                <h2>Our Partners</h2>
+                <p>Building stronger digital transactions through trusted partnerships.</p>
+            </div>
+        </div>
+        
+        <!-- Marquee Slider -->
+        <div class="partners-marquee-container reveal delay-200">
+            <div class="partners-marquee">
+                <!-- Original Set -->
+                <div class="partner-card"><span class="partner-placeholder">Partner Logo 1</span></div>
+                <div class="partner-card"><span class="partner-placeholder">Partner Logo 2</span></div>
+                <div class="partner-card"><span class="partner-placeholder">Partner Logo 3</span></div>
+                <div class="partner-card"><span class="partner-placeholder">Partner Logo 4</span></div>
+                <div class="partner-card"><span class="partner-placeholder">Partner Logo 5</span></div>
+                
+                <!-- Duplicate Set for Infinite Scroll -->
+                <div class="partner-card" aria-hidden="true"><span class="partner-placeholder">Partner Logo 1</span></div>
+                <div class="partner-card" aria-hidden="true"><span class="partner-placeholder">Partner Logo 2</span></div>
+                <div class="partner-card" aria-hidden="true"><span class="partner-placeholder">Partner Logo 3</span></div>
+                <div class="partner-card" aria-hidden="true"><span class="partner-placeholder">Partner Logo 4</span></div>
+                <div class="partner-card" aria-hidden="true"><span class="partner-placeholder">Partner Logo 5</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <div class="cta-bg-shape"></div>
+        <div class="container cta-container reveal">
+            <h2>Ready to Make Your Next Deal Safer?</h2>
+            <p>Whether you're buying or selling, MigratePay helps you manage the transaction with greater clarity and confidence.</p>
+            <div class="cta-actions">
+                <a href="{{ route('auth') }}" class="btn btn-white">Start a Deal Now</a>
+                <a href="{{ route('calculator') }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3); background: transparent;">Calculate Charges</a>
+            </div>
+        </div>
+    </section>
+
+    @include('partials.footer')
+
+    <!-- Interactive Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Scroll Reveal Animation (Intersection Observer)
+            const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+            
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.15,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const isOpen = item.classList.contains('is-open');
+                    faqItems.forEach(i => i.classList.remove('is-open'));
+                    if (!isOpen) {
+                        item.classList.add('is-open');
+                    }
+                });
+            });
+
+            // Smooth Scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if(targetId === '#') return;
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Header Scroll Effect
+            const header = document.getElementById('site-header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Menu logic
+            const rawMenus = localStorage.getItem('migratepay_menus');
+            let headerItems = [];
+            
+            if (rawMenus) {
+                try {
+                    const menus = JSON.parse(rawMenus);
+                    const headerMenuObj = menus.find(m => m.name.toLowerCase().includes('header')) || menus[0];
+                    if (headerMenuObj && headerMenuObj.items) {
+                        headerItems = headerMenuObj.items.filter(i => i.visible);
+                    }
+                } catch(e) {}
+            }
+            
+            if (headerItems.length === 0) {
+                headerItems = [
+                    { id: 'm1', label: 'HOME', href: '/', visible: true },
+                    { id: 'm2', label: 'GET TO KNOW US', href: '#', visible: true, children: [
+                        { id: 'c1', label: 'About Us', href: '/about', visible: true },
+                        { id: 'c2', label: 'Our Story', href: '/about#story', visible: true }
+                    ]},
+                    { id: 'm3', label: 'BLOG', href: '/blog', visible: true },
+                    { id: 'm4', label: 'OUR PARTNERS', href: '/our-teams', visible: true },
+                    { id: 'm5', label: 'LEGACY', href: '#', visible: true, children: [
+                        { id: 'c3', label: 'Our Legacy', href: '/legacy', visible: true },
+                        { id: 'c4', label: 'History', href: '/history', visible: true }
+                    ]}
+                ];
+            }
+
+            const navContainer = document.getElementById('dynamic-nav-container');
+            const loginBtn = navContainer.querySelector('.btn-login-header');
+            const mobileNavInner = document.getElementById('mobile-nav-inner');
+            
+            // Stagger animation for desktop load
+            const staggerDelay = 100;
+            let currentDelay = 100;
+
+            const renderDesktopNode = (item, depth = 0) => {
+                if(item.children && item.children.length > 0) {
+                    const childHtml = item.children.filter(c=>c.visible).map(c => renderDesktopNode(c, depth + 1).outerHTML).join('');
+                    
+                    const dropdown = document.createElement('div');
+                    dropdown.className = 'nav-item dropdown';
+                    
+                    if (depth === 0) {
+                        dropdown.style.animation = `slideDownBadge 0.6s forwards ${currentDelay}ms`;
+                        dropdown.style.opacity = '0';
+                        currentDelay += staggerDelay;
+                    }
+                    
+                    dropdown.innerHTML = `
+                        <span style="display:flex; align-items:center;">
+                            ${item.label}
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; margin-left:6px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </span>
+                        <div class="dropdown-menu">
+                            ${childHtml}
+                        </div>
+                    `;
+                    return dropdown;
+                } else {
+                    const a = document.createElement('a');
+                    a.href = item.href;
+                    if (depth === 0) {
+                        a.className = 'nav-item';
+                        a.textContent = item.label;
+                        a.style.animation = `slideDownBadge 0.6s forwards ${currentDelay}ms`;
+                        a.style.opacity = '0';
+                        currentDelay += staggerDelay;
+                    } else {
+                        a.className = 'dropdown-link';
+                        a.textContent = item.label;
+                    }
+                    return a;
+                }
+            };
+            
+            const renderMobileNode = (item) => {
+                const a = document.createElement('a');
+                a.href = item.href;
+                a.textContent = item.label;
+                a.style.fontSize = '24px';
+                a.style.fontWeight = '900';
+                a.style.color = '#0f172a';
+                a.style.textDecoration = 'none';
+                return a;
+            };
+
+            // Build Desktop Nav
+            if (navContainer) {
+                headerItems.forEach(item => {
+                    navContainer.insertBefore(renderDesktopNode(item, 0), loginBtn);
+                });
+            }
+            
+            // Build Mobile Nav
+            if (mobileNavInner) {
+                headerItems.forEach(item => {
+                    mobileNavInner.appendChild(renderMobileNode(item));
+                });
+                const mobileLogin = loginBtn.cloneNode(true);
+                mobileLogin.style.marginTop = '20px';
+                mobileLogin.style.fontSize = '16px';
+                mobileNavInner.appendChild(mobileLogin);
+            }
+
+            // Mobile Menu Toggle
+            const toggleBtn = document.getElementById('mobile-menu-toggle');
+            const mobilePanel = document.getElementById('mobile-nav-panel');
+            let menuOpen = false;
+            
+            if (toggleBtn && mobilePanel) {
+                toggleBtn.addEventListener('click', () => {
+                    menuOpen = !menuOpen;
+                    if(menuOpen) {
+                        mobilePanel.classList.add('active');
+                        toggleBtn.querySelector('span:nth-child(1)').style.transform = 'translateY(7px) rotate(45deg)';
+                        toggleBtn.querySelector('span:nth-child(2)').style.opacity = '0';
+                        toggleBtn.querySelector('span:nth-child(3)').style.transform = 'translateY(-7px) rotate(-45deg)';
+                    } else {
+                        mobilePanel.classList.remove('active');
+                        toggleBtn.querySelector('span:nth-child(1)').style.transform = 'none';
+                        toggleBtn.querySelector('span:nth-child(2)').style.opacity = '1';
+                        toggleBtn.querySelector('span:nth-child(3)').style.transform = 'none';
+                    }
+                });
+            }
+
+            // Interactive Process Slider
+            const processTrack = document.getElementById('processTrack');
+            const processCards = document.querySelectorAll('.process-card');
+            const processConnector = document.getElementById('processConnector');
+            
+            if (processTrack && processCards.length > 0) {
+                let activeIndex = 0;
+                let autoplayTimer;
+                
+                function updateSlider(index) {
+                    activeIndex = index;
+                    processCards.forEach((card, i) => {
+                        if (i === index) {
+                            card.classList.add('active');
+                        } else {
+                            card.classList.remove('active');
+                        }
+                    });
+                    
+                    if (processConnector) {
+                        const percentage = 10 + (index * 20);
+                        processConnector.style.width = percentage + '%';
+                    }
+                }
+                
+                function startAutoplay() {
+                    stopAutoplay();
+                    autoplayTimer = setInterval(() => {
+                        let nextIndex = (activeIndex + 1) % processCards.length;
+                        updateSlider(nextIndex);
+                        
+                        if (window.innerWidth <= 1024 && processCards[nextIndex]) {
+                            processTrack.scrollTo({
+                                left: processCards[nextIndex].offsetLeft - 20,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 4000);
+                }
+                
+                function stopAutoplay() {
+                    if (autoplayTimer) clearInterval(autoplayTimer);
+                }
+                
+                processCards.forEach((card, i) => {
+                    card.addEventListener('mouseenter', () => {
+                        if (window.innerWidth > 1024) {
+                            stopAutoplay();
+                            updateSlider(i);
+                        }
+                    });
+                    card.addEventListener('click', () => {
+                        stopAutoplay();
+                        updateSlider(i);
+                        if (window.innerWidth <= 1024) {
+                            processTrack.scrollTo({
+                                left: card.offsetLeft - 20,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+                
+                processTrack.addEventListener('mouseenter', stopAutoplay);
+                processTrack.addEventListener('mouseleave', () => {
+                    if (window.innerWidth > 1024) startAutoplay();
+                });
+                
+                if (window.innerWidth <= 1024) {
+                    let isScrolling;
+                    processTrack.addEventListener('scroll', () => {
+                        window.clearTimeout(isScrolling);
+                        isScrolling = setTimeout(function() {
+                            let closestIndex = 0;
+                            let minDistance = Infinity;
+                            const trackCenter = processTrack.scrollLeft + (processTrack.clientWidth / 2);
+                            
+                            processCards.forEach((card, i) => {
+                                const cardCenter = card.offsetLeft + (card.clientWidth / 2);
+                                const dist = Math.abs(trackCenter - cardCenter);
+                                if (dist < minDistance) {
+                                    minDistance = dist;
+                                    closestIndex = i;
+                                }
+                            });
+                            
+                            if (closestIndex !== activeIndex) {
+                                updateSlider(closestIndex);
+                            }
+                        }, 66);
+                    }, { passive: true });
+                }
+                
+                updateSlider(0);
+                startAutoplay();
+            }
+
+            // Hero Animation Sequencer
+            const heroAnim = document.getElementById('heroAnim');
+            if(heroAnim) {
+                let currentScene = 1;
+                let animTimeout;
+                
+                const sceneDurations = {
+                    1: 3000, 2: 3500, 3: 3500, 4: 3500, 
+                    5: 3000, 6: 3000, 7: 3500, 8: 3000, 9: 3500, 10: 1000  
+                };
+
+                const dots = document.querySelectorAll('#heroDots .dot');
+
+                function updateDots(scene) {
+                    dots.forEach((dot, index) => {
+                        if(index + 1 === scene) dot.classList.add('active');
+                        else dot.classList.remove('active');
+                    });
+                }
+
+                function playNextScene() {
+                    let duration = sceneDurations[currentScene] || 2000;
+                    
+                    if (currentScene === 10) {
+                        currentScene = 1;
+                        heroAnim.setAttribute('data-scene', currentScene);
+                        updateDots(currentScene);
+                        animTimeout = setTimeout(playNextScene, sceneDurations[1]);
+                    } else {
+                        currentScene++;
+                        heroAnim.setAttribute('data-scene', currentScene);
+                        if(currentScene < 10) updateDots(currentScene);
+                        animTimeout = setTimeout(playNextScene, sceneDurations[currentScene]);
+                    }
+                }
+                
+                dots.forEach(dot => {
+                    dot.addEventListener('click', function() {
+                        clearTimeout(animTimeout);
+                        currentScene = parseInt(this.getAttribute('data-target'));
+                        heroAnim.setAttribute('data-scene', currentScene);
+                        updateDots(currentScene);
+                        animTimeout = setTimeout(playNextScene, sceneDurations[currentScene]);
+                    });
+                });
+
+                animTimeout = setTimeout(playNextScene, sceneDurations[1]);
+            }
+
+            // Homepage Escrow Calculator Logic
+            const calcAmountInput = document.getElementById('calcHomeAmount');
+            const calcPresets = document.querySelectorAll('.calc-preset-chip');
+            const calcPayerBtns = document.querySelectorAll('.calc-payer-btn');
+            
+            let currentPayer = 'shared_50';
+
+            function getChargePct(amount) {
+                if (amount >= 1000 && amount <= 5000) return 5;
+                if (amount > 5000 && amount <= 10000) return 4.5;
+                if (amount > 10000 && amount <= 15000) return 4;
+                if (amount > 15000) return 3;
+                return 5;
+            }
+
+            function formatBDT(num) {
+                return '৳' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            function updateCalculator() {
+                if(!calcAmountInput) return;
+                let amount = parseFloat(calcAmountInput.value) || 0;
+                if(amount < 1000) amount = 1000;
+
+                const pct = getChargePct(amount);
+                const totalFee = amount * (pct / 100);
+                
+                let buyerFee = 0;
+                let sellerFee = 0;
+                let buyerSubText = '';
+                let sellerSubText = '';
+
+                if (currentPayer === 'shared_50') {
+                    buyerFee = totalFee / 2;
+                    sellerFee = totalFee / 2;
+                    buyerSubText = 'Deal + 50% escrow fee';
+                    sellerSubText = 'Deal - 50% escrow fee';
+                } else if (currentPayer === 'buyer_100') {
+                    buyerFee = totalFee;
+                    sellerFee = 0;
+                    buyerSubText = 'Deal + 100% escrow fee';
+                    sellerSubText = 'Full deal amount (0% fee)';
+                } else if (currentPayer === 'seller_100') {
+                    buyerFee = 0;
+                    sellerFee = totalFee;
+                    buyerSubText = 'Exact deal amount (0% fee)';
+                    sellerSubText = 'Deal - 100% escrow fee';
+                }
+
+                const buyerPays = amount + buyerFee;
+                const sellerGets = Math.max(0, amount - sellerFee);
+
+                // Update UI elements
+                const elTierText = document.getElementById('calcTierText');
+                const elValAmount = document.getElementById('calcValAmount');
+                const elValRate = document.getElementById('calcValRate');
+                const elValFee = document.getElementById('calcValFee');
+                const elBuyerPays = document.getElementById('calcBuyerPays');
+                const elSellerGets = document.getElementById('calcSellerGets');
+                const elBuyerSub = document.getElementById('calcBuyerSub');
+                const elSellerSub = document.getElementById('calcSellerSub');
+
+                if (elTierText) {
+                    let tierDesc = 'for deals over ৳15,000';
+                    if (amount <= 5000) tierDesc = 'for deals ৳1,000 – ৳5,000';
+                    else if (amount <= 10000) tierDesc = 'for deals ৳5,001 – ৳10,000';
+                    else if (amount <= 15000) tierDesc = 'for deals ৳10,001 – ৳15,000';
+                    elTierText.innerHTML = `Applied: <strong>৳{pct}%</strong> (${tierDesc})`;
+                }
+
+                // Highlight active tier card
+                const t1 = document.getElementById('tierCard1');
+                const t2 = document.getElementById('tierCard2');
+                const t3 = document.getElementById('tierCard3');
+                const t4 = document.getElementById('tierCard4');
+                if (t1 && t2 && t3 && t4) {
+                    [t1, t2, t3, t4].forEach(c => c.classList.remove('active'));
+                    if (amount <= 5000) t1.classList.add('active');
+                    else if (amount <= 10000) t2.classList.add('active');
+                    else if (amount <= 15000) t3.classList.add('active');
+                    else t4.classList.add('active');
+                }
+
+                if (elValAmount) elValAmount.innerText = formatBDT(amount);
+                if (elValRate) elValRate.innerText = `${pct}%`;
+                if (elValFee) elValFee.innerText = formatBDT(totalFee);
+                if (elBuyerPays) elBuyerPays.innerText = formatBDT(buyerPays);
+                if (elSellerGets) elSellerGets.innerText = formatBDT(sellerGets);
+                if (elBuyerSub) elBuyerSub.innerText = buyerSubText;
+                if (elSellerSub) elSellerSub.innerText = sellerSubText;
+            }
+
+            if (calcAmountInput) {
+                calcAmountInput.addEventListener('input', () => {
+                    calcPresets.forEach(chip => chip.classList.remove('active'));
+                    updateCalculator();
+                });
+
+                calcPresets.forEach(chip => {
+                    chip.addEventListener('click', function() {
+                        calcPresets.forEach(c => c.classList.remove('active'));
+                        this.classList.add('active');
+                        calcAmountInput.value = this.getAttribute('data-amount');
+                        updateCalculator();
+                    });
+                });
+
+                const tierCards = document.querySelectorAll('.calc-tier-card');
+                tierCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        const targetAmount = this.getAttribute('data-amount');
+                        if (targetAmount && calcAmountInput) {
+                            calcPresets.forEach(c => {
+                                if (c.getAttribute('data-amount') === targetAmount) c.classList.add('active');
+                                else c.classList.remove('active');
+                            });
+                            calcAmountInput.value = targetAmount;
+                            updateCalculator();
+                        }
+                    });
+                });
+
+                calcPayerBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        calcPayerBtns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        currentPayer = this.getAttribute('data-payer');
+                        updateCalculator();
+                    });
+                });
+
+                // Initial calculation
+                updateCalculator();
+            }
+        });
+    </script>
+    @include('partials.ai-chat-widget')
+</body>
 </html>
