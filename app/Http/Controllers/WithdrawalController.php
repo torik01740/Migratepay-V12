@@ -113,13 +113,20 @@ class WithdrawalController extends Controller
     public function adminApprove(Request $request, int $id): JsonResponse
     {
         $request->validate(['admin_note' => 'nullable|string|max:500']);
-        $withdrawal = $this->withdrawalService->approveWithdrawal($id, Auth::user(), $request->input('admin_note'));
+        try {
+            $withdrawal = $this->withdrawalService->approveWithdrawal($id, Auth::user(), $request->input('admin_note'));
 
-        return response()->json([
-            'success'    => true,
-            'message'    => 'Withdrawal approved successfully.',
-            'withdrawal' => $withdrawal,
-        ]);
+            return response()->json([
+                'success'    => true,
+                'message'    => 'Withdrawal approved successfully.',
+                'withdrawal' => $withdrawal,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+        }
     }
 
     /**
@@ -128,12 +135,19 @@ class WithdrawalController extends Controller
     public function adminReject(Request $request, int $id): JsonResponse
     {
         $request->validate(['admin_note' => 'required|string|max:500']);
-        $withdrawal = $this->withdrawalService->rejectWithdrawal($id, Auth::user(), $request->input('admin_note'));
+        try {
+            $withdrawal = $this->withdrawalService->rejectWithdrawal($id, Auth::user(), $request->input('admin_note'));
 
-        return response()->json([
-            'success'    => true,
-            'message'    => 'Withdrawal rejected and funds refunded to user.',
-            'withdrawal' => $withdrawal,
-        ]);
+            return response()->json([
+                'success'    => true,
+                'message'    => 'Withdrawal rejected and funds refunded to user.',
+                'withdrawal' => $withdrawal,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+        }
     }
 }

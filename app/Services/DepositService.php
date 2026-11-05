@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Deposit;
 use App\Models\Notification;
 use App\Models\User;
+use App\Services\AuditLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -102,6 +103,12 @@ class DepositService
                 'reviewed_at' => now(),
             ]);
 
+            AuditLogService::log(
+                'finance.deposit_approved',
+                "Admin {$admin->email} approved deposit ID {$deposit->id} of ৳{$cleanAmount} ({$deposit->gateway})",
+                ['deposit_id' => $deposit->id, 'admin_id' => $admin->id, 'user_id' => $user->id, 'amount' => $cleanAmount]
+            );
+
             $transaction = $this->walletService->credit(
                 $user,
                 $cleanAmount,
@@ -147,6 +154,12 @@ class DepositService
                 'reviewed_by' => $admin->id,
                 'reviewed_at' => now(),
             ]);
+
+            AuditLogService::log(
+                'finance.deposit_rejected',
+                "Admin {$admin->email} rejected deposit ID {$deposit->id} of ৳{$deposit->amount}. Reason: {$adminNote}",
+                ['deposit_id' => $deposit->id, 'admin_id' => $admin->id, 'user_id' => $deposit->user_id, 'amount' => $deposit->amount, 'reason' => $adminNote]
+            );
 
             Notification::create([
                 'user_id'        => $deposit->user_id,

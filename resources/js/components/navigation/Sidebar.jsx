@@ -19,6 +19,9 @@ import {
     PlusIcon,
     ChatIcon,
     ActivityIcon,
+    SettingsIcon,
+    BellIcon,
+    MenuIcon,
 } from '../common/Icons';
 
 export const Sidebar = ({
@@ -45,14 +48,37 @@ export const Sidebar = ({
     ];
 
     const adminNavItems = [
+        // Operations
         { id: 'Dashboard', label: 'Control Tower', icon: DashboardIcon },
         { id: 'Users', label: 'User Directory', icon: UsersIcon },
         { id: 'Deposits', label: 'Deposit Requests', icon: DepositIcon, badge: 'Review' },
         { id: 'Withdrawals', label: 'Withdrawal Approvals', icon: WithdrawalIcon },
         { id: 'Deals', label: 'Disputes & Deals', icon: DealsIcon },
         { id: 'Gateways', label: 'Payment Vault', icon: GatewaysIcon },
+        { id: 'Charges', label: 'Commission Tiers', icon: WalletIcon },
         { id: 'Support', label: 'Support Queue', icon: SupportIcon },
+        { id: 'Reports', label: 'Dispute Reports', icon: ActivityIcon },
         { id: 'Analytics', label: 'System Analytics', icon: AnalyticsIcon },
+        // Content & Marketing
+        { id: 'Categories', label: 'Deal Categories', icon: PlusIcon },
+        { id: 'Coupons', label: 'Fee Coupons', icon: WalletIcon },
+        { id: 'Banners', label: 'Notice Banners', icon: ExternalLinkIcon },
+        { id: 'ManagePages', label: 'CMS Static Pages', icon: DealsIcon },
+        { id: 'Blog', label: 'Blog Engine', icon: ChatIcon },
+        { id: 'Media', label: 'Media Vault', icon: ExternalLinkIcon },
+        // Intelligence & Administration
+        { id: 'AiLiveChat', label: 'AI Support Assistant', icon: ChatIcon },
+        { id: 'ProjectSubmissions', label: 'Project Submissions', icon: DealsIcon },
+        { id: 'Announcements', label: 'Broadcast Alerts', icon: BellIcon },
+        { id: 'SiteSettings', label: 'Platform Branding', icon: SettingsIcon },
+        { id: 'StaffSettings', label: 'Staff Privileges', icon: UsersIcon },
+        { id: 'Menus', label: 'Navigation Menus', icon: MenuIcon },
+        { id: 'Backup', label: 'Database Backup', icon: SecurityIcon },
+        { id: 'Reviews', label: 'Review Moderation', icon: UsersIcon },
+        { id: 'KnowledgeBase', label: 'Knowledge Base', icon: SupportIcon },
+        { id: 'Ledger', label: 'Master Ledger Audit', icon: ActivityIcon },
+        { id: 'Security', label: 'Security Policies', icon: SecurityIcon },
+        { id: 'Alerts', label: 'Operational Alerts', icon: ActivityIcon, badge: 'Alerts' },
     ];
 
     const navItems = portal === 'admin' ? adminNavItems : userNavItems;
@@ -69,9 +95,9 @@ export const Sidebar = ({
             borderRightWidth="1px"
             borderColor="whiteAlpha.100"
         >
-            <Box>
+            <Box display="flex" flexDirection="column" flex={1} overflow="hidden">
                 {/* Brand Header */}
-                <Flex align="center" justify="space-between" mb={6} px={2} pt={2}>
+                <Flex align="center" justify="space-between" mb={4} px={2} pt={2} flexShrink={0}>
                     <HStack gap={3}>
                         <Flex
                             w={9}
@@ -119,7 +145,17 @@ export const Sidebar = ({
                 </Flex>
 
                 {/* Navigation Menu */}
-                <VStack gap={1} align="stretch">
+                <VStack
+                    gap={1}
+                    align="stretch"
+                    flex={1}
+                    overflowY="auto"
+                    pr={1}
+                    css={{
+                        '&::-webkit-scrollbar': { width: '4px' },
+                        '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.2)', borderRadius: '4px' },
+                    }}
+                >
                     <Text fontSize="2xs" fontWeight="700" color="whiteAlpha.500" textTransform="uppercase" px={3} py={1} letterSpacing="0.08em">
                         {portal === 'admin' ? 'Management Core' : 'Escrow Operations'}
                     </Text>

@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\Notification;
+use App\Models\SystemSetting;
 use App\Models\User;
 use App\Models\WithdrawalMethod;
 use App\Models\WithdrawalRequest;
+use App\Services\AuditLogService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -100,6 +102,13 @@ class WithdrawalService
      */
     public function requestWithdrawal(User $user, array $data): array
     {
+        // Enforce KYC requirement if active
+        if (SystemSetting::get('security.require_kyc_withdrawal', false)) {
+            if (!$user->isVerified()) {
+                throw new RuntimeException("Account identity verification (KYC) is required before requesting withdrawals. Please submit your identity verification documents in Profile & Verification.");
+            }
+        }
+
         $method = WithdrawalMethod::where('user_id', $user->id)->findOrFail($data['withdrawal_method_id']);
         $amount = DecimalSafeMath::canonicalize($data['amount'], 2);
 
@@ -181,6 +190,12 @@ class WithdrawalService
                 'processed_at' => now(),
             ]);
 
+            AuditLogService::log(
+                'finance.withdrawal_approved',
+                "Admin {$admin->email} approved withdrawal {$withdrawal->reference_id} of ৳{$withdrawal->amount}",
+                ['withdrawal_id' => $withdrawal->id, 'admin_id' => $admin->id, 'user_id' => $withdrawal->user_id, 'amount' => $withdrawal->amount]
+            );
+
             Notification::create([
                 'user_id'        => $withdrawal->user_id,
                 'type'           => 'withdrawal_approved',
@@ -215,6 +230,12 @@ class WithdrawalService
                 'reviewed_by' => $admin->id,
                 'reviewed_at' => now(),
             ]);
+
+            AuditLogService::log(
+                'finance.withdrawal_rejected',
+                "Admin {$admin->email} rejected withdrawal {$withdrawal->reference_id} of ৳{$cleanAmount}. Reason: {$adminNote}",
+                ['withdrawal_id' => $withdrawal->id, 'admin_id' => $admin->id, 'user_id' => $withdrawal->user_id, 'amount' => $cleanAmount, 'reason' => $adminNote]
+            );
 
             $this->walletService->credit(
                 $user,

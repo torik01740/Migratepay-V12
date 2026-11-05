@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Deal;
 use App\Models\Deposit;
 use App\Models\SupportTicketMessage;
+use App\Models\User;
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +19,7 @@ class FileAccessController extends Controller
     public function streamDepositReceipt(Request $request, Deposit $deposit): Response
     {
         $user = $request->user();
-        if (!$user || (!$user->isAdmin() && $user->id !== $deposit->user_id)) {
+        if (!$user || (!$user->isStaff() && $user->id !== $deposit->user_id)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized file access.'], 403);
         }
 
@@ -53,7 +55,7 @@ class FileAccessController extends Controller
         $user = $request->user();
         $ticket = $message->ticket;
 
-        if (!$ticket || !$user || (!$user->isAdmin() && $user->id !== $ticket->user_id)) {
+        if (!$ticket || !$user || (!$user->isStaff() && $user->id !== $ticket->user_id)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized file access.'], 403);
         }
 
@@ -86,7 +88,7 @@ class FileAccessController extends Controller
     public function streamDealDeliverable(Request $request, Deal $deal, string $filename): Response
     {
         $user = $request->user();
-        if (!$user || (!$user->isAdmin() && $user->id !== $deal->initiator_id && $user->id !== $deal->counterparty_id)) {
+        if (!$user || (!$user->isStaff() && $user->id !== $deal->initiator_id && $user->id !== $deal->counterparty_id)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized deliverable access.'], 403);
         }
 
@@ -112,6 +114,81 @@ class FileAccessController extends Controller
     }
 
     /**
+     * Stream authorized KYC identity verification document from private disk.
+     * Enforces strict least-privilege: Document owner, root Admin, or Co-Admin only.
+     * Editorial and Support roles are explicitly forbidden (HTTP 403).
+     */
+    public function streamKycDocument(Request $request, User $user): Response
+    {
+        $authUser = $request->user();
+        if (!$authUser) {
+            return response()->json(['success' => false, 'message' => 'Unauthenticated.'], 401);
+        }
+
+        $isOwner = ($authUser->id === $user->id);
+        $isComplianceStaff = ($authUser->isAdmin() || $authUser->hasRole('co-admin', 'co_admin'));
+
+        if (!$isOwner && !$isComplianceStaff) {
+            AuditLogService::log(
+                'kyc.unauthorized_access_attempt',
+                "User {$authUser->id} ({$authUser->role}) denied access to KYC document of user {$user->id}",
+                ['actor_id' => $authUser->id, 'role' => $authUser->role, 'target_user_id' => $user->id],
+                'warning'
+            );
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized KYC document access. Only the document owner or compliance administrators are permitted.',
+            ], 403);
+        }
+
+        if ($isComplianceStaff && !$isOwner) {
+            AuditLogService::log(
+                'kyc.document_viewed',
+                "Staff {$authUser->email} ({$authUser->role}) viewed KYC document for user {$user->id}",
+                ['staff_id' => $authUser->id, 'target_user_id' => $user->id]
+            );
+        }
+
+        if (empty($user->kyc_document_path)) {
+            return response()->json(['success' => false, 'message' => 'KYC document not found.'], 404);
+        }
+
+        // Sanitize path against directory traversal
+        $filename = basename($user->kyc_document_path);
+        $path = "kyc/{$user->id}/" . $filename;
+        $rawPath = (str_contains($user->kyc_document_path, '..') || str_starts_with($user->kyc_document_path, '/'))
+            ? null
+            : $user->kyc_document_path;
+
+        try {
+            $disk = Storage::disk('private');
+            if ($disk->exists($path)) {
+                $chosenDisk = $disk;
+                $chosenPath = $path;
+            } elseif ($rawPath && $disk->exists($rawPath)) {
+                $chosenDisk = $disk;
+                $chosenPath = $rawPath;
+            } elseif (Storage::disk('local')->exists($path)) {
+                $chosenDisk = Storage::disk('local');
+                $chosenPath = $path;
+            } elseif ($rawPath && Storage::disk('local')->exists($rawPath)) {
+                $chosenDisk = Storage::disk('local');
+                $chosenPath = $rawPath;
+            } else {
+                return response()->json(['success' => false, 'message' => 'Physical document file not found.'], 404);
+            }
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => 'Physical document file not found.'], 404);
+        }
+
+        return $chosenDisk->response($chosenPath, $filename, [
+            'Cache-Control' => 'private, no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
+    }
+
+    /**
      * Unified streaming endpoint by type and identifier.
      */
     public function streamById(Request $request, string $type, int $id): Response
@@ -124,6 +201,11 @@ class FileAccessController extends Controller
         if ($type === 'support_attachment') {
             $message = SupportTicketMessage::findOrFail($id);
             return $this->streamSupportAttachment($request, $message);
+        }
+
+        if ($type === 'kyc') {
+            $targetUser = User::findOrFail($id);
+            return $this->streamKycDocument($request, $targetUser);
         }
 
         return response()->json(['success' => false, 'message' => 'Invalid file stream request.'], 400);

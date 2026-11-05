@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SystemSetting;
 use App\Models\User;
+use App\Services\AuditLogService;
+use App\Services\MfaService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,12 +30,37 @@ class AuthController extends Controller
         ]);
 
         $credentials['email'] = strtolower(trim($credentials['email']));
+        $throttleKey = 'login:' . $request->ip() . '|' . $credentials['email'];
+        $maxAttempts = (int)SystemSetting::get('security.max_failed_logins', 5);
+
+        if (RateLimiter::tooManyAttempts($throttleKey, $maxAttempts)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            AuditLogService::log(
+                'auth.lockout',
+                "Account temporarily locked due to excessive failed logins: {$credentials['email']}",
+                ['email' => $credentials['email'], 'ip' => $request->ip(), 'max_attempts' => $maxAttempts, 'retry_after_seconds' => $seconds],
+                'warning'
+            );
+
+            return response()->json([
+                'success' => false,
+                'message' => "Too many failed login attempts. Account temporarily locked. Please try again in {$seconds} seconds.",
+            ], 429);
+        }
 
         if (Auth::attempt($credentials, true)) {
+            RateLimiter::clear($throttleKey);
             $user = Auth::user();
 
             // Check if user is suspended or banned
             if (in_array(strtolower($user->status), ['suspended', 'banned', 'inactive'])) {
+                AuditLogService::log(
+                    'auth.login_blocked',
+                    "Blocked login attempt for suspended/inactive user: {$user->email}",
+                    ['user_id' => $user->id, 'status' => $user->status, 'ip' => $request->ip()],
+                    'warning'
+                );
+
                 Auth::logout();
                 $request->session()->invalidate();
                 return response()->json([
@@ -43,14 +71,53 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
+            // Check if two-factor authentication is active on this account
+            if ($user->hasTwoFactorEnabled()) {
+                $request->session()->put('mfa.pending_user_id', $user->id);
+                $request->session()->put('mfa.pending_remember', $request->boolean('remember', true));
+                $request->session()->put('mfa.pending_expires_at', now()->addMinutes(5)->timestamp);
+
+                AuditLogService::log(
+                    'mfa.challenge_prompted',
+                    "MFA challenge prompted for user: {$user->email}",
+                    ['user_id' => $user->id, 'ip' => $request->ip()]
+                );
+
+                Auth::logout();
+
+                return response()->json([
+                    'success'      => true,
+                    'requires_mfa' => true,
+                    'message'      => 'Two-factor authentication code required.',
+                    'email'        => $user->email,
+                ]);
+            }
+
+            $request->session()->put('auth.mfa_verified', true);
+
+            AuditLogService::log(
+                'auth.login_success',
+                "User {$user->email} logged in successfully",
+                ['user_id' => $user->id, 'role' => $user->role, 'ip' => $request->ip()]
+            );
+
             return response()->json([
                 'success'  => true,
                 'message'  => 'Login successful',
                 'user'     => $user,
                 'role'     => $user->role,
-                'redirect' => $user->role === 'admin' ? '/admin' : '/dashboard',
+                'redirect' => $user->isStaff() ? '/admin' : '/dashboard',
             ]);
         }
+
+        RateLimiter::hit($throttleKey, 300);
+
+        AuditLogService::log(
+            'auth.login_failed',
+            "Failed login attempt for {$credentials['email']}",
+            ['email' => $credentials['email'], 'ip' => $request->ip()],
+            'warning'
+        );
 
         return response()->json([
             'success' => false,
@@ -63,6 +130,10 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
+        if ($user = Auth::user()) {
+            AuditLogService::log('auth.logout', "User {$user->email} logged out", ['user_id' => $user->id, 'ip' => $request->ip()]);
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -70,6 +141,76 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Logged out successfully.',
+        ]);
+    }
+
+    /**
+     * Complete MFA challenge during login authentication.
+     */
+    public function verifyMfa(Request $request, MfaService $mfaService): JsonResponse
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        $throttleKey = 'mfa_verify:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return response()->json([
+                'success' => false,
+                'message' => "Too many invalid attempts. Please try again in {$seconds} seconds.",
+            ], 429);
+        }
+
+        $pendingUserId = $request->session()->get('mfa.pending_user_id');
+        $expiresAt = $request->session()->get('mfa.pending_expires_at', 0);
+
+        if (!$pendingUserId || now()->timestamp > $expiresAt) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Two-factor authentication session expired. Please log in again.',
+            ], 401);
+        }
+
+        $user = User::find($pendingUserId);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User account not found.',
+            ], 404);
+        }
+
+        $verification = $mfaService->verifyCodeOrRecovery($user, $request->input('code'));
+
+        if (!$verification['valid']) {
+            RateLimiter::hit($throttleKey, 300);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid authentication code or recovery code.',
+            ], 422);
+        }
+
+        RateLimiter::clear($throttleKey);
+
+        $remember = (bool)$request->session()->get('mfa.pending_remember', true);
+        Auth::login($user, $remember);
+
+        $request->session()->forget(['mfa.pending_user_id', 'mfa.pending_remember', 'mfa.pending_expires_at']);
+        $request->session()->put('auth.mfa_verified', true);
+        $request->session()->regenerate();
+
+        AuditLogService::log(
+            'auth.login_success_mfa',
+            "User {$user->email} completed MFA challenge ({$verification['type']}) and logged in successfully",
+            ['user_id' => $user->id, 'type' => $verification['type'], 'ip' => $request->ip()]
+        );
+
+        return response()->json([
+            'success'  => true,
+            'message'  => 'Two-factor authentication verified successfully.',
+            'user'     => $user,
+            'role'     => $user->role,
+            'redirect' => $user->isStaff() ? '/admin' : '/dashboard',
         ]);
     }
 
@@ -230,7 +371,21 @@ class AuthController extends Controller
         }
 
         $user->password = Hash::make($request->password);
+        $user->setRememberToken(Str::random(60));
         $user->save();
+
+        // Invalidate other devices
+        try {
+            Auth::logoutOtherDevices($request->password);
+        } catch (\Throwable $e) {
+            // Non-critical if session driver is file/cookie
+        }
+
+        AuditLogService::log(
+            'auth.password_changed',
+            "Password changed for user ID {$user->id}",
+            ['user_id' => $user->id, 'ip' => $request->ip()]
+        );
 
         return response()->json([
             'success' => true,
@@ -380,9 +535,16 @@ class AuthController extends Controller
         }
 
         $user->password = Hash::make($request->password);
+        $user->setRememberToken(Str::random(60));
         $user->save();
 
         DB::table('password_reset_tokens')->where('email', $email)->delete();
+
+        AuditLogService::log(
+            'auth.password_reset',
+            "Password reset successfully completed for {$user->email}",
+            ['user_id' => $user->id, 'ip' => $request->ip()]
+        );
 
         return response()->json([
             'success' => true,

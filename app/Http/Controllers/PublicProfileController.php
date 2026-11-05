@@ -15,7 +15,7 @@ class PublicProfileController extends Controller
     public function index(Request $request)
     {
         $query = User::with('reviewsReceived')
-            ->where('role', '!=', 'admin');
+            ->whereNotIn('role', ['admin', 'co-admin', 'editorial', 'editorial-team', 'support', 'support-team']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -35,6 +35,12 @@ class PublicProfileController extends Controller
         }
 
         $profiles = $query->orderBy('created_at', 'desc')->paginate(12)->withQueryString();
+
+        // Sanitize sensitive attributes
+        $profiles->getCollection()->transform(function ($u) {
+            $u->makeHidden(['wallet_balance', 'nid_number', 'kyc_document_path', 'rejection_reason', 'phone']);
+            return $u;
+        });
 
         if ($request->wantsJson() || $request->is('api/*')) {
             return response()->json([
@@ -59,10 +65,13 @@ class PublicProfileController extends Controller
             })
             ->firstOrFail();
 
-        // Never expose administrator profile publicly
-        if ($user->role === 'admin') {
+        // Never expose staff or administrator profiles publicly
+        if ($user->isStaff()) {
             abort(404, 'User profile not found.');
         }
+
+        // Sanitize sensitive customer attributes from public response
+        $user->makeHidden(['wallet_balance', 'nid_number', 'kyc_document_path', 'rejection_reason', 'phone']);
 
         $completedDealsCount = Deal::where(function ($q) use ($user) {
             $q->where('initiator_id', $user->id)

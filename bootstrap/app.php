@@ -21,8 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'api/payments/webhook/*',
         ]);
 
+        $middleware->web(append: [
+            \App\Http\Middleware\EnforceSessionTimeout::class,
+        ]);
+
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'session.timeout' => \App\Http\Middleware\EnforceSessionTimeout::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

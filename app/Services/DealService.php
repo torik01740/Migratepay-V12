@@ -401,8 +401,13 @@ class DealService
         return DB::transaction(function () use ($id, $user) {
             $deal = Deal::lockForUpdate()->findOrFail($id);
 
-            if (!in_array($deal->status, ['funds_secured', 'buyer_review'])) {
-                throw new RuntimeException('Funds cannot be released at this stage.');
+            // Explicit allowlist of valid source states for buyer fund release
+            $permittedStates = ['funds_secured', 'buyer_review'];
+            if (!in_array($deal->status, $permittedStates, true)) {
+                if (in_array($deal->status, ['completed', 'released'], true)) {
+                    throw new RuntimeException('Funds already released.');
+                }
+                throw new RuntimeException("Funds cannot be released at this stage (current status: '{$deal->status}').");
             }
 
             if (!$this->isBuyer($deal, $user)) {
@@ -453,8 +458,17 @@ class DealService
         return DB::transaction(function () use ($id, $admin) {
             $deal = Deal::lockForUpdate()->findOrFail($id);
 
-            if (in_array($deal->status, ['completed', 'released'])) {
-                throw new RuntimeException('Funds already released.');
+            // Workstream B: Explicit allowlist of valid source states for admin fund release
+            $permittedStates = ['funds_secured', 'buyer_review', 'disputed'];
+            if (!in_array($deal->status, $permittedStates, true)) {
+                if (in_array($deal->status, ['completed', 'released'], true)) {
+                    throw new RuntimeException('Funds already released.');
+                }
+                throw new RuntimeException("Cannot release funds: deal is currently in '{$deal->status}' status. Escrow funds must be in " . implode(', ', $permittedStates) . ".");
+            }
+
+            if ($deal->admin_approved) {
+                throw new RuntimeException('Funds already approved.');
             }
 
             $seller = $this->getSeller($deal);

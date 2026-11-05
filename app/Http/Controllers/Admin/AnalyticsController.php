@@ -79,6 +79,13 @@ class AnalyticsController extends Controller
         $otherCount = User::whereNotIn(DB::raw('LOWER(gender)'), ['male', 'female'])->orWhereNull('gender')->count();
 
         return response()->json([
+            'barData' => $barData,
+            'metrics' => [
+                'monthlyVolume'   => $totalVolume,
+                'activeUsers'     => $totalUsers,
+                'dealSuccessRate' => $successRate,
+                'disputeRate'     => $disputeRate,
+            ],
             'volume' => [
                 'chart_data'   => $barData,
                 'total_deals'  => $totalDeals,

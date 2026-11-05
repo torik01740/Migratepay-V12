@@ -1,25 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Text, Button } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { DashboardLayout } from './DashboardLayout';
+
+// Core Reconstructed Modules
 import { AdminDashboardHome } from '../pages/dashboard/admin/DashboardHome';
-import { DashboardCard } from '../components/common/DashboardCard';
+import { UsersManagementModule } from '../pages/dashboard/admin/UsersManagementModule';
+import { DepositsManagementModule } from '../pages/dashboard/admin/DepositsManagementModule';
+import { WithdrawalsManagementModule } from '../pages/dashboard/admin/WithdrawalsManagementModule';
+import { DealsManagementModule } from '../pages/dashboard/admin/DealsManagementModule';
+import { PaymentGatewaysModule } from '../pages/dashboard/admin/PaymentGatewaysModule';
+import { ChargeManagementModule } from '../pages/dashboard/admin/ChargeManagementModule';
+import { SupportTicketsModule } from '../pages/dashboard/admin/SupportTicketsModule';
+import { ReportsManagementModule } from '../pages/dashboard/admin/ReportsManagementModule';
+import { AnalyticsModule } from '../pages/dashboard/admin/AnalyticsModule';
+import { ManageCategoryModule } from '../pages/dashboard/admin/ManageCategoryModule';
+import { CouponsModule } from '../pages/dashboard/admin/CouponsModule';
+import { BannersModule } from '../pages/dashboard/admin/BannersModule';
+import { ManagePagesModule } from '../pages/dashboard/admin/ManagePagesModule';
+import { BlogPostsModule } from '../pages/dashboard/admin/BlogPostsModule';
+import { MediaModule } from '../pages/dashboard/admin/MediaModule';
+import { AiLiveChatModule } from '../pages/dashboard/admin/AiLiveChatModule';
+import { ProjectSubmissionModule } from '../pages/dashboard/admin/ProjectSubmissionModule';
+import { AnnouncementsModule } from '../pages/dashboard/admin/AnnouncementsModule';
+import { SiteSettingsModule } from '../pages/dashboard/admin/SiteSettingsModule';
+import { UserSettingsModule } from '../pages/dashboard/admin/UserSettingsModule';
+import { MenusModule } from '../pages/dashboard/admin/MenusModule';
+import { BackupModule } from '../pages/dashboard/admin/BackupModule';
+import { ReviewsModerationModule } from '../pages/dashboard/admin/ReviewsModerationModule';
+import { KnowledgeBaseModule } from '../pages/dashboard/admin/KnowledgeBaseModule';
+import { LedgerAuditModule } from '../pages/dashboard/admin/LedgerAuditModule';
+import { SecurityPoliciesModule } from '../pages/dashboard/admin/SecurityPoliciesModule';
+import { SystemAlertsModule, UnreadBanner } from '../pages/dashboard/admin/SystemAlertsModule';
+
+const ROUTE_NAV_MAP = {
+    users: 'Users',
+    deposits: 'Deposits',
+    withdrawals: 'Withdrawals',
+    deals: 'Deals',
+    gateways: 'Gateways',
+    charges: 'Charges',
+    support: 'Support',
+    reports: 'Reports',
+    analytics: 'Analytics',
+    categories: 'Categories',
+    coupons: 'Coupons',
+    banners: 'Banners',
+    cms: 'ManagePages',
+    pages: 'ManagePages',
+    blog: 'Blog',
+    media: 'Media',
+    aichat: 'AiLiveChat',
+    submissions: 'ProjectSubmissions',
+    announcements: 'Announcements',
+    sitesettings: 'SiteSettings',
+    staff: 'StaffSettings',
+    usersettings: 'StaffSettings',
+    menus: 'Menus',
+    backup: 'Backup',
+    reviews: 'Reviews',
+    kb: 'KnowledgeBase',
+    knowledgebase: 'KnowledgeBase',
+    ledger: 'Ledger',
+    security: 'Security',
+    alerts: 'Alerts',
+};
 
 export const AdminLayout = () => {
     const [activeNav, setActiveNav] = useState(() => {
         if (typeof window !== 'undefined') {
             const pathParts = window.location.pathname.split('/');
             const sub = pathParts[2];
-            if (sub) {
-                const map = {
-                    users: 'Users',
-                    deposits: 'Deposits',
-                    withdrawals: 'Withdrawals',
-                    deals: 'Deals',
-                    gateways: 'Gateways',
-                    support: 'Support',
-                    analytics: 'Analytics',
-                };
-                return map[sub.toLowerCase()] || 'Dashboard';
+            if (sub && ROUTE_NAV_MAP[sub.toLowerCase()]) {
+                return ROUTE_NAV_MAP[sub.toLowerCase()];
             }
         }
         return 'Dashboard';
@@ -41,8 +93,8 @@ export const AdminLayout = () => {
             } else {
                 const pathParts = window.location.pathname.split('/');
                 const sub = pathParts[2];
-                if (sub) {
-                    setActiveNav(sub.charAt(0).toUpperCase() + sub.slice(1));
+                if (sub && ROUTE_NAV_MAP[sub.toLowerCase()]) {
+                    setActiveNav(ROUTE_NAV_MAP[sub.toLowerCase()]);
                 } else {
                     setActiveNav('Dashboard');
                 }
@@ -54,36 +106,66 @@ export const AdminLayout = () => {
     }, []);
 
     const renderContent = () => {
-        if (activeNav === 'Dashboard') {
-            return <AdminDashboardHome onNavigate={handleNavSelect} />;
+        switch (activeNav) {
+            case 'Dashboard':
+                return <AdminDashboardHome onNavigate={handleNavSelect} />;
+            case 'Users':
+                return <UsersManagementModule />;
+            case 'Deposits':
+                return <DepositsManagementModule />;
+            case 'Withdrawals':
+                return <WithdrawalsManagementModule />;
+            case 'Deals':
+                return <DealsManagementModule />;
+            case 'Gateways':
+                return <PaymentGatewaysModule />;
+            case 'Charges':
+                return <ChargeManagementModule />;
+            case 'Support':
+                return <SupportTicketsModule />;
+            case 'Reports':
+                return <ReportsManagementModule />;
+            case 'Analytics':
+                return <AnalyticsModule />;
+            case 'Categories':
+                return <ManageCategoryModule />;
+            case 'Coupons':
+                return <CouponsModule />;
+            case 'Banners':
+                return <BannersModule />;
+            case 'ManagePages':
+                return <ManagePagesModule />;
+            case 'Blog':
+                return <BlogPostsModule />;
+            case 'Media':
+                return <MediaModule />;
+            case 'AiLiveChat':
+                return <AiLiveChatModule />;
+            case 'ProjectSubmissions':
+                return <ProjectSubmissionModule />;
+            case 'Announcements':
+                return <AnnouncementsModule />;
+            case 'SiteSettings':
+                return <SiteSettingsModule />;
+            case 'StaffSettings':
+                return <UserSettingsModule />;
+            case 'Menus':
+                return <MenusModule />;
+            case 'Backup':
+                return <BackupModule />;
+            case 'Reviews':
+                return <ReviewsModerationModule />;
+            case 'KnowledgeBase':
+                return <KnowledgeBaseModule />;
+            case 'Ledger':
+                return <LedgerAuditModule />;
+            case 'Security':
+                return <SecurityPoliciesModule />;
+            case 'Alerts':
+                return <SystemAlertsModule onNavigate={handleNavSelect} />;
+            default:
+                return <AdminDashboardHome onNavigate={handleNavSelect} />;
         }
-
-        return (
-            <DashboardCard
-                title={`${activeNav} Management Console`}
-                subtitle="Scheduled for full reconstruction in Phase 8."
-            >
-                <Box p={8} textAlign="center">
-                    <Heading size="lg" color="#0A1128" mb={2}>
-                        {activeNav} Administrative Queue
-                    </Heading>
-                    <Text fontSize="sm" color="gray.600" maxW="520px" mx="auto" mb={6}>
-                        The administrative authentication barrier, Chakra UI 3 provider, navigation shell, and API services are established.
-                        The comprehensive administrative {activeNav.toLowerCase()} control panels will be migrated in <strong>Phase 8 (Admin Dashboard Reconstruction)</strong>.
-                    </Text>
-                    <Button
-                        size="sm"
-                        bg="#DC2626"
-                        color="white"
-                        _hover={{ bg: '#B91C1C' }}
-                        onClick={() => handleNavSelect('Dashboard')}
-                        borderRadius="lg"
-                    >
-                        Back to Control Tower
-                    </Button>
-                </Box>
-            </DashboardCard>
-        );
     };
 
     return (
@@ -92,10 +174,14 @@ export const AdminLayout = () => {
             activeNav={activeNav}
             onNavSelect={handleNavSelect}
         >
-            {renderContent()}
+            <Box>
+                {activeNav !== 'Alerts' && activeNav !== 'Deposits' && (
+                    <UnreadBanner onNavigate={handleNavSelect} />
+                )}
+                {renderContent()}
+            </Box>
         </DashboardLayout>
     );
 };
 
 export default AdminLayout;
-

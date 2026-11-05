@@ -56,6 +56,11 @@ class User extends Authenticatable
         'verification_updated_at',
         'gender',
         'id_type',
+        'kyc_document_path',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
+        'two_factor_pending_secret',
     ];
 
     /**
@@ -66,6 +71,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_pending_secret',
     ];
 
     /**
@@ -86,7 +94,17 @@ class User extends Authenticatable
             'verified_at' => 'datetime',
             'verification_updated_at' => 'datetime',
             'date_of_birth' => 'date',
+            'two_factor_confirmed_at' => 'datetime',
+            'two_factor_recovery_codes' => 'array',
         ];
+    }
+
+    /**
+     * Determine if two-factor authentication is active for this account.
+     */
+    public function hasTwoFactorEnabled(): bool
+    {
+        return !empty($this->two_factor_secret) && $this->two_factor_confirmed_at !== null;
     }
 
     /**
@@ -94,7 +112,26 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return strtolower((string)$this->role) === 'admin';
+    }
+
+    /**
+     * Check if user has any administrative or staff role.
+     */
+    public function isStaff(): bool
+    {
+        $role = strtolower(str_replace(['_', ' '], '-', (string)$this->role));
+        return in_array($role, ['admin', 'co-admin', 'editorial', 'editorial-team', 'support', 'support-team'], true);
+    }
+
+    /**
+     * Check if user has a specific role or one of given roles.
+     */
+    public function hasRole(string ...$roles): bool
+    {
+        $normalizedRoles = array_map(fn($r) => strtolower(str_replace(['_', ' '], '-', $r)), $roles);
+        $userRole = strtolower(str_replace(['_', ' '], '-', (string)$this->role));
+        return in_array($userRole, $normalizedRoles, true);
     }
 
     /**

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AiAdminController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
+use App\Http\Controllers\Admin\SecurityPolicyController;
 use App\Http\Controllers\AiSupportController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\FileAccessController;
+use App\Http\Controllers\MfaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\ProfileController;
@@ -73,7 +75,7 @@ Route::get('/dashboard/{any?}', function () {
 })->where('any', '.*')->name('dashboard');
 
 Route::get('/admin/{any?}', function () {
-    if (!auth()->check() || auth()->user()->role !== 'admin') {
+    if (!auth()->check() || !auth()->user()->isStaff()) {
         return redirect('/auth?role=admin');
     }
     $user = auth()->user();
@@ -92,6 +94,7 @@ Route::post('/api/logout', [AuthController::class, 'logout']);
 Route::post('/api/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/api/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/api/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/api/auth/mfa-verify', [AuthController::class, 'verifyMfa']);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 2. Public API Endpoints (Sanitized, No Secrets Exposed)
@@ -137,6 +140,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/api/change-password', [AuthController::class, 'updatePassword']);
     Route::post('/api/user/change-password', [AuthController::class, 'updatePassword']);
     Route::post('/api/user/request-verification', [AuthController::class, 'requestVerification']);
+
+    // Two-Factor Authentication (MFA / TOTP)
+    Route::get('/api/user/mfa/status', [MfaController::class, 'status']);
+    Route::post('/api/user/mfa/setup', [MfaController::class, 'setup']);
+    Route::post('/api/user/mfa/confirm', [MfaController::class, 'confirm']);
+    Route::post('/api/user/mfa/regenerate-recovery-codes', [MfaController::class, 'regenerateRecoveryCodes']);
+    Route::post('/api/user/mfa/disable', [MfaController::class, 'disable']);
 
     // Transactions History
     Route::get('/api/transactions', function () {
@@ -209,6 +219,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/private/deposits/{deposit}', [FileAccessController::class, 'streamDepositReceipt']);
     Route::get('/api/private/support-attachments/{message}', [FileAccessController::class, 'streamSupportAttachment']);
     Route::get('/api/private/deals/{deal}/deliverables/{filename}', [FileAccessController::class, 'streamDealDeliverable'])->where('filename', '.*');
+    Route::get('/api/private/kyc/{user}', [FileAccessController::class, 'streamKycDocument']);
     Route::get('/api/private/stream/{type}/{id}', [FileAccessController::class, 'streamById'])->name('private.files.stream');
 });
 
@@ -288,6 +299,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/blog', [CmsBlogController::class, 'adminBlogStore']);
         Route::put('/blog/{id}', [CmsBlogController::class, 'adminBlogUpdate']);
         Route::delete('/blog/{id}', [CmsBlogController::class, 'adminBlogDestroy']);
+
+        // Security Governance & Policies
+        Route::get('/security/policies', [SecurityPolicyController::class, 'getPolicies']);
+        Route::post('/security/policies', [SecurityPolicyController::class, 'updatePolicies']);
     });
 
     // Categories Admin Management

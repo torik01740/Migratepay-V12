@@ -12,7 +12,7 @@ import {
     Spinner,
 } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/useAuth';
-import { userProfileApi } from '../../../services/dashboardApi';
+import { userProfileApi, mfaApi } from '../../../services/dashboardApi';
 import authService from '../../../services/auth';
 import { PageHeader } from '../../../components/common/PageHeader';
 import { DashboardCard } from '../../../components/common/DashboardCard';
@@ -28,7 +28,7 @@ import {
 
 export const ProfileModule = () => {
     const { user, refreshUser } = useAuth();
-    const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'kyc' | 'password' | 'reviews'
+    const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'kyc' | 'password' | 'security' | 'reviews'
     const [saving, setSaving] = useState(false);
 
     // Profile Form
@@ -62,6 +62,35 @@ export const ProfileModule = () => {
     const [reviews, setReviews] = useState([]);
     const [loadingReviews, setLoadingReviews] = useState(false);
 
+    // 2FA / MFA State
+    const [mfaStatus, setMfaStatus] = useState({
+        loading: false,
+        enabled: false,
+        recovery_codes_remaining: 0,
+        confirmed_at: null,
+    });
+    const [mfaSetup, setMfaSetup] = useState({
+        active: false,
+        loading: false,
+        qr_code_url: '',
+        secret: '',
+        code: '',
+        confirming: false,
+    });
+    const [mfaRecoveryCodes, setMfaRecoveryCodes] = useState([]);
+    const [mfaDisableForm, setMfaDisableForm] = useState({
+        active: false,
+        password: '',
+        code: '',
+        loading: false,
+    });
+    const [mfaRegenForm, setMfaRegenForm] = useState({
+        active: false,
+        password: '',
+        code: '',
+        loading: false,
+    });
+
     useEffect(() => {
         if (user) {
             setProfile({
@@ -87,7 +116,116 @@ export const ProfileModule = () => {
                 .catch((e) => console.error(e))
                 .finally(() => setLoadingReviews(false));
         }
+        if (activeTab === 'security') {
+            loadMfaStatus();
+        }
     }, [activeTab, user?.id]);
+
+    const loadMfaStatus = async () => {
+        setMfaStatus((prev) => ({ ...prev, loading: true }));
+        try {
+            const res = await mfaApi.getStatus();
+            if (res.success) {
+                setMfaStatus({
+                    loading: false,
+                    enabled: !!res.mfa_enabled,
+                    recovery_codes_remaining: res.recovery_codes_remaining || 0,
+                    confirmed_at: res.confirmed_at,
+                });
+            }
+        } catch (err) {
+            console.error(err);
+            setMfaStatus((prev) => ({ ...prev, loading: false }));
+        }
+    };
+
+    const handleStartMfaSetup = async () => {
+        setMfaSetup((prev) => ({ ...prev, loading: true }));
+        try {
+            const res = await mfaApi.setup();
+            if (res.success) {
+                setMfaSetup({
+                    active: true,
+                    loading: false,
+                    qr_code_url: res.qr_code_url,
+                    secret: res.secret,
+                    code: '',
+                    confirming: false,
+                });
+            }
+        } catch (err) {
+            toaster.create({ title: 'Error', description: err?.response?.data?.message || err.message, type: 'error' });
+            setMfaSetup((prev) => ({ ...prev, loading: false }));
+        }
+    };
+
+    const handleConfirmMfa = async (e) => {
+        e.preventDefault();
+        if (!mfaSetup.code || mfaSetup.code.trim().length !== 6) {
+            toaster.create({ title: 'Invalid Code', description: 'Please enter a 6-digit TOTP code.', type: 'error' });
+            return;
+        }
+        setMfaSetup((prev) => ({ ...prev, confirming: true }));
+        try {
+            const res = await mfaApi.confirm(mfaSetup.code.trim());
+            if (res.success) {
+                toaster.create({ title: '2FA Activated', description: 'Two-factor authentication is now active on your account.', type: 'success' });
+                setMfaRecoveryCodes(res.recovery_codes || []);
+                setMfaSetup({ active: false, loading: false, qr_code_url: '', secret: '', code: '', confirming: false });
+                loadMfaStatus();
+                refreshUser();
+            } else {
+                toaster.create({ title: 'Verification Failed', description: res.message || 'Invalid code.', type: 'error' });
+            }
+        } catch (err) {
+            toaster.create({ title: 'Verification Failed', description: err?.response?.data?.message || 'Invalid or expired code.', type: 'error' });
+        } finally {
+            setMfaSetup((prev) => ({ ...prev, confirming: false }));
+        }
+    };
+
+    const handleRegenerateRecoveryCodes = async (e) => {
+        e.preventDefault();
+        setMfaRegenForm((prev) => ({ ...prev, loading: true }));
+        try {
+            const res = await mfaApi.regenerateRecoveryCodes({
+                password: mfaRegenForm.password,
+                code: mfaRegenForm.code,
+            });
+            if (res.success) {
+                toaster.create({ title: 'Recovery Codes Regenerated', description: 'Save your new emergency backup codes.', type: 'success' });
+                setMfaRecoveryCodes(res.recovery_codes || []);
+                setMfaRegenForm({ active: false, password: '', code: '', loading: false });
+                loadMfaStatus();
+            }
+        } catch (err) {
+            toaster.create({ title: 'Error', description: err?.response?.data?.message || err.message, type: 'error' });
+        } finally {
+            setMfaRegenForm((prev) => ({ ...prev, loading: false }));
+        }
+    };
+
+    const handleDisableMfa = async (e) => {
+        e.preventDefault();
+        setMfaDisableForm((prev) => ({ ...prev, loading: true }));
+        try {
+            const res = await mfaApi.disable({
+                password: mfaDisableForm.password,
+                code: mfaDisableForm.code,
+            });
+            if (res.success) {
+                toaster.create({ title: '2FA Disabled', description: 'Two-factor authentication has been removed from your account.', type: 'warning' });
+                setMfaDisableForm({ active: false, password: '', code: '', loading: false });
+                setMfaRecoveryCodes([]);
+                loadMfaStatus();
+                refreshUser();
+            }
+        } catch (err) {
+            toaster.create({ title: 'Error', description: err?.response?.data?.message || err.message, type: 'error' });
+        } finally {
+            setMfaDisableForm((prev) => ({ ...prev, loading: false }));
+        }
+    };
 
     const handleProfileSubmit = async (e) => {
         e.preventDefault();
@@ -195,6 +333,7 @@ export const ProfileModule = () => {
                     { id: 'profile', label: 'Personal Information' },
                     { id: 'kyc', label: 'KYC Verification' },
                     { id: 'password', label: 'Change Password' },
+                    { id: 'security', label: 'Two-Factor Auth (2FA)' },
                     { id: 'reviews', label: 'Customer Reviews' },
                 ].map((t) => (
                     <Button
@@ -396,6 +535,298 @@ export const ProfileModule = () => {
                             </Button>
                         </VStack>
                     </form>
+                </DashboardCard>
+            )}
+
+            {/* Tab: Two-Factor Authentication (2FA) */}
+            {activeTab === 'security' && (
+                <DashboardCard
+                    title="Two-Factor Authentication (TOTP / MFA)"
+                    subtitle="Protect your account, wallet, and deal escrow transactions with hardware or app-based authenticator codes."
+                >
+                    {mfaStatus.loading ? (
+                        <Flex justify="center" p={8}><Spinner size="md" color="#1769FF" /></Flex>
+                    ) : (
+                        <VStack gap={5} align="stretch">
+                            {/* Status Card */}
+                            <Box
+                                p={4}
+                                borderRadius="xl"
+                                borderWidth="1px"
+                                bg={mfaStatus.enabled ? '#ECFDF5' : '#FFFBEB'}
+                                borderColor={mfaStatus.enabled ? '#A7F3D0' : '#FDE68A'}
+                            >
+                                <Flex justify="space-between" align={{ base: 'flex-start', sm: 'center' }} direction={{ base: 'column', sm: 'row' }} gap={3}>
+                                    <HStack gap={3}>
+                                        <Flex
+                                            w={10}
+                                            h={10}
+                                            borderRadius="full"
+                                            bg={mfaStatus.enabled ? '#10B981' : '#F59E0B'}
+                                            color="white"
+                                            align="center"
+                                            justify="center"
+                                        >
+                                            {mfaStatus.enabled ? <CheckCircleIcon size={20} /> : <SecurityIcon size={20} />}
+                                        </Flex>
+                                        <Box>
+                                            <Flex align="center" gap={2}>
+                                                <Text fontSize="sm" fontWeight="800" color="#0A1128">
+                                                    Two-Factor Authentication
+                                                </Text>
+                                                <Badge
+                                                    colorPalette={mfaStatus.enabled ? 'green' : 'orange'}
+                                                    variant="solid"
+                                                    fontSize="2xs"
+                                                    px={2}
+                                                >
+                                                    {mfaStatus.enabled ? 'ACTIVE & ENFORCED' : 'DISABLED'}
+                                                </Badge>
+                                            </Flex>
+                                            <Text fontSize="xs" color="gray.600" mt={0.5}>
+                                                {mfaStatus.enabled
+                                                    ? `Enrolled with TOTP Authenticator. Confirmed: ${mfaStatus.confirmed_at ? new Date(mfaStatus.confirmed_at).toLocaleDateString() : 'Active'}. Single-use recovery codes remaining: ${mfaStatus.recovery_codes_remaining}.`
+                                                    : 'Add an extra layer of defense. An authenticator app (Google Authenticator, Authy, Microsoft Authenticator) will generate a verification code at login.'}
+                                            </Text>
+                                        </Box>
+                                    </HStack>
+
+                                    {!mfaStatus.enabled && !mfaSetup.active && (
+                                        <Button
+                                            size="sm"
+                                            bg="#002147"
+                                            color="white"
+                                            loading={mfaSetup.loading}
+                                            onClick={handleStartMfaSetup}
+                                            borderRadius="xl"
+                                            px={4}
+                                        >
+                                            Enable 2FA
+                                        </Button>
+                                    )}
+                                </Flex>
+                            </Box>
+
+                            {/* Freshly Generated Recovery Codes Alert */}
+                            {mfaRecoveryCodes.length > 0 && (
+                                <Box p={4} borderRadius="xl" bg="#FEF3C7" borderWidth="1px" borderColor="#F59E0B">
+                                    <Heading size="xs" color="#92400E" mb={1} display="flex" align="center" gap={2}>
+                                        <AlertCircleIcon size={16} /> Important: Save Your Emergency Recovery Codes
+                                    </Heading>
+                                    <Text fontSize="2xs" color="#78350F" mb={3}>
+                                        Store these single-use codes safely. If you lose access to your authenticator app, each code can be used once to access your account.
+                                    </Text>
+                                    <Grid templateColumns={{ base: '1fr 1fr', sm: '1fr 1fr 1fr 1fr' }} gap={2} mb={3}>
+                                        {mfaRecoveryCodes.map((code, idx) => (
+                                            <Box
+                                                key={idx}
+                                                p={2}
+                                                bg="white"
+                                                borderRadius="md"
+                                                borderWidth="1px"
+                                                borderColor="#FDE68A"
+                                                textAlign="center"
+                                                fontFamily="monospace"
+                                                fontSize="xs"
+                                                fontWeight="700"
+                                                color="#1E293B"
+                                            >
+                                                {code}
+                                            </Box>
+                                        ))}
+                                    </Grid>
+                                    <HStack gap={2}>
+                                        <Button
+                                            size="xs"
+                                            variant="outline"
+                                            borderColor="#D97706"
+                                            color="#92400E"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(mfaRecoveryCodes.join('\n'));
+                                                toaster.create({ title: 'Copied', description: 'Recovery codes copied to clipboard.', type: 'info' });
+                                            }}
+                                        >
+                                            Copy All Codes
+                                        </Button>
+                                        <Button
+                                            size="xs"
+                                            bg="#92400E"
+                                            color="white"
+                                            onClick={() => setMfaRecoveryCodes([])}
+                                        >
+                                            I Have Safely Saved Them
+                                        </Button>
+                                    </HStack>
+                                </Box>
+                            )}
+
+                            {/* Active Setup Flow */}
+                            {mfaSetup.active && !mfaStatus.enabled && (
+                                <Box p={5} borderRadius="xl" borderWidth="1px" borderColor="#CBD5E1" bg="white">
+                                    <Heading size="xs" color="#0A1128" mb={3}>
+                                        Setup Authenticator App
+                                    </Heading>
+                                    <Grid templateColumns={{ base: '1fr', md: '220px 1fr' }} gap={5} align="center">
+                                        <Box textAlign="center">
+                                            {mfaSetup.qr_code_url ? (
+                                                <img
+                                                    src={mfaSetup.qr_code_url}
+                                                    alt="MFA QR Code"
+                                                    style={{ width: '180px', height: '180px', margin: '0 auto', borderRadius: '12px', border: '1px solid #CBD5E1', padding: '8px', background: 'white' }}
+                                                />
+                                            ) : (
+                                                <Spinner size="lg" />
+                                            )}
+                                            <Text fontSize="3xs" color="gray.500" mt={1}>Scan with Google Authenticator or Authy</Text>
+                                        </Box>
+
+                                        <VStack align="stretch" gap={3}>
+                                            <Box>
+                                                <Text fontSize="xs" fontWeight="700" color="#0A1128">Step 1: Scan the QR Code</Text>
+                                                <Text fontSize="2xs" color="gray.600">Open your authenticator app, tap add account, and scan the QR code.</Text>
+                                                <Text fontSize="2xs" color="gray.500" mt={1}>
+                                                    Can't scan? Enter key manually: <code style={{ background: '#F1F5F9', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>{mfaSetup.secret}</code>
+                                                </Text>
+                                            </Box>
+
+                                            <form onSubmit={handleConfirmMfa}>
+                                                <Box mb={3}>
+                                                    <Text fontSize="xs" fontWeight="700" color="#0A1128" mb={1}>Step 2: Enter 6-digit verification code</Text>
+                                                    <input
+                                                        type="text"
+                                                        maxLength={6}
+                                                        value={mfaSetup.code}
+                                                        onChange={(e) => setMfaSetup({ ...mfaSetup, code: e.target.value.replace(/\D/g, '') })}
+                                                        placeholder="123456"
+                                                        style={{ width: '160px', padding: '8px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '16px', letterSpacing: '4px', textAlign: 'center', fontWeight: 'bold' }}
+                                                        required
+                                                    />
+                                                </Box>
+
+                                                <HStack gap={2}>
+                                                    <Button type="submit" size="sm" bg="#006A4E" color="white" loading={mfaSetup.confirming} borderRadius="lg">
+                                                        Verify & Activate 2FA
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => setMfaSetup({ active: false, loading: false, qr_code_url: '', secret: '', code: '', confirming: false })}
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                </HStack>
+                                            </form>
+                                        </VStack>
+                                    </Grid>
+                                </Box>
+                            )}
+
+                            {/* Active Enrolled Actions: Regenerate Codes & Disable 2FA */}
+                            {mfaStatus.enabled && (
+                                <VStack align="stretch" gap={3}>
+                                    <HStack gap={3} wrap="wrap">
+                                        <Button
+                                            size="xs"
+                                            variant="outline"
+                                            onClick={() => setMfaRegenForm(prev => ({ ...prev, active: !prev.active }))}
+                                            borderRadius="lg"
+                                        >
+                                            {mfaRegenForm.active ? 'Close Code Generator' : 'Regenerate Backup Codes'}
+                                        </Button>
+                                        <Button
+                                            size="xs"
+                                            variant="outline"
+                                            color="red.600"
+                                            borderColor="red.300"
+                                            onClick={() => setMfaDisableForm(prev => ({ ...prev, active: !prev.active }))}
+                                            borderRadius="lg"
+                                        >
+                                            {mfaDisableForm.active ? 'Cancel Disable' : 'Disable Two-Factor Auth'}
+                                        </Button>
+                                    </HStack>
+
+                                    {/* Regenerate Codes Form */}
+                                    {mfaRegenForm.active && (
+                                        <Box p={4} borderRadius="xl" borderWidth="1px" borderColor="#E2E8F0" bg="#F8FAFC">
+                                            <Heading size="xs" color="#0A1128" mb={2}>Confirm Backup Code Regeneration</Heading>
+                                            <Text fontSize="2xs" color="gray.600" mb={3}>
+                                                Generating new recovery codes will immediately invalidate all previously issued backup codes.
+                                            </Text>
+                                            <form onSubmit={handleRegenerateRecoveryCodes}>
+                                                <Grid templateColumns={{ base: '1fr', sm: '1fr 1fr' }} gap={3} mb={3}>
+                                                    <Box>
+                                                        <Text fontSize="2xs" fontWeight="700" color="#0A1128" mb={1}>Current Password *</Text>
+                                                        <input
+                                                            type="password"
+                                                            value={mfaRegenForm.password}
+                                                            onChange={(e) => setMfaRegenForm({ ...mfaRegenForm, password: e.target.value })}
+                                                            style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #CBD5E1', fontSize: '13px' }}
+                                                            required
+                                                        />
+                                                    </Box>
+                                                    <Box>
+                                                        <Text fontSize="2xs" fontWeight="700" color="#0A1128" mb={1}>Current Authenticator Code *</Text>
+                                                        <input
+                                                            type="text"
+                                                            maxLength={6}
+                                                            value={mfaRegenForm.code}
+                                                            onChange={(e) => setMfaRegenForm({ ...mfaRegenForm, code: e.target.value.replace(/\D/g, '') })}
+                                                            placeholder="123456"
+                                                            style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #CBD5E1', fontSize: '13px' }}
+                                                            required
+                                                        />
+                                                    </Box>
+                                                </Grid>
+                                                <Button type="submit" size="xs" bg="#002147" color="white" loading={mfaRegenForm.loading} borderRadius="md">
+                                                    Issue New Recovery Codes
+                                                </Button>
+                                            </form>
+                                        </Box>
+                                    )}
+
+                                    {/* Disable 2FA Form */}
+                                    {mfaDisableForm.active && (
+                                        <Box p={4} borderRadius="xl" borderWidth="1px" borderColor="#FECACA" bg="#FEF2F2">
+                                            <Heading size="xs" color="#991B1B" mb={2}>Disable Two-Factor Authentication</Heading>
+                                            <Text fontSize="2xs" color="#991B1B" mb={3}>
+                                                Warning: Disabling 2FA reduces account security. You must authenticate with your password and current authenticator code.
+                                            </Text>
+                                            <form onSubmit={handleDisableMfa}>
+                                                <Grid templateColumns={{ base: '1fr', sm: '1fr 1fr' }} gap={3} mb={3}>
+                                                    <Box>
+                                                        <Text fontSize="2xs" fontWeight="700" color="#0A1128" mb={1}>Current Password *</Text>
+                                                        <input
+                                                            type="password"
+                                                            value={mfaDisableForm.password}
+                                                            onChange={(e) => setMfaDisableForm({ ...mfaDisableForm, password: e.target.value })}
+                                                            style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #CBD5E1', fontSize: '13px' }}
+                                                            required
+                                                        />
+                                                    </Box>
+                                                    <Box>
+                                                        <Text fontSize="2xs" fontWeight="700" color="#0A1128" mb={1}>Current Authenticator Code *</Text>
+                                                        <input
+                                                            type="text"
+                                                            maxLength={6}
+                                                            value={mfaDisableForm.code}
+                                                            onChange={(e) => setMfaDisableForm({ ...mfaDisableForm, code: e.target.value.replace(/\D/g, '') })}
+                                                            placeholder="123456"
+                                                            style={{ width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #CBD5E1', fontSize: '13px' }}
+                                                            required
+                                                        />
+                                                    </Box>
+                                                </Grid>
+                                                <Button type="submit" size="xs" bg="#DC2626" color="white" loading={mfaDisableForm.loading} borderRadius="md">
+                                                    Confirm and Deactivate 2FA
+                                                </Button>
+                                            </form>
+                                        </Box>
+                                    )}
+                                </VStack>
+                            )}
+                        </VStack>
+                    )}
                 </DashboardCard>
             )}
 

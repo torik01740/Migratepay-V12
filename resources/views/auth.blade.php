@@ -780,6 +780,47 @@
                  ============================== -->
 
             <!-- ==============================
+                 MFA CHALLENGE PANEL
+                 ============================== -->
+            <div id="mfa-challenge-panel" class="view-panel">
+                <div class="auth-header">
+                    <div style="width: 52px; height: 52px; border-radius: 50%; background: #EEF2FF; color: #4F46E5; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h1>Two-Factor Verification</h1>
+                    <p id="mfa-prompt-text">Enter the 6-digit code from your authenticator app, or an 8-character recovery code.</p>
+                </div>
+
+                <form id="mfa-challenge-form" onsubmit="event.preventDefault(); doVerifyMfaChallenge(document.getElementById('mfa-verify-btn'));">
+                    <div class="form-group">
+                        <label class="form-label" id="mfa-code-label">Verification Code</label>
+                        <input type="text" id="mfa-challenge-code" class="form-control" placeholder="123456" maxlength="12" style="letter-spacing:4px; font-size:18px; text-align:center; font-weight:800;" required autocomplete="one-time-code">
+                    </div>
+                    
+                    <div id="mfa-error-msg" style="display:none; background:#FFEBEE; color:#D32F2F; border:1px solid #FFCDD2; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; margin-bottom:16px;"></div>
+
+                    <button type="button" id="mfa-verify-btn" class="btn btn-primary" onclick="doVerifyMfaChallenge(this)">
+                        <span>Verify & Sign In</span>
+                        <div class="spinner"></div>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <button type="button" onclick="toggleMfaRecoveryMode()" id="mfa-toggle-mode-btn" style="color: var(--emerald-500); font-weight: 600; font-size: 13px; background: none; border: none; cursor: pointer; text-decoration: underline;">
+                        Use an emergency recovery code
+                    </button>
+                    <div style="margin-top: 12px;">
+                        <button type="button" onclick="switchPanel('login-panel')" style="color: var(--gray-500); font-size: 13px; background: none; border: none; cursor: pointer;">
+                            ← Back to Password Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- ==============================
+                 END MFA CHALLENGE PANEL
+                 ============================== -->
+
+            <!-- ==============================
                  FORGOT PASSWORD PANEL
                  ============================== -->
             <div id="forgot-password-panel" class="view-panel">
@@ -1615,16 +1656,30 @@
                 btn.classList.remove('loading');
 
                 if (res.ok && result.success) {
+                    if (result.requires_mfa) {
+                        switchPanel('mfa-challenge-panel');
+                        setTimeout(() => {
+                            const mfaInput = document.getElementById('mfa-challenge-code');
+                            if (mfaInput) {
+                                mfaInput.value = '';
+                                mfaInput.focus();
+                            }
+                        }, 100);
+                        return;
+                    }
+
                     // Sync email and wallet balance to localStorage for React dashboards
                     if (result.role === 'admin') {
                         localStorage.setItem('migratepay_admin_auth', 'true');
                     } else {
                         localStorage.setItem('migratepay_user_auth', 'true');
                     }
-                    localStorage.setItem('migratepay_current_user_email', result.user.email.toLowerCase());
-                    const balances = JSON.parse(localStorage.getItem('migratepay_wallet_balances') || '{}');
-                    balances[result.user.email.toLowerCase()] = parseFloat(result.user.wallet_balance) || 0;
-                    localStorage.setItem('migratepay_wallet_balances', JSON.stringify(balances));
+                    if (result.user && result.user.email) {
+                        localStorage.setItem('migratepay_current_user_email', result.user.email.toLowerCase());
+                        const balances = JSON.parse(localStorage.getItem('migratepay_wallet_balances') || '{}');
+                        balances[result.user.email.toLowerCase()] = parseFloat(result.user.wallet_balance) || 0;
+                        localStorage.setItem('migratepay_wallet_balances', JSON.stringify(balances));
+                    }
 
                     // Redirect based on role — server tells us where to go
                     window.location.href = getBasePath() + (result.redirect || '/dashboard');
@@ -1636,6 +1691,110 @@
             } catch (e) {
                 btn.classList.remove('loading');
                 showLoginError('Network error. Please check your connection.');
+            }
+        }
+
+        // ─── MFA Challenge Verification ─────────────────────────────────────────────
+        let isRecoveryMode = false;
+        function toggleMfaRecoveryMode() {
+            isRecoveryMode = !isRecoveryMode;
+            const label = document.getElementById('mfa-code-label');
+            const input = document.getElementById('mfa-challenge-code');
+            const toggleBtn = document.getElementById('mfa-toggle-mode-btn');
+            const promptText = document.getElementById('mfa-prompt-text');
+            if (isRecoveryMode) {
+                if (label) label.textContent = '8-Character Recovery Code';
+                if (input) {
+                    input.placeholder = 'ABCD-1234';
+                    input.maxLength = 12;
+                    input.value = '';
+                    input.focus();
+                }
+                if (toggleBtn) toggleBtn.textContent = 'Use 6-digit authenticator code instead';
+                if (promptText) promptText.textContent = 'Enter one of your emergency recovery backup codes (e.g. ABCD-1234).';
+            } else {
+                if (label) label.textContent = 'Verification Code';
+                if (input) {
+                    input.placeholder = '123456';
+                    input.maxLength = 6;
+                    input.value = '';
+                    input.focus();
+                }
+                if (toggleBtn) toggleBtn.textContent = 'Use an emergency recovery code';
+                if (promptText) promptText.textContent = 'Enter the 6-digit code from your authenticator app.';
+            }
+        }
+
+        async function doVerifyMfaChallenge(btn) {
+            const input = document.getElementById('mfa-challenge-code');
+            const code = (input?.value || '').trim();
+            const errorEl = document.getElementById('mfa-error-msg');
+            if (errorEl) errorEl.style.display = 'none';
+
+            if (!code) {
+                if (errorEl) {
+                    errorEl.style.display = 'block';
+                    errorEl.textContent = 'Please enter your verification code.';
+                }
+                return;
+            }
+
+            btn.classList.add('loading');
+            try {
+                let csrfToken = getCsrf();
+                let res = await fetch(getBasePath() + '/api/auth/mfa-verify', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                    body: JSON.stringify({ code, _token: csrfToken })
+                });
+
+                if (res.status === 419) {
+                    try {
+                        const tokenRes = await fetch(getBasePath() + '/api/csrf-token', { credentials: 'same-origin' });
+                        const tokenData = await tokenRes.json();
+                        if (tokenData && tokenData.csrf_token) {
+                            csrfToken = tokenData.csrf_token;
+                            res = await fetch(getBasePath() + '/api/auth/mfa-verify', {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                                body: JSON.stringify({ code, _token: csrfToken })
+                            });
+                        }
+                    } catch (e) {
+                        console.error('CSRF recovery failed', e);
+                    }
+                }
+
+                const result = await res.json();
+                btn.classList.remove('loading');
+
+                if (res.ok && result.success) {
+                    if (result.role === 'admin') {
+                        localStorage.setItem('migratepay_admin_auth', 'true');
+                    } else {
+                        localStorage.setItem('migratepay_user_auth', 'true');
+                    }
+                    if (result.user && result.user.email) {
+                        localStorage.setItem('migratepay_current_user_email', result.user.email.toLowerCase());
+                        const balances = JSON.parse(localStorage.getItem('migratepay_wallet_balances') || '{}');
+                        balances[result.user.email.toLowerCase()] = parseFloat(result.user.wallet_balance) || 0;
+                        localStorage.setItem('migratepay_wallet_balances', JSON.stringify(balances));
+                    }
+                    window.location.href = getBasePath() + (result.redirect || '/dashboard');
+                } else {
+                    if (errorEl) {
+                        errorEl.style.display = 'block';
+                        errorEl.textContent = result.message || 'Invalid or expired verification code.';
+                    }
+                }
+            } catch (err) {
+                btn.classList.remove('loading');
+                if (errorEl) {
+                    errorEl.style.display = 'block';
+                    errorEl.textContent = 'Network error. Please try again.';
+                }
             }
         }
 

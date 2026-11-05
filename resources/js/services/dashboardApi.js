@@ -69,10 +69,20 @@ export const supportDeskApi = {
         }).then((res) => res.data),
 };
 
+export const mfaApi = {
+    getStatus: () => api.get('/api/user/mfa/status').then((res) => res.data),
+    setup: () => api.post('/api/user/mfa/setup').then((res) => res.data),
+    confirm: (code) => api.post('/api/user/mfa/confirm', { code }).then((res) => res.data),
+    regenerateRecoveryCodes: (data) => api.post('/api/user/mfa/regenerate-recovery-codes', data).then((res) => res.data),
+    disable: (data) => api.post('/api/user/mfa/disable', data).then((res) => res.data),
+    verifyChallenge: (code) => api.post('/api/auth/mfa-verify', { code }).then((res) => res.data),
+};
+
 export default {
     dealsApi,
     financeApi,
     userProfileApi,
     supportDeskApi,
+    mfaApi,
 };
 
